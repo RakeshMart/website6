@@ -4437,7 +4437,7 @@
         if (e.keyCode === 123) { e.preventDefault(); return false; }
         if (k === 'printscreen') { e.preventDefault(); return false; }
         if (ctrl) { var blocked = ['c', 'x', 'v', 'u', 's', 'a', 'p', 'j', 'i', 'f', 'k', 'e', 'h', 'g']; if (blocked.indexOf(k) !== -1) { e.preventDefault(); return false; } }
-        if (ctrl && e.shiftKey && ['i', 'j', 'c', 'k', 'e', 'n'].indexOf(k) !== -1) { e.preventDefault(); return false; }
+        // if (ctrl && e.shiftKey && ['i', 'j', 'c', 'k', 'e', 'n'].indexOf(k) !== -1) { e.preventDefault(); return false; }
       }, true);
       var longPressTimer = null; var LONG_PRESS_MS = 500;
       document.addEventListener('touchstart', function (e) { var target = e.target; if (target && (target.tagName === 'IMG' || target.closest('img, .img-protect-wrap'))) { longPressTimer = setTimeout(function () { e.preventDefault(); }, LONG_PRESS_MS); } }, { passive: false, capture: true });
