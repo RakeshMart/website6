@@ -1,8 +1,8 @@
 const CACHE_NAME = 'rakesh-mart-v1';
 const urlsToCache = [
-  '/website/',
-  '/website/index.html',
-  '/website/manifest.json'
+  '/website6/',
+  '/website6/index.html',
+  '/website6/manifest.json'
 ];
 
 // Install event
