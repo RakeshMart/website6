@@ -3239,7 +3239,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyH_yk8CaPMjG9sM3cpOraTOlSi1vWv7tBoz55tFhb9MXEratXLEgD4IzFNVZ0s1YU/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzOpYAeeKUPTxC720dUl7LkLOgb-xHauEGWzboTW62r3IzB8XWLf-4-_0AB9o5lL1vK/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
@@ -4450,6 +4450,65 @@
 
     document.getElementById("prof-avatar-box").addEventListener("click", function () {
       openDPModal();
+    });
+
+    // Firebase config — ye public safe hai
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRnJlF41SzGiabnJKz5gsBtVjCQldz0aw",
+      authDomain: "rakesh-mart.firebaseapp.com",
+      projectId: "rakesh-mart",
+      storageBucket: "rakesh-mart.firebasestorage.app",
+      messagingSenderId: "197450225636",
+      appId: "1:197450225636:web:e412e0037cd1a3021359f1"
+    };
+
+    const VAPID_KEY = "BPdJz-3CaVqV-sHEmLWjb-PQ6rPf-RmfAtowEOSh4ozs2HFBUsMv9RxJgpcT8SOPdnZA1QtevSdbZJf66imDIhk";
+    const BACKEND_URL = "https://rakesh-mart-backend.onrender.com"; // Render URL
+
+    async function initFirebasePush() {
+      try {
+        // Firebase load karo
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+        const { getMessaging, getToken, onMessage } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js');
+
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+
+        // Permission maango
+        const permission = await Notification.requestPermission();
+
+        if (permission === 'granted') {
+          // Token lo
+          const token = await getToken(messaging, {
+            vapidKey: VAPID_KEY,
+            serviceWorkerRegistration: await navigator.serviceWorker.ready
+          });
+
+          if (token) {
+            // Backend pe register karo
+            await fetch(BACKEND_URL + '/register-token', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token })
+            });
+            console.log('Push notification registered!');
+          }
+
+          // Foreground messages
+          onMessage(messaging, (payload) => {
+            showNotifToast({
+              text: payload.notification.body
+            });
+          });
+        }
+      } catch (err) {
+        console.log('Push setup failed:', err);
+      }
+    }
+
+    // App load hone ke baad run karo
+    window.addEventListener('load', () => {
+      setTimeout(initFirebasePush, 3000); // 3 sec baad maango permission
     });
   </script>
 
