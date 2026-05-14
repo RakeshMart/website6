@@ -4460,43 +4460,54 @@
       window.onbeforeprint = function () { return false; };
     })();
 
+
+    // WEB PUSH NOTIFICATIONS (Native - No Firebase)
     // ============================================================
-    // FIREBASE PUSH NOTIFICATIONS
-    // ============================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyDRnJlF41SzGiabnJKz5gsBtVjCQldz0aw",
-      authDomain: "rakesh-mart.firebaseapp.com",
-      projectId: "rakesh-mart",
-      storageBucket: "rakesh-mart.firebasestorage.app",
-      messagingSenderId: "197450225636",
-      appId: "1:197450225636:web:e412e0037cd1a3021359f1"
-    };
-    const VAPID_KEY = "BPdJz-3CaVqV-sHEmLWjb-PQ6rPf-RmfAtowEOSh4ozs2HFBUsMv9RxJgpcT8SOPdnZA1QtevSdbZJf66imDIhk";
+    const VAPID_KEY = "BOsusGUZaZcyyrBvrCEFIz5uyR_J_88U8CnojVOfyNRIuO9fwvsXEcbp9i4_-w3WCX4BQA8IQhUTHeCZCw7JhwQ";
     const BACKEND_URL = "https://rakesh-mart-backend.onrender.com";
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const output = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) output[i] = rawData.charCodeAt(i);
+      return output;
+    }
 
     async function initFirebasePush() {
       try {
-        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
-        const { getMessaging, getToken, onMessage } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js');
-        const app = initializeApp(firebaseConfig);
-        const messaging = getMessaging(app);
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+          console.log('Push not supported on this browser'); return;
+        }
         const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const swReg = await navigator.serviceWorker.ready;
-          const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-          if (token) {
-            await fetch(BACKEND_URL + '/register-token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) });
-            console.log('Push notification registered!');
-          }
-          // Foreground messages - save to history + show toast
-          onMessage(messaging, (payload) => {
-            var notif = { text: payload.notification.body || payload.notification.title, time: new Date().toLocaleString('en-IN') };
-            mergeNotifications([notif]);
-            showNotifToast(notif);
-            updateNotifBadge();
+        if (permission !== 'granted') { console.log('Push permission denied'); return; }
+
+        const swReg = await navigator.serviceWorker.ready;
+
+        // Pehle check karo already subscribed hai ya nahi
+        let sub = await swReg.pushManager.getSubscription();
+
+        if (!sub) {
+          // Naya subscription banao
+          sub = await swReg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_KEY)
           });
         }
-      } catch (err) { console.log('Push setup failed:', err); }
+
+        // Backend mein register karo
+        await fetch(BACKEND_URL + '/register-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: JSON.stringify(sub) })
+        });
+
+        console.log('✅ Web Push registered successfully!');
+
+      } catch (err) {
+        console.log('Push setup failed:', err);
+      }
     }
 
     window.addEventListener('load', () => {
