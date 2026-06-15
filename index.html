@@ -1051,13 +1051,17 @@
       overflow: hidden;
       transition: .2s;
       box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      padding: 0;
+      position: relative;
+      /* ← ADD THIS */
     }
 
     .cat-img-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 14px;
+      border-radius: 0;
+      display: block;
     }
 
     .cat-item.active .cat-img-box {
@@ -2891,6 +2895,230 @@
       box-shadow: 0 12px 30px rgba(124, 58, 237, .25), inset 0 1px 0 rgba(255, 255, 255, .6);
     }
 
+    /* ===== SPIN WHEEL ===== */
+    .spin-eligibility-card {
+      background: linear-gradient(135deg, #1e5c2a, #2d7a3a);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .spin-eligibility-card .elig-amount {
+      font-size: 2rem;
+      font-weight: 800;
+      font-family: 'Baloo 2', sans-serif;
+      color: var(--accent2);
+    }
+
+    .spin-wheel-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    #spin-canvas {
+      border-radius: 50%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+    }
+
+    .spin-pointer {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .3));
+    }
+
+    .spin-btn {
+      width: 100%;
+      padding: .9rem;
+      border-radius: var(--radius);
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255, 107, 43, .35);
+      margin-top: .5rem;
+      transition: .2s;
+    }
+
+    .spin-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .spin-cooldown-box {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .spin-cooldown-box .timer-big {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: 'Baloo 2', sans-serif;
+    }
+
+    .reward-card {
+      background: #fff;
+      border: 2px solid var(--accent2);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(255, 159, 67, .25);
+      margin: 1rem 0;
+    }
+
+    .reward-card .reward-label {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border-radius: 50px;
+      padding: .3rem 1rem;
+      font-size: .78rem;
+      font-weight: 800;
+      display: inline-block;
+      margin-bottom: .8rem;
+    }
+
+    .reward-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: .6rem;
+    }
+
+    .reward-card .reward-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .reward-card .reward-price {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 800;
+      margin: .3rem 0;
+    }
+
+    .reward-card .reward-desc {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: .8rem;
+    }
+
+    .add-delivery-btn {
+      width: 100%;
+      padding: .8rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--green);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+    }
+
+    .confetti-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .win-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .win-popup-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      animation: winPopIn .5s cubic-bezier(.175, .885, .32, 1.275);
+    }
+
+    @keyframes winPopIn {
+      from {
+        transform: scale(0);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .win-popup-card .win-emoji {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    .win-popup-card h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: .3rem;
+    }
+
+    .win-popup-card p {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 1rem;
+    }
+
+    .win-popup-close {
+      width: 100%;
+      padding: .75rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .spin-hidden {
+      display: none !important;
+    }
+
+    .free-gift-badge {
+      background: linear-gradient(135deg, #ff6b2b, #ff9f43);
+      color: #fff;
+      font-size: .65rem;
+      font-weight: 800;
+      padding: .15rem .5rem;
+      border-radius: 50px;
+      display: inline-block;
+    }
+
     /* MISC */
     .toast {
       position: fixed;
@@ -2967,6 +3195,38 @@
       text-align: center;
       padding: 3rem;
       color: var(--muted);
+    }
+
+    .reward-description-box {
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      border: 1.5px solid var(--green3);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-top: 1rem;
+      line-height: 1.7;
+      font-size: .95rem;
+      color: var(--text);
+    }
+
+    .reward-description-box strong {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .reward-description-highlight {
+      background: rgba(30, 92, 42, 0.1);
+      padding: .4rem .7rem;
+      border-radius: 8px;
+      display: inline-block;
+      margin: .3rem 0;
+      font-weight: 700;
+    }
+
+    #spin-page {
+      background-image: url('https://raw.githubusercontent.com/RakeshMart/imp-spin/main/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
   </style>
 </head>
@@ -3403,10 +3663,36 @@
           </div>
           <div class="banner-icon"><i class="fa fa-truck-fast"></i></div>
         </div>
-        <div id="offer-img-banner-wrap" style="display:none;">
-          <div class="offer-banner-gap"></div>
-          <div class="offer-img-banner" onclick="selectCat('__OFFER__')" id="offer-img-banner-el"><img
-              id="offer-img-banner-img" src="" alt="Offer"></div>
+
+
+        <!-- SPECIAL OFFERS SLIDER -->
+        <div id="special-offers-slider-wrap" style="margin-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:0 0 8px 0;">
+            <div
+              style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:.4rem;">
+              <i class="fa fa-star" style="color:var(--accent)"></i> Special Offers
+            </div>
+          </div>
+          <div style="position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-md);"
+            id="slider-outer">
+            <div id="offer-slides-track"
+              style="display:flex;transition:transform 0.45s cubic-bezier(.4,0,.2,1);will-change:transform;">
+              <!-- Slides yahan JS se inject honge -->
+            </div>
+            <!-- Arrows -->
+            <div id="slider-arrow-left" onclick="sliderMove(-1)"
+              style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:5;font-size:.85rem;color:var(--text);">
+              <i class="fa fa-chevron-left"></i>
+            </div>
+            <div id="slider-arrow-right" onclick="sliderMove(1)"
+              style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:5;font-size:.85rem;color:var(--text);">
+              <i class="fa fa-chevron-right"></i>
+            </div>
+            <!-- Dot Indicators -->
+            <div id="slider-dots"
+              style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:5;">
+            </div>
+          </div>
         </div>
       </div>
       <div class="section-header">
@@ -3636,15 +3922,28 @@
       <button class="nav-tab" id="tab-cart" onclick="showTab('cart')"><i class="fa fa-bag-shopping tab-icon"></i><span
           class="tab-label" id="nav-cart-txt">Cart</span><span class="tab-badge show"
           id="cart-badge-bottom">0</span></button>
+
       <button class="nav-tab" id="tab-chat" onclick="showTab('chat')"><i class="fa fa-comments tab-icon"></i><span
           class="tab-label" id="nav-chat-txt">Chat</span></button>
       <button class="nav-tab" id="tab-profile" onclick="showTab('profile')"><i
           class="fa fa-circle-user tab-icon"></i><span class="tab-label" id="nav-profile-txt">Profile</span></button>
     </nav>
+    <!-- SPIN PAGE -->
+    <div id="spin-page" class="page">
+      <div class="page-header" style="background:var(--green);">
+        <div class="back-icon-btn" onclick="showTab('home')" style="border-color:rgba(255,255,255,.3);color:#fff;"><i
+            class="fa fa-arrow-left"></i></div>
+        <h2 style="color:#fff;"><i class="fa fa-gift" style="color:var(--accent2)"></i> Lucky Spin</h2>
+      </div>
+      <div id="spin-page-content"
+        style="padding:1rem;padding-bottom:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 130px);">
+      </div>
+    </div>
+
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwmxK2DPep1RM2F5_eNWqm3s7b_kMTAg1Zj6Tj0juPK3r9zjDf4bFKgBg4fpEkq7s02/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbygUMxmkplS-3YSe_BrjVi3qTK58bRvheSy0x2VQddc0zzKoKG9RyLg1bv-Ncp5WLd9/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
@@ -3660,6 +3959,8 @@
     var isOrderPlacing = false;
     var notifCheckTimer = null;
     var currentNotifTab = 'new'; // 'new' or 'all'
+    var _spinQueued = false;   // User ne click kiya par winner abhi aa raha tha
+    var _hubWaitTimer = null;  // Hub animation timer
 
     // ============================================================
     // PERSISTENT NOTIFICATION STORAGE (LocalStorage based)
@@ -4117,6 +4418,7 @@
 
       var savedCart = localStorage.getItem('kiranaCart'); if (savedCart) { cart = JSON.parse(savedCart); updateCartBadges(); }
       var savedOrders = localStorage.getItem('kiranaOrders'); if (savedOrders) orders = JSON.parse(savedOrders);
+      try { var pr = localStorage.getItem('pendingReward'); if (pr) pendingRewardItem = JSON.parse(pr); } catch (e) { }
       var savedLang = localStorage.getItem("lang"); if (savedLang) currentLang = savedLang;
       updateLangButtons(); updateAllUIText();
       if (currentUser) fillProfileUI();
@@ -4225,7 +4527,8 @@
       document.querySelectorAll('.nav-tab').forEach(function (nt) { nt.classList.remove('active'); });
       var tabEl = document.getElementById('tab-' + tab); if (tabEl) tabEl.classList.add('active');
       activeTab = tab;
-      if (tab === 'home') { renderCategories(); renderProducts(); }
+      if (tab === 'home') { renderCategories(); renderProducts(); buildSliderSlides(); }
+      if (tab === 'spin') { loadSpinPage(); }
       if (tab === 'cart') renderCart();
       if (tab === 'orders') { loadOrdersFromSheet(); startOrdersRefresh(); }
       if (tab === 'profile') fillProfileUI();
@@ -4252,19 +4555,51 @@
         if (data && data.products && data.products.length > 0) { products = data.products; offerLabel = data.offerLabel || ''; offerBannerImg = data.offerBannerImg || ''; buildCatImageMap(); }
         else products = defaultProducts();
         document.getElementById('loading-wrap').style.display = 'none'; document.getElementById('products-grid').style.display = 'grid';
-        renderCategories(); renderOfferBanner(); renderProducts();
+        renderCategories(); renderOfferBanner(); renderProducts(); buildSliderSlides();
       }).catch(function () { products = defaultProducts(); document.getElementById('loading-wrap').style.display = 'none'; document.getElementById('products-grid').style.display = 'grid'; renderCategories(); renderProducts(); });
     }
     function buildCatImageMap() { catImageMap = {}; products.forEach(function (p) { var cats = getProductCategories(p); var img = p.catImg || ''; if (img && img.startsWith('http')) { cats.forEach(function (cat) { if (!catImageMap[cat]) catImageMap[cat] = img; }) } }); }
     function defaultProducts() { return [{ id: 1, name: "Basmati Chawal 1kg", cat: "Chawal & Atta", price: 89, orig: 110, img: "https://raw.githubusercontent.com/All-Basic-To-Advance-Tool/Rakesh_Kirana/main/Rice.jpg", img2: "", img3: "", img4: "", desc: "Long grain basmati, khushboodar.", rating: 4.8, badge: "sale", name_hi: "बासमती चावल 1kg", name_en: "Basmati Rice 1kg", cat_hi: "चावल & आटा", cat_en: "Rice & Flour", desc_hi: "लंबे दाने बासमती।", desc_en: "Long grain basmati rice." }, { id: 2, name: "Aashirvaad Atta 5kg", cat: "Chawal & Atta", price: 245, orig: 280, img: "", img2: "", img3: "", img4: "", desc: "Chakki fresh gehun ka atta.", rating: 4.7, badge: "", name_hi: "आशीर्वाद आटा 5kg", name_en: "Aashirvaad Flour 5kg", cat_hi: "चावल & आटा", cat_en: "Rice & Flour", desc_hi: "चक्की फ्रेश।", desc_en: "Fresh wheat flour." }, { id: 3, name: "Toor Daal 1kg", cat: "Daal", price: 130, orig: 150, img: "", img2: "", img3: "", img4: "", desc: "Moti aur saaf toor daal.", rating: 4.5, badge: "new", name_hi: "तूर दाल 1kg", name_en: "Toor Dal 1kg", cat_hi: "दाल", cat_en: "Pulses", desc_hi: "मोटी साफ दाल।", desc_en: "Clean toor dal." }]; }
     function getProductCategories(p) { if (!p.cat) return ['General']; return p.cat.split(',').map(function (c) { return c.trim(); }).filter(function (c) { return c; }); }
     function getProductCatDisplay(p) { var cats = getProductCategories(p); return cats.map(function (cat) { if (currentLang === 'hi' && p.cat_hi) { var hi = p.cat_hi.split(','); var idx = p.cat.split(',').map(function (c) { return c.trim(); }).indexOf(cat); return (hi[idx] || cat).trim(); } if (currentLang === 'en' && p.cat_en) { var en = p.cat_en.split(','); var idx2 = p.cat.split(',').map(function (c) { return c.trim(); }).indexOf(cat); return (en[idx2] || cat).trim(); } return cat; }).join(', '); }
-    function renderOfferBanner() { var wrap = document.getElementById('offer-img-banner-wrap'); if (!wrap) return; var hasOffers = products.some(function (p) { return p.isOffer; }); if (!hasOffers || !offerBannerImg || !offerBannerImg.startsWith('http')) { wrap.style.display = 'none'; return; } document.getElementById('offer-img-banner-img').src = offerBannerImg; wrap.style.display = 'block'; }
+    function renderOfferBanner() {
+      // Ab ye function zaroori nahi - slider mein ho gaya
+      // Lekin function ko khali rehne do (error nahi aayegi)
+      // Ye function sirf backward compatibility ke liye hai
+    }
     function getAllUniqueCats() { var catSet = {}; products.forEach(function (p) { getProductCategories(p).forEach(function (c) { catSet[c] = true; }); }); return Object.keys(catSet); }
     function getCatDisplayName(cat) { if (cat === 'All') return t('cat_all'); for (var i = 0; i < products.length; i++) { var cats = getProductCategories(products[i]); var idx = cats.indexOf(cat); if (idx >= 0) { if (currentLang === 'hi' && products[i].cat_hi) { var arr = products[i].cat_hi.split(','); return (arr[idx] || cat).trim(); } if (currentLang === 'en' && products[i].cat_en) { var arr2 = products[i].cat_en.split(','); return (arr2[idx] || cat).trim(); } return cat; } } return cat; }
-    function getCatIconHtml(cat) { if (catImageMap[cat]) return '<img src="' + catImageMap[cat] + '" onerror="this.outerHTML=\'' + getFallbackIcon(cat) + '\'" loading="lazy">'; return getFallbackIcon(cat); }
+
+    function getCatIconHtml(cat) {
+      if (catImageMap[cat] && catImageMap[cat].startsWith && catImageMap[cat].startsWith('http')) {
+        return '<img src="' + catImageMap[cat] + '" alt="' + cat + '" onerror="this.outerHTML=\'' + getFallbackIcon(cat) + '\'" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">';
+      }
+      return getFallbackIcon(cat);
+    }
     function getFallbackIcon(cat) { return CAT_ICONS[cat] || '<i class="fa fa-box"></i>'; }
-    function renderCategories() { if (!products || !products.length) return; var cats = ['All'].concat(getAllUniqueCats()); var scroll = document.getElementById('cat-scroll'); if (!scroll) return; scroll.innerHTML = cats.map(function (c) { var iconHtml = c === 'All' ? '<i class="fa fa-bag-shopping"></i>' : getCatIconHtml(c); return '<div class="cat-item ' + (c === activeCategory ? 'active' : '') + '" onclick="selectCat(\'' + c + '\')"><div class="cat-img-box">' + iconHtml + '</div><div class="cat-item-name">' + getCatDisplayName(c) + '</div></div>'; }).join(''); }
+    function renderCategories() {
+      if (!products || !products.length) return;
+      var cats = ['All'].concat(getAllUniqueCats());
+      var scroll = document.getElementById('cat-scroll');
+      if (!scroll) return;
+      scroll.innerHTML = cats.map(function (c) {
+        var iconHtml = '';
+        if (c === 'All') {
+          iconHtml = '<i class="fa fa-bag-shopping"></i>';
+        } else {
+          var imgSrc = catImageMap[c];
+          if (imgSrc && imgSrc.startsWith('http')) {
+            iconHtml = '<img src="' + imgSrc + '" alt="' + c + '" onerror="this.outerHTML=\'<i class=&quot;fa fa-box&quot;></i>\'" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:0;">';
+          } else {
+            iconHtml = '<i class="fa fa-box"></i>';
+          }
+        }
+        return '<div class="cat-item ' + (c === activeCategory ? 'active' : '') + '" onclick="selectCat(\'' + c + '\')"><div class="cat-img-box">' + iconHtml + '</div><div class="cat-item-name">' + getCatDisplayName(c) + '</div></div>';
+      }).join('');
+    }
+
+    console.log('catImageMap:', catImageMap);
+    console.log('Atta & Flour value:', catImageMap['Atta & Flour']);
     function selectCat(cat) { activeCategory = cat; var bb = document.getElementById('offer-back-btn'); if (cat === '__OFFER__') { document.body.classList.add('offer-active'); if (bb) bb.style.display = 'block'; } else { document.body.classList.remove('offer-active'); if (bb) bb.style.display = 'none'; } renderCategories(); renderProducts(); }
     function goBackFromOffer() { activeCategory = 'All'; document.body.classList.remove('offer-active'); var bb = document.getElementById('offer-back-btn'); if (bb) bb.style.display = 'none'; renderCategories(); renderProducts(); }
 
@@ -4345,15 +4680,101 @@
     function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); document.getElementById('cart-badge-top').textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } }
     function removeFromCart(id) { cart = cart.filter(function (c) { return c.id != id; }); localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); renderCart(); }
     function changeCartQty(id, d) { var item = cart.find(function (c) { return c.id == id; }); if (item) { item.qty = Math.max(1, item.qty + d); localStorage.setItem('kiranaCart', JSON.stringify(cart)); renderCart(); updateCartBadges(); } }
+
+
     function renderCart() {
       var body = document.getElementById('cart-body');
-      if (!cart.length) { body.innerHTML = '<div class="empty"><i class="fa fa-bag-shopping"></i><h3>' + t('cart_empty') + '</h3><p>' + t('cart_empty_sub') + '</p><button class="checkout-big-btn" style="margin-top:1rem;max-width:220px;margin-left:auto;margin-right:auto" onclick="showTab(\'home\')"><i class="fa fa-store"></i> ' + t('do_shopping') + '</button></div>'; return; }
-      var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; var total = subtotal + delivery;
-      body.innerHTML = cart.map(function (item) { var imgHtml = (item.img && item.img.startsWith('http')) ? '<img src="' + item.img + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">' : '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>'; return '<div class="cart-item"><div class="cart-img">' + imgHtml + '</div><div class="cart-info"><div class="cart-name">' + getName(item) + '</div><div class="cart-price">₹' + (item.price * item.qty) + '</div><div class="cart-controls"><button class="cart-qty-btn" onclick="changeCartQty(' + item.id + ',-1)"><i class="fa fa-minus"></i></button><span class="cart-qty-val">' + item.qty + '</span><button class="cart-qty-btn" onclick="changeCartQty(' + item.id + ',1)"><i class="fa fa-plus"></i></button><span style="color:var(--muted);font-size:.75rem">× ₹' + item.price + '</span><button class="cart-remove" onclick="removeFromCart(' + item.id + ')"><i class="fa fa-trash"></i> ' + t('remove') + '</button></div></div></div>'; }).join('') +
-        '<div class="cart-summary-card"><h3><i class="fa fa-receipt" style="color:var(--accent)"></i> ' + t('bill') + '</h3><div class="sum-row"><span>' + t('subtotal') + '</span><span>₹' + subtotal + '</span></div><div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? '<span style="color:var(--success);font-weight:800">' + t('free_del') + ' <i class="fa fa-party-horn"></i></span>' : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('total') + '</span><span style="color:var(--accent)">₹' + total + '</span></div></div>' +
-        '<button class="checkout-big-btn" onclick="showTab(\'checkout\')"><i class="fa fa-credit-card"></i> ' + t('checkout') + ' — ₹' + total + '</button><div style="height:80px"></div>';
-    }
 
+      if (!cart.length) {
+        var pendingHint = '';
+        if (pendingRewardItem) {
+          pendingHint = '<div style="background:#eaf5ec;border:1.5px solid var(--green3);border-radius:12px;padding:.8rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem;">' +
+            '<i class="fa fa-gift" style="font-size:1.5rem;color:var(--green);flex-shrink:0"></i>' +
+            '<div><div style="font-weight:800;font-size:.85rem;color:var(--green)">Spin Reward Pending: ' + pendingRewardItem.name + '</div>' +
+            '<div style="font-size:.75rem;color:var(--muted)">Koi bhi item cart mein dalo — reward FREE add ho jayega!</div></div></div>';
+        }
+        body.innerHTML = pendingHint + '<div class="empty"><i class="fa fa-bag-shopping"></i><h3>' + t('cart_empty') + '</h3><p>' + t('cart_empty_sub') + '</p><button class="checkout-big-btn" style="margin-top:1rem;max-width:220px;margin-left:auto;margin-right:auto" onclick="showTab(\'home\')"><i class="fa fa-store"></i> ' + t('do_shopping') + '</button></div>';
+        return;
+      }
+
+      var subtotal = cart.reduce(function (s, i) {
+        return s + i.price * i.qty;
+      }, 0);
+
+      var delivery = subtotal >= 99 ? 0 : 20;
+      var total = subtotal + delivery;
+
+      body.innerHTML =
+        cart.map(function (item) {
+
+          var rewardBadge = item.isReward
+            ? '<span style="background:#1e5c2a;color:#fff;font-size:.6rem;font-weight:800;padding:.15rem .5rem;border-radius:50px;margin-left:.4rem">🎁 Spin Reward</span>'
+            : '';
+
+          var imgHtml =
+            (item.img && item.img.startsWith('http'))
+              ? '<img src="' + item.img + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">'
+              : '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>';
+
+          return (
+            '<div class="cart-item">' +
+            '<div class="cart-img">' + imgHtml + '</div>' +
+            '<div class="cart-info">' +
+            '<div class="cart-name">' +
+            getName(item) +
+            rewardBadge +
+            '</div>' +
+            '<div class="cart-price">₹' + (item.price * item.qty) + '</div>' +
+            '<div class="cart-controls">' +
+            '<button class="cart-qty-btn" onclick="changeCartQty(' + item.id + ',-1)">' +
+            '<i class="fa fa-minus"></i>' +
+            '</button>' +
+            '<span class="cart-qty-val">' + item.qty + '</span>' +
+            '<button class="cart-qty-btn" onclick="changeCartQty(' + item.id + ',1)">' +
+            '<i class="fa fa-plus"></i>' +
+            '</button>' +
+            '<span style="color:var(--muted);font-size:.75rem">× ₹' + item.price + '</span>' +
+            '<button class="cart-remove" onclick="removeFromCart(' + item.id + ')">' +
+            '<i class="fa fa-trash"></i> ' + t('remove') +
+            '</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+          );
+
+        }).join('') +
+
+        '<div class="cart-summary-card">' +
+        '<h3><i class="fa fa-receipt" style="color:var(--accent)"></i> ' + t('bill') + '</h3>' +
+        '<div class="sum-row">' +
+        '<span>' + t('subtotal') + '</span>' +
+        '<span>₹' + subtotal + '</span>' +
+        '</div>' +
+        '<div class="sum-row">' +
+        '<span><i class="fa fa-truck"></i> ' + t('delivery') + '</span>' +
+        '<span>' +
+        (delivery === 0
+          ? '<span style="color:var(--success);font-weight:800">' +
+          t('free_del') +
+          ' <i class="fa fa-party-horn"></i>' +
+          '</span>'
+          : '₹' + delivery) +
+        '</span>' +
+        '</div>' +
+        '<div class="sum-row total">' +
+        '<span>' + t('total') + '</span>' +
+        '<span style="color:var(--accent)">₹' + total + '</span>' +
+        '</div>' +
+        '</div>' +
+
+        '<button class="checkout-big-btn" onclick="showTab(\'checkout\')">' +
+        '<i class="fa fa-credit-card"></i> ' +
+        t('checkout') +
+        ' — ₹' + total +
+        '</button>' +
+
+        '<div style="height:80px"></div>';
+    }
     // ============================================================
     // UPI
     // ============================================================
@@ -4385,6 +4806,8 @@
       if (selectedPayment === 'upi') { if (!upiAppClicked) { showToast('Pehle koi UPI app select karo', 'error'); return; } var cb = document.getElementById('upi-paid-check'); if (!cb || !cb.checked) { showToast('Payment ke baad checkbox tick karo', 'error'); return; } }
       if (selectedPayment === 'razorpay') { handleRazorpay(btn); return; }
       if (!cart.length) { showToast('Cart khali hai, pehle items dalo', 'error'); return; }
+      var normalItems = cart.filter(function (i) { return !i.isReward; });
+      if (!normalItems.length) { showToast('Spin reward ke saath koi normal item bhi dalo!', 'error'); return; }
       isOrderPlacing = true; btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Order ho raha hai...'; btn.disabled = true;
       var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; var orderId = 'ORD-' + Math.floor(1000000 + Math.random() * 9000000); currentOrderId = orderId;
       var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
@@ -4442,8 +4865,13 @@
       'use strict';
       function isEditable(el) { if (!el) return false; var tag = (el.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'textarea' || tag === 'select') return true; if (el.isContentEditable) return true; return false; }
       function block(e) { if (isEditable(e && e.target)) return; e.preventDefault(); e.stopPropagation(); return false; }
-      var style = document.createElement('style'); style.textContent = ['*{-webkit-user-select:none!important;-moz-user-select:none!important;user-select:none!important;}', 'input,textarea,[contenteditable="true"]{-webkit-user-select:text!important;user-select:text!important;}', 'img{-webkit-user-drag:none!important;user-drag:none!important;pointer-events:none!important;}', 'img{-webkit-touch-callout:none!important;}', 'body{-webkit-touch-callout:none!important;}', '.product-img img,.cart-img img,.offer-img-banner img,.gallery-slide img,.brand-logo-img,.profile-avatar img{pointer-events:none!important;-webkit-user-drag:none!important;}', '.img-protect-wrap{position:relative!important;display:inline-block!important;}', '.img-protect-wrap::after{content:"";position:absolute!important;inset:0!important;z-index:99!important;background:transparent!important;pointer-events:all!important;-webkit-user-select:none!important;user-select:none!important;}'].join('\n'); document.head.appendChild(style);
-      function wrapImages() { document.querySelectorAll('img').forEach(function (img) { if (img.dataset.protected) return; img.dataset.protected = '1'; img.setAttribute('draggable', 'false'); img.setAttribute('oncontextmenu', 'return false'); var parent = img.parentElement; if (parent && !parent.classList.contains('img-protect-wrap')) { var wrapper = document.createElement('span'); wrapper.className = 'img-protect-wrap'; parent.insertBefore(wrapper, img); wrapper.appendChild(img); } }); }
+      var style = document.createElement('style'); style.textContent = ['*{-webkit-user-select:none!important;-moz-user-select:none!important;user-select:none!important;}', 'input,textarea,[contenteditable="true"]{-webkit-user-select:text!important;user-select:text!important;}', 'img{-webkit-user-drag:none!important;user-drag:none!important;pointer-events:none!important;}', 'img{-webkit-touch-callout:none!important;}', 'body{-webkit-touch-callout:none!important;}', '.product-img img,.cart-img img,.offer-img-banner img,.gallery-slide img,.brand-logo-img,.profile-avatar img{pointer-events:none!important;-webkit-user-drag:none!important;}', '.img-protect-wrap{position:relative!important;display:block!important;line-height:0!important;font-size:0!important;}', '.img-protect-wrap::after{content:"";position:absolute!important;inset:0!important;z-index:99!important;background:transparent!important;pointer-events:all!important;-webkit-user-select:none!important;user-select:none!important;}'].join('\n'); document.head.appendChild(style);
+      function wrapImages() {
+        document.querySelectorAll('img').forEach(function (img) {
+          if (img.dataset.protected) return; img.dataset.protected = '1'; img.setAttribute('draggable', 'false'); img.setAttribute('oncontextmenu', 'return false'); // .cat-img-box ke images wrap nahi honge
+          if (img.closest('.cat-img-box')) return; var parent = img.parentElement; if (parent && !parent.classList.contains('img-protect-wrap')) { var wrapper = document.createElement('span'); wrapper.className = 'img-protect-wrap'; parent.insertBefore(wrapper, img); wrapper.appendChild(img); }
+        });
+      }
       wrapImages(); var imgObserver = new MutationObserver(function () { wrapImages(); }); imgObserver.observe(document.body, { childList: true, subtree: true });
       document.addEventListener('contextmenu', block, true); document.addEventListener('selectstart', block, true);
       document.addEventListener('selectionchange', function () { try { var sel = window.getSelection(); if (!sel || sel.isCollapsed) return; var node = sel.anchorNode; if (node && node.nodeType === 3) node = node.parentNode; if (isEditable(node)) return; sel.removeAllRanges(); } catch (_) { } }, true);
@@ -4509,10 +4937,1093 @@
         console.log('Push setup failed:', err);
       }
     }
+    // ============================================================
+    // SPECIAL OFFERS SLIDER
+    // ============================================================
+    var sliderIndex = 0;
+    var sliderItems = [];
+    var sliderAutoTimer = null;
 
+    function buildSliderSlides() {
+      var track = document.getElementById('offer-slides-track');
+      var dotsEl = document.getElementById('slider-dots');
+      if (!track) return;
+
+      sliderItems = [];
+
+      // Slide 1: Offer banner (agar available ho)
+      if (offerBannerImg && offerBannerImg.startsWith('http')) {
+        sliderItems.push({ type: 'offer', img: offerBannerImg, label: offerLabel || 'Special Offers' });
+      }
+
+      // Slide 2: Spin slide — PEHLE localStorage se try karo
+      var savedSliderImg = '';
+      try { savedSliderImg = localStorage.getItem('spinSliderImg') || ''; } catch (e) { }
+      var finalSpinImg = (spinSliderImg && spinSliderImg.startsWith('http'))
+        ? spinSliderImg
+        : savedSliderImg;
+      sliderItems.push({ type: 'spin', img: finalSpinImg, label: 'Lucky Spin' });
+
+      // Agar koi items nahi to slider hide karo
+      if (sliderItems.length === 0) {
+        document.getElementById('special-offers-slider-wrap').style.display = 'none';
+        return;
+      }
+
+      track.innerHTML = sliderItems.map(function (item, idx) {
+        if (item.type === 'spin') {
+          var bg = (item.img && item.img.startsWith('http'))
+            ? 'background-image:url(' + item.img + ');background-size:cover;background-position:center;'
+            : 'background:linear-gradient(135deg,#1e5c2a,#ff6b2b);';
+          var inner = (item.img && item.img.startsWith('http')) ? '' :
+            '<div style="font-size:3rem;">🎡</div>' +
+            '<div style="color:#fff;font-family:\'Baloo 2\',sans-serif;font-size:1.1rem;font-weight:800;">Lucky Spin — Kuch Jeeto!</div>' +
+            '<div style="color:rgba(255,255,255,.8);font-size:.78rem;">Weekly reward spin</div>';
+          return '<div class="slider-slide" style="min-width:100%;height:140px;' + bg + 'display:flex;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:.5rem;" onclick="showSpinPage()">' + inner + '</div>';
+        } else {
+          return '<div class="slider-slide" style="min-width:100%;height:140px;cursor:pointer;" onclick="selectCat(\'__OFFER__\')">' +
+            '<img src="' + item.img + '" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display=\'none\'">' +
+            '</div>';
+        }
+      }).join('');
+
+      // Dots
+      dotsEl.innerHTML = sliderItems.map(function (_, idx) {
+        return '<div onclick="goToSlide2(' + idx + ')" style="width:' + (idx === 0 ? '20px' : '8px') + ';height:8px;border-radius:50px;background:' + (idx === 0 ? '#fff' : 'rgba(255,255,255,.5)') + ';cursor:pointer;transition:.3s;" id="sdot-' + idx + '"></div>';
+      }).join('');
+
+      // Swipe support
+      enableSliderSwipe();
+      startSliderAuto();
+    }
+
+    function goToSlide2(idx) {
+      sliderIndex = idx;
+      var track = document.getElementById('offer-slides-track');
+      if (track) track.style.transform = 'translateX(-' + idx + '00%)';
+      document.querySelectorAll('[id^="sdot-"]').forEach(function (d, i) {
+        d.style.width = i === idx ? '20px' : '8px';
+        d.style.background = i === idx ? '#fff' : 'rgba(255,255,255,.5)';
+      });
+    }
+
+    function sliderMove(dir) {
+      if (!sliderItems.length) return;
+      sliderIndex = (sliderIndex + dir + sliderItems.length) % sliderItems.length;
+      goToSlide2(sliderIndex);
+      if (sliderAutoTimer) { clearInterval(sliderAutoTimer); startSliderAuto(); }
+    }
+
+    function startSliderAuto() {
+      if (sliderAutoTimer) clearInterval(sliderAutoTimer);
+      sliderAutoTimer = setInterval(function () { sliderMove(1); }, 3500);
+    }
+
+    function enableSliderSwipe() {
+      var outer = document.getElementById('slider-outer');
+      if (!outer) return;
+      var sx = 0;
+      outer.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+      outer.addEventListener('touchend', function (e) { var diff = sx - e.changedTouches[0].clientX; if (Math.abs(diff) > 40) sliderMove(diff > 0 ? 1 : -1); }, { passive: true });
+    }
+
+    // ============================================================
+    // SPIN WHEEL SYSTEM
+    // ============================================================
+    var spinItems = [];
+    var spinEligAmount = 0;
+    var spinUsed = false;
+    var spinEnabled = false;
+    var spinSliderImg = '';
+    var spinCooldownTimer = null;
+    var lastSpinDate = null;
+
+    function getNextSunday() {
+      var now = new Date();
+      var day = now.getDay();
+      var daysUntilSunday = day === 0 ? 7 : 7 - day;
+      var next = new Date(now);
+      next.setDate(now.getDate() + daysUntilSunday);
+      next.setHours(0, 0, 0, 0);
+      return next;
+    }
+
+
+    function formatCooldownTime(ms) {
+      if (ms <= 0) return '';
+      var s = Math.floor(ms / 1000);
+      var d = Math.floor(s / 86400);
+      var h = Math.floor((s % 86400) / 3600);
+      var m = Math.floor((s % 3600) / 60);
+      var sc = s % 60;
+      function p(n) { return String(n).padStart(2, '0'); }
+      var box = function (val, label, bg) {
+        return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">' +
+          '<div style="background:' + bg + ';color:#fff;border-radius:8px;font-size:26px;font-weight:600;width:58px;height:56px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;">' + p(val) + '</div>' +
+          '<span style="font-size:10px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">' + label + '</span>' +
+          '</div>';
+      };
+      var sep = '<span style="font-size:26px;font-weight:500;color:#aaa;margin-top:10px;">:</span>';
+      return '<div style="display:flex;align-items:flex-start;justify-content:center;gap:8px;">' +
+        box(d, 'Din', '#1e5c2a') + sep +
+        box(h, 'Ghante', '#ff6b2b') + sep +
+        box(m, 'Min', '#1e5c2a') + sep +
+        box(sc, 'Sec', '#ff6b2b') +
+        '</div>';
+    }
+    function loadSpinPage() {
+      var content = document.getElementById('spin-page-content');
+      if (!content) return;
+
+      if (!currentUser) {
+        content.innerHTML = '<div class="empty" style="margin-top:2rem"><i class="fa fa-lock"></i><h3>Pehle Login Karo</h3><p>Spin ke liye register hona zaroori hai</p></div>';
+        return;
+      }
+
+      content.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:1.5rem;">' +
+        '<div style="position:relative;width:100px;height:100px;">' +
+        '<div style="position:absolute;inset:0;border-radius:50%;background:conic-gradient(#FFD700,#FF6B2B,#1e5c2a,#9B59B6,#FFD700);animation:spinLoad 1.2s linear infinite;"></div>' +
+        '<div style="position:absolute;inset:8px;border-radius:50%;background:linear-gradient(135deg,#1a4a20,#0f3317);display:flex;align-items:center;justify-content:center;">' +
+        '<i class="fa fa-dharmachakra" style="font-size:2rem;color:#FFD700;animation:spinLoad 2s linear infinite;"></i>' +
+        '</div>' +
+        '</div>' +
+        '<div style="text-align:center;">' +
+        '<div style="font-family:\'Baloo 2\',sans-serif;font-size:1.3rem;font-weight:800;color:#FFD700;text-shadow:0 0 20px rgba(255,215,0,0.5);margin-bottom:.4rem;">Lucky Spin</div>' +
+        '<div style="color:rgba(255,255,255,.7);font-size:.85rem;font-weight:600;letter-spacing:.05em;">Khushkismat ho rahe hain...</div>' +
+        '<div style="display:flex;gap:.4rem;justify-content:center;margin-top:.8rem;">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:#FFD700;animation:dotBounce 1s ease infinite 0s;"></div>' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:#FF6B2B;animation:dotBounce 1s ease infinite .2s;"></div>' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:#fff;animation:dotBounce 1s ease infinite .4s;"></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<style>' +
+        '@keyframes spinLoad{to{transform:rotate(360deg)}}' +
+        '@keyframes dotBounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-8px);opacity:1}}' +
+        '</style>';
+
+      fetch(CONFIG.SCRIPT_URL + '?action=getSpinData&phone=' + encodeURIComponent(currentUser.phone))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          spinEnabled = data.spinEnabled;
+          spinItems = data.spinItems || [];
+          spinEligAmount = data.eligAmount || 0;
+          spinUsed = data.spinUsed;
+          lastSpinDate = data.lastSpinDate || null;
+          spinSliderImg = data.sliderImg || '';
+          // localStorage mein save karo future ke liye
+          try {
+            if (spinSliderImg) localStorage.setItem('spinSliderImg', spinSliderImg);
+          } catch (e) { }
+          buildSliderSlides();
+
+          if (!spinEnabled) {
+            content.innerHTML = '<div class="empty" style="margin-top:2rem"><i class="fa fa-dharmachakra"></i><h3>Spin Abhi Available Nahi</h3><p>Jab spin active hoga, yahan show hoga</p></div>';
+            // tab-spin removed
+            return;
+          }
+
+          // tab-spin removed
+          renderSpinUI(content, data);
+          // preFetchWinner removed — spin sirf user ke click par hoga
+        })
+        .catch(function (err) {
+          console.log('Spin load error:', err);
+          content.innerHTML = '<div class="empty" style="margin-top:2rem"><i class="fa fa-triangle-exclamation"></i><h3>Load nahi ho raha</h3><p>Internet check karo aur retry karo</p><button onclick="loadSpinPage()" class="add-delivery-btn" style="margin-top:1rem">Retry Karo</button></div>';
+        });
+    }
+
+    function showSpinPage() {
+      document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+      document.getElementById('spin-page').classList.add('active');
+      document.getElementById('main-top-header').style.display = 'none';
+      document.querySelector('.bottom-nav').style.display = '';
+      document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
+      activeTab = 'spin';
+      loadSpinPage();
+    }
+    function renderSpinUI(content, data) {
+      var eligHtml = '';
+
+      if (spinUsed) {
+        var nextSunday = getNextSunday();
+        var msLeft = nextSunday - new Date();
+        var cooldownHtml = '<div class="spin-cooldown-box">' +
+          '<i class="fa fa-clock" style="font-size:2rem;color:var(--accent);margin-bottom:.5rem;display:block"></i>' +
+          '<div style="font-size:.85rem;color:var(--muted);margin-bottom:.4rem">Next Spin In:</div>' +
+          '<div class="timer-big" id="spin-countdown">' + formatCooldownTime(msLeft) + '</div>' +
+          '<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Sunday reset ke baad naya spin milega</div>' +
+          '</div>';
+
+        // Pehla reward agar mila ho
+        var rewardHtml = '';
+        if (data.lastReward) {
+          rewardHtml = '<div style="background:var(--green-light);border:1.5px solid var(--green3);border-radius:var(--radius);padding:.8rem;text-align:center;margin-bottom:1rem;">' +
+            '<i class="fa fa-gift" style="color:var(--green);font-size:1.5rem;margin-bottom:.3rem;display:block"></i>' +
+            '<div style="font-weight:800;color:var(--green);font-size:.88rem">Pichhla Reward: ' + data.lastReward + '</div>' +
+            '</div>';
+        }
+
+        content.innerHTML = eligHtml + rewardHtml + cooldownHtml;
+        startCooldownTimer();
+        return;
+      }
+
+      if (spinItems.length === 0) {
+        content.innerHTML = eligHtml + '<div class="empty"><i class="fa fa-box-open"></i><h3>Spin Items nahi hain</h3><p>Kuch time baad aao</p></div>';
+        return;
+      }
+
+      // Spin wheel draw karo
+      var wheelHtml = '<div class="spin-wheel-wrap" style="position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:1rem 0;">' +
+        '<svg id="needle-svg" width="40" height="54" viewBox="0 0 40 54" style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:20;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));">' +
+        '<defs><linearGradient id="ndlG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6B2B"/><stop offset="100%" stop-color="#CC4400"/></linearGradient></defs>' +
+        '<polygon points="20,50 6,8 20,0 34,8" fill="url(#ndlG)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>' +
+        '<circle cx="20" cy="8" r="5" fill="#FFD700" stroke="#fff" stroke-width="1.5"/>' +
+        '<circle cx="20" cy="50" r="4" fill="#1e5c2a" stroke="#fff" stroke-width="1.5"/>' +
+        '</svg>' +
+        '<canvas id="spin-canvas" width="300" height="300" style="cursor:pointer;width:min(88vw,340px);height:min(88vw,340px);" onclick="handleWheelClick(event)"></canvas>' +
+        '<div id="spin-cd-overlay" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;background:rgba(0,0,0,0.72);border-radius:12px;padding:10px 16px;text-align:center;border:2px solid #FF6B2B;min-width:130px;"><div style="color:#FF6B2B;font-size:.65rem;font-weight:800;">Next Spin In</div><div id="spin-countdown" style="color:#fff;font-size:1.2rem;font-weight:900;font-family:monospace;margin-top:2px;"></div></div>' +
+        '</div>';
+
+      content.innerHTML = eligHtml + wheelHtml;
+      preloadSpinImages(spinItems);
+      drawSpinWheel(spinItems);
+      _preloadSpinImages(spinItems);
+    }
+
+    // ============================================================
+    // SPIN WHEEL - PREMIUM CASINO STYLE
+    // REPLACE FROM: var spinColors = ['#FF6B2B'...]
+    // REPLACE TO: (before) function startCooldownTimer()
+    // ============================================================
+    var _imgCache = {};
+    function _preloadSpinImages(items) {
+      items.forEach(function (item) {
+        if (item.image && item.image.startsWith('http') && !_imgCache[item.image]) {
+          var img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = function () { _imgCache[item.image] = img; drawSpinWheel(spinItems); };
+          img.src = item.image;
+          _imgCache[item.image] = img;
+        }
+      });
+    }
+    var spinColors = [
+      { bg: '#FFD700', text: '#7A5A00', glow: 'rgba(255,215,0,0.6)' },
+      { bg: '#FF6B2B', text: '#fff', glow: 'rgba(255,107,43,0.6)' },
+      { bg: '#1e5c2a', text: '#fff', glow: 'rgba(30,92,42,0.6)' },
+      { bg: '#9B59B6', text: '#fff', glow: 'rgba(155,89,182,0.6)' },
+      { bg: '#E74C3C', text: '#fff', glow: 'rgba(231,76,60,0.6)' },
+      { bg: '#2980B9', text: '#fff', glow: 'rgba(41,128,185,0.6)' },
+      { bg: '#27AE60', text: '#fff', glow: 'rgba(39,174,96,0.6)' },
+      { bg: '#E67E22', text: '#fff', glow: 'rgba(230,126,34,0.6)' }
+    ];
+
+    // ICON mapping for common grocery items
+    function getItemIcon(name) {
+      var n = (name || '').toLowerCase();
+      if (n.includes('chawal') || n.includes('rice') || n.includes('चावल')) return '🍚';
+      if (n.includes('atta') || n.includes('flour') || n.includes('आटा')) return '🌾';
+      if (n.includes('daal') || n.includes('dal') || n.includes('दाल')) return '🫘';
+      if (n.includes('tel') || n.includes('oil') || n.includes('ghee') || n.includes('तेल')) return '🫙';
+      if (n.includes('masala') || n.includes('spice') || n.includes('मसाला')) return '🌶️';
+      if (n.includes('namak') || n.includes('salt') || n.includes('नमक')) return '🧂';
+      if (n.includes('shakkar') || n.includes('sugar') || n.includes('चीनी')) return '🍬';
+      if (n.includes('sabun') || n.includes('soap') || n.includes('साबुन')) return '🧼';
+      if (n.includes('milk') || n.includes('doodh') || n.includes('dairy') || n.includes('दूध')) return '🥛';
+      if (n.includes('namkeen') || n.includes('snack') || n.includes('chips')) return '🥨';
+      if (n.includes('biscuit') || n.includes('cookie')) return '🍪';
+      if (n.includes('chai') || n.includes('tea') || n.includes('चाय')) return '🍵';
+      if (n.includes('sabzi') || n.includes('vegetable') || n.includes('veggie')) return '🥦';
+      if (n.includes('fruit') || n.includes('fal') || n.includes('phal')) return '🍎';
+      if (n.includes('free') || n.includes('muft') || n.includes('gift')) return '🎁';
+      return '🛒';
+    }
+
+    var spinImgCache = {};
+
+    function preloadSpinImages(items) {
+      items.forEach(function (item) {
+        if (item.image && item.image.startsWith('http') && !spinImgCache[item.image]) {
+          var img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = function () { spinImgCache[item.image] = img; drawSpinWheel(spinItems); };
+          img.onerror = function () { spinImgCache[item.image] = null; };
+          img.src = item.image;
+          spinImgCache[item.image] = img;
+        }
+      });
+    }
+
+    function drawSpinWheel(items) {
+      var canvas = document.getElementById('spin-canvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var displaySize = canvas.getBoundingClientRect().width || 300;
+      var dpr = window.devicePixelRatio || 1;
+      var W = Math.round(displaySize * dpr);
+      var H = W;
+      canvas.width = W; canvas.height = H;
+      ctx.scale(dpr, dpr);
+      var W = displaySize; var H = displaySize;
+      var cx = W / 2, cy = H / 2, r = 128;
+      var arc = (2 * Math.PI) / items.length;
+      ctx.clearRect(0, 0, W, H);
+
+      var glowGrad = ctx.createRadialGradient(cx, cy, r - 2, cx, cy, r + 18);
+      glowGrad.addColorStop(0, 'rgba(255,215,0,0.7)');
+      glowGrad.addColorStop(0.5, 'rgba(255,170,0,0.4)');
+      glowGrad.addColorStop(1, 'rgba(255,215,0,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, r + 18, 0, 2 * Math.PI);
+      ctx.fillStyle = glowGrad; ctx.fill();
+
+      ctx.beginPath(); ctx.arc(cx, cy, r + 12, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1a4a20'; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, r + 10, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 4; ctx.stroke();
+
+      var bulbCount = Math.min(items.length * 2, 24);
+      for (var b = 0; b < bulbCount; b++) {
+        var bAngle = (b / bulbCount) * 2 * Math.PI - Math.PI / 2;
+        var bx = cx + (r + 6) * Math.cos(bAngle);
+        var by = cy + (r + 6) * Math.sin(bAngle);
+        ctx.beginPath(); ctx.arc(bx, by, 4, 0, 2 * Math.PI);
+        var bulbColors = ['#FFD700', '#FF6B2B', '#fff', '#FFD700', '#27AE60', '#fff'];
+        ctx.fillStyle = bulbColors[b % bulbColors.length];
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 0.5; ctx.stroke();
+      }
+
+      // Draw slices
+      items.forEach(function (item, i) {
+        var start = arc * i - Math.PI / 2;
+        var end = start + arc;
+        var color = spinColors[i % spinColors.length];
+        ctx.beginPath(); ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, start, end); ctx.closePath();
+        ctx.fillStyle = color.bg; ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+      });
+
+      // Draw images (wheel ke saath rotate hongi)
+      items.forEach(function (item, i) {
+        var sliceMidAngle = arc * i - Math.PI / 2 + arc / 2;
+        var imgSize = 36;
+        var imgR = r * 0.52;
+        var imgX = cx + imgR * Math.cos(sliceMidAngle);
+        var imgY = cy + imgR * Math.sin(sliceMidAngle);
+
+        ctx.save();
+        ctx.translate(imgX, imgY);
+        ctx.rotate(sliceMidAngle + Math.PI / 2);
+
+        if (item.image && item.image.startsWith('http') && _imgCache[item.image] && _imgCache[item.image].complete) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(-imgSize / 2 - 2, -imgSize / 2 - 2, imgSize + 4, imgSize + 4, 7);
+          ctx.fillStyle = '#fff'; ctx.fill();
+          ctx.beginPath();
+          ctx.roundRect(-imgSize / 2, -imgSize / 2, imgSize, imgSize, 6);
+          ctx.clip();
+          ctx.drawImage(_imgCache[item.image], -imgSize / 2, -imgSize / 2, imgSize, imgSize);
+          ctx.restore();
+        } else {
+          ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          try { ctx.fillText(getItemIcon(item.name), 0, 0); } catch (e) { }
+        }
+        ctx.restore();
+      });
+
+      // Draw text - ALWAYS READABLE (independent of rotation)
+      // Draw text - Outer edge pe, slice ke along, ALWAYS READABLE
+      items.forEach(function (item, i) {
+        var sliceMidAngle = arc * i - Math.PI / 2 + arc / 2;
+        var color = spinColors[i % spinColors.length];
+
+        // Text outer edge pe — image se door (image 0.52 pe hai, text 0.80 pe)
+        var textR = r * 0.80;
+        var textX = cx + textR * Math.cos(sliceMidAngle);
+        var textY = cy + textR * Math.sin(sliceMidAngle);
+
+        ctx.save();
+        ctx.translate(textX, textY);
+
+        var textRotation = sliceMidAngle + Math.PI / 2;
+
+        var deg = ((textRotation * 180 / Math.PI) + 360) % 360;
+
+        if (deg > 90 && deg < 270) {
+          textRotation += Math.PI;
+        }
+
+        ctx.rotate(textRotation);
+
+
+
+        var label = item.name;
+        var fontSize = label.length > 8 ? 9 : label.length > 5 ? 11 : 13;
+        ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+        ctx.fillStyle = color.text;
+        ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 4;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        // Name line
+        ctx.fillText(label, 0, -10);
+        // Price line
+        ctx.font = 'bold 10px Arial, sans-serif';
+        ctx.globalAlpha = 0.95;
+        ctx.fillText('\u20B9' + item.price, 0, 7);
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+        ctx.restore();
+      });
+
+      // Inner shadow
+      var innerShadow = ctx.createRadialGradient(cx, cy, r - 30, cx, cy, r);
+      innerShadow.addColorStop(0, 'rgba(0,0,0,0)');
+      innerShadow.addColorStop(1, 'rgba(0,0,0,0.25)');
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.fillStyle = innerShadow; ctx.fill();
+
+      // Hub
+      var hubGlow = ctx.createRadialGradient(cx, cy, 18, cx, cy, 32);
+      hubGlow.addColorStop(0, 'rgba(255,215,0,0.8)');
+      hubGlow.addColorStop(1, 'rgba(255,215,0,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, 32, 0, 2 * Math.PI);
+      ctx.fillStyle = hubGlow; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1a4a20'; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 24, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3; ctx.stroke();
+      var hubGrad = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, 20);
+      hubGrad.addColorStop(0, '#2ecc71');
+      hubGrad.addColorStop(0.5, '#1e5c2a');
+      hubGrad.addColorStop(1, '#0f3317');
+      ctx.beginPath(); ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+      ctx.fillStyle = hubGrad; ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 9px Arial, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 2;
+      ctx.fillText('SPIN', cx, cy - 1); ctx.shadowBlur = 0;
+    }
+
+    var isSpinning = false;
+    var currentRotation = 0;
+    var bulbFlashTimer = null;
+    var bulbFlashState = false;
+    function startBulbFlash() { bulbFlashTimer = setInterval(function () { bulbFlashState = !bulbFlashState; }, 120); }
+    function stopBulbFlash() { clearInterval(bulbFlashTimer); bulbFlashState = false; }
+    function handleWheelClick(e) {
+      var rect = e.target.getBoundingClientRect();
+      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      var scale = 280 / rect.width;
+      var dx = mx * scale - 150, dy = my * scale - 150;
+      if (Math.sqrt(dx * dx + dy * dy) <= 22) doSpin();
+    }
+
+    // Pre-fetch storage — loading time pe winner silently fetch hoga
+    var _preFetchedWinner = null;
+    var _preFetchStatus = 'idle'; // 'idle' | 'loading' | 'ready' | 'error'
+    // Loading time pe silently server se winner lo — user ko nahi dikhta
+    function preFetchWinner() {
+      if (!currentUser || !spinEnabled || spinUsed || spinItems.length === 0) return;
+      _preFetchedWinner = null;
+      _preFetchStatus = 'loading';
+
+      fetch(CONFIG.SCRIPT_URL + '?action=doSpin&phone=' + encodeURIComponent(currentUser.phone))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.success) {
+            var winIdx = typeof data.winningIndex !== 'undefined' ? Number(data.winningIndex) : 0;
+            winIdx = Math.max(0, Math.min(winIdx, spinItems.length - 1));
+            _preFetchedWinner = {
+              winIdx: winIdx,
+              winItem: data.winningItem || spinItems[winIdx] || spinItems[0],
+              fullData: data
+            };
+            _preFetchStatus = 'ready';
+            _preFetchStatus = 'ready';
+            console.log('✅ Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
+
+            // Hub restore + agar user pehle click kar chuka tha to auto-spin!
+            if (_hubWaitTimer) { clearInterval(_hubWaitTimer); _hubWaitTimer = null; }
+            drawSpinWheel(spinItems); // Normal SPIN hub wapas
+            if (_spinQueued && !isSpinning) {
+              _spinQueued = false;
+              setTimeout(doSpin, 80); // Thoda delay for smooth UX
+            }
+            console.log('✅ Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
+          } else {
+            _preFetchStatus = 'error';
+            _preFetchedWinner = null;
+            console.log('Pre-fetch:', data.message);
+            if (data.message) {
+              spinUsed = true;
+              setTimeout(loadSpinPage, 800);
+            }
+          }
+        })
+        .catch(function (err) {
+          _preFetchStatus = 'error';
+          _preFetchedWinner = null;
+          console.log('preFetchWinner error:', err);
+        });
+    }
+
+    function doSpin() {
+      if (isSpinning) return;
+      if (!currentUser) { showToast('Login karo pehle', 'error'); return; }
+
+      // Sirf user ke button click par server call hoga
+      isSpinning = true;
+      _animateHubWaiting();
+      startBulbFlash();
+
+      fetch(CONFIG.SCRIPT_URL + '?action=doSpin&phone=' + encodeURIComponent(currentUser.phone))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (_hubWaitTimer) { clearInterval(_hubWaitTimer); _hubWaitTimer = null; }
+          if (data.success) {
+            var winIdx = typeof data.winningIndex !== 'undefined' ? Number(data.winningIndex) : 0;
+            winIdx = Math.max(0, Math.min(winIdx, spinItems.length - 1));
+            var winItem = data.winningItem || spinItems[winIdx] || spinItems[0];
+            drawSpinWheel(spinItems);
+            startTickAudio();
+            animateSpinWheel(winIdx, winItem, data);
+          } else {
+            isSpinning = false;
+            stopBulbFlash();
+            drawSpinWheel(spinItems);
+            if (data.message) showToast(data.message, 'error');
+          }
+        })
+        .catch(function (err) {
+          isSpinning = false;
+          stopBulbFlash();
+          if (_hubWaitTimer) { clearInterval(_hubWaitTimer); _hubWaitTimer = null; }
+          drawSpinWheel(spinItems);
+          showToast('Network error, dobara try karo', 'error');
+        });
+    }
+
+    // Hub pe loading dots dikhao — same coordinates jo drawSpinWheel use karta hai
+    function _animateHubWaiting() {
+      if (_hubWaitTimer) return;
+      var step = 0;
+      _hubWaitTimer = setInterval(function () {
+        var canvas = document.getElementById('spin-canvas');
+        if (!canvas || !isSpinning) {
+          clearInterval(_hubWaitTimer); _hubWaitTimer = null; return;
+        }
+        var ctx = canvas.getContext('2d');
+        var displaySize = canvas.getBoundingClientRect().width || 300;
+        var dpr = window.devicePixelRatio || 1;
+        // Same as drawSpinWheel — scale then use CSS pixel coords
+        ctx.save();
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        var cx = displaySize / 2, cy = displaySize / 2;
+
+        // Hub glow
+        var hubGlow = ctx.createRadialGradient(cx, cy, 18, cx, cy, 32);
+        hubGlow.addColorStop(0, 'rgba(255,215,0,0.8)');
+        hubGlow.addColorStop(1, 'rgba(255,215,0,0)');
+        ctx.beginPath(); ctx.arc(cx, cy, 32, 0, 2 * Math.PI);
+        ctx.fillStyle = hubGlow; ctx.fill();
+
+        // Hub outer ring
+        ctx.beginPath(); ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1a4a20'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, 24, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3; ctx.stroke();
+
+        // Hub inner gradient
+        var hubGrad = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, 20);
+        hubGrad.addColorStop(0, '#2ecc71');
+        hubGrad.addColorStop(0.5, '#1e5c2a');
+        hubGrad.addColorStop(1, '#0f3317');
+        ctx.beginPath(); ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = hubGrad; ctx.fill();
+
+        // "SPIN" text — thoda upar
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 9px Arial, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 2;
+        ctx.fillText('SPIN', cx, cy - 7);
+        ctx.shadowBlur = 0;
+
+        // 3 loading dots niche — ek ek karke yellow highlight
+        var dotSpacing = 5.5;
+        for (var i = 0; i < 3; i++) {
+          var active = (step % 3) === i;
+          ctx.beginPath();
+          ctx.arc(cx + (i - 1) * dotSpacing, cy + 7, 2.2, 0, 2 * Math.PI);
+          ctx.fillStyle = active ? '#FFD700' : 'rgba(255,255,255,0.3)';
+          ctx.fill();
+        }
+        step++;
+        ctx.restore();
+      }, 350);
+    }
+
+
+
+
+    function animateSpinWheel(winIdx, winItem, fullData) {
+      var canvas = document.getElementById('spin-canvas');
+      if (!canvas) return;
+
+      var items = spinItems;
+      var arc = 360 / items.length;
+      var arc = 360 / items.length;
+      // Pointer top pe hai (270 degrees = -90 degrees = 12 baje)
+      // Jab wheel rotate hota hai, slice 0 start hota hai -90 degree pe
+      // Winning slice ko pointer ke neeche lana hai
+      var sliceCenter = winIdx * arc + arc / 2;
+      // currentRotation account karna zaroori hai — warna wheel sahi slice pe nahi rukegi
+      var targetAngle = ((360 - ((sliceCenter + currentRotation) % 360)) + 360) % 360;
+      var extraRounds = (7 + Math.floor(Math.random() * 3)) * 360;
+      // Thoda variation dono taraf (arc ka 30% tak)
+      var variation = (Math.random() - 0.5) * (arc * 0.3);
+      var totalRotation = currentRotation + extraRounds + targetAngle + variation;
+
+      var startTime = null;
+      var duration = 5000 + Math.random() * 1500;
+
+      // Tick sound simulation via canvas flash
+      var lastTickAngle = 0;
+      var tickInterval = arc;
+
+      function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+      var _dpr = window.devicePixelRatio || 1;
+      var _dispSize = canvas.getBoundingClientRect().width || 300;
+      canvas.width = Math.round(_dispSize * _dpr);
+      canvas.height = Math.round(_dispSize * _dpr);
+
+      function drawFrame(rot) {
+        var ctx = canvas.getContext('2d');
+        ctx.setTransform(_dpr, 0, 0, _dpr, 0, 0);
+        var W = _dispSize, H = _dispSize, cx = _dispSize / 2, cy = _dispSize / 2, r = _dispSize * 0.427;
+        var arcRad = (2 * Math.PI) / items.length;
+        ctx.clearRect(0, 0, W, H);
+
+        // Outer glow
+        var glowGrad = ctx.createRadialGradient(cx, cy, r - 2, cx, cy, r + 18);
+        glowGrad.addColorStop(0, 'rgba(255,215,0,0.7)');
+        glowGrad.addColorStop(0.5, 'rgba(255,170,0,0.4)');
+        glowGrad.addColorStop(1, 'rgba(255,215,0,0)');
+        ctx.beginPath(); ctx.arc(cx, cy, r + 18, 0, 2 * Math.PI);
+        ctx.fillStyle = glowGrad; ctx.fill();
+
+        ctx.beginPath(); ctx.arc(cx, cy, r + 12, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1a4a20'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, r + 10, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 4; ctx.stroke();
+
+        // Bulbs
+        var bulbCount = Math.min(items.length * 2, 24);
+        var bulbColors = ['#FFD700', '#FF6B2B', '#fff', '#FFD700', '#27AE60', '#fff'];
+        for (var b = 0; b < bulbCount; b++) {
+          var bAngle = (b / bulbCount) * 2 * Math.PI - Math.PI / 2;
+          var bx = cx + (r + 6) * Math.cos(bAngle);
+          var by = cy + (r + 6) * Math.sin(bAngle);
+          ctx.beginPath(); ctx.arc(bx, by, 4, 0, 2 * Math.PI);
+          ctx.fillStyle = (b + (bulbFlashState ? 3 : 0)) % 3 === 0 ? bulbColors[b % bulbColors.length] : 'rgba(255,255,255,0.15)';
+          ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 0.5; ctx.stroke();
+        }
+
+        // ── STEP 1: Rotating slices only ──
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate((rot * Math.PI) / 180);
+        ctx.translate(-cx, -cy);
+
+        items.forEach(function (item, i) {
+          var start = arcRad * i - Math.PI / 2;
+          var end = start + arcRad;
+          var color = spinColors[i % spinColors.length];
+          ctx.beginPath(); ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, start, end); ctx.closePath();
+          ctx.fillStyle = color.bg; ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+        });
+
+        // ── STEP 2: Images rotate WITH wheel ──
+        items.forEach(function (item, i) {
+          var sliceMid = arcRad * i - Math.PI / 2 + arcRad / 2;
+          var imgSize = 32;
+          var imgDist = r * 0.50;
+          var imgX = cx + imgDist * Math.cos(sliceMid);
+          var imgY = cy + imgDist * Math.sin(sliceMid);
+
+          ctx.save();
+          ctx.translate(imgX, imgY);
+          ctx.rotate(sliceMid + Math.PI / 2);
+
+          if (item.image && item.image.startsWith('http') && _imgCache[item.image] && _imgCache[item.image].complete) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(-imgSize / 2 - 2, -imgSize / 2 - 2, imgSize + 4, imgSize + 4, 7);
+            ctx.fillStyle = '#fff'; ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(-imgSize / 2, -imgSize / 2, imgSize, imgSize, 6);
+            ctx.clip();
+            ctx.drawImage(_imgCache[item.image], -imgSize / 2, -imgSize / 2, imgSize, imgSize);
+            ctx.restore();
+          } else {
+            ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            try { ctx.fillText(getItemIcon(item.name), 0, 0); } catch (e) { }
+          }
+          ctx.restore();
+        });
+
+        // Inner shadow (still inside rotated ctx)
+        var innerShadow = ctx.createRadialGradient(cx, cy, r - 30, cx, cy, r);
+        innerShadow.addColorStop(0, 'rgba(0,0,0,0)');
+        innerShadow.addColorStop(1, 'rgba(0,0,0,0.25)');
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+        ctx.fillStyle = innerShadow; ctx.fill();
+        ctx.restore(); // ── End rotating ctx ──
+
+
+        // ── STEP 3: Text — rotate WITH wheel (inside rotating context) ──
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate((rot * Math.PI) / 180);
+        ctx.translate(-cx, -cy);
+
+        items.forEach(function (item, i) {
+          var sliceMid = arcRad * i - Math.PI / 2 + arcRad / 2;
+          var color = spinColors[i % spinColors.length];
+
+          // Text position: outer area of slice
+          var textDist = r * 0.72;
+          var textX = cx + textDist * Math.cos(sliceMid);
+          var textY = cy + textDist * Math.sin(sliceMid);
+
+          ctx.save();
+          ctx.translate(textX, textY);
+
+          // Text ko slice ke saath align karo (radially outward)
+          var textAngle = sliceMid + Math.PI / 2;
+          // Left half mein flip karo taaki text seedha padhe
+          var deg = ((sliceMid * 180 / Math.PI) + 360) % 360;
+          if (deg > 90 && deg < 270) textAngle += Math.PI;
+
+          ctx.rotate(textAngle);
+
+          var label = item.name;
+          var fontSize = label.length > 8 ? 10 : label.length > 5 ? 12 : 14;
+          ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+          ctx.fillStyle = color.text;
+          ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 4;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(label, 0, -10);
+          ctx.font = 'bold 10px Arial, sans-serif';
+          ctx.globalAlpha = 0.95;
+          ctx.fillText('\u20B9' + item.price, 0, 7);
+          ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+          ctx.restore();
+        });
+
+        ctx.restore(); // ── End text rotating ctx ──
+
+
+        // ── Hub (always on top) ──
+        var hubGlow = ctx.createRadialGradient(cx, cy, 18, cx, cy, 32);
+        hubGlow.addColorStop(0, 'rgba(255,215,0,0.8)');
+        hubGlow.addColorStop(1, 'rgba(255,215,0,0)');
+        ctx.beginPath(); ctx.arc(cx, cy, 32, 0, 2 * Math.PI);
+        ctx.fillStyle = hubGlow; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1a4a20'; ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, 24, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3; ctx.stroke();
+        var hubGrad = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, 20);
+        hubGrad.addColorStop(0, '#2ecc71');
+        hubGrad.addColorStop(0.5, '#1e5c2a');
+        hubGrad.addColorStop(1, '#0f3317');
+        ctx.beginPath(); ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = hubGrad; ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 9px Arial, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 2;
+        ctx.fillText('SPIN', cx, cy - 1); ctx.shadowBlur = 0;
+      }
+
+      function animate(ts) {
+        if (!startTime) startTime = ts;
+        var elapsed = ts - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = easeOut(progress);
+        var rot = currentRotation + (totalRotation - currentRotation) * eased;
+
+        drawFrame(rot);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          currentRotation = totalRotation % 360;
+          isSpinning = false;
+          spinUsed = true;
+          stopBulbFlash();
+          stopTickAudio();
+          showWinPopup(winItem, fullData);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    var _spinAudioCtx = null;
+    var _spinAudioStartTs = 0;
+
+    function startTickAudio() {
+      try {
+        _spinAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        _spinAudioStartTs = performance.now();
+        function tick() {
+          if (!isSpinning) return;
+          var elapsed = performance.now() - _spinAudioStartTs;
+          var spinDur = 6000;
+          var progress = Math.min(elapsed / spinDur, 1);
+          // Pehle fast clicks (40ms), end mein dheere (300ms) — real wheel jaisa
+          var delay = 40 + progress * progress * 280;
+
+          // Sharp wooden ratchet click sound
+          var bufSize = Math.floor(_spinAudioCtx.sampleRate * 0.045);
+          var buf = _spinAudioCtx.createBuffer(1, bufSize, _spinAudioCtx.sampleRate);
+          var data = buf.getChannelData(0);
+          for (var i = 0; i < bufSize; i++) {
+            var t = i / _spinAudioCtx.sampleRate;
+            var env = Math.exp(-t * 180);
+            data[i] = env * (Math.random() * 2 - 1) * 0.55
+                    + env * Math.sin(2 * Math.PI * 1100 * t) * 0.3
+                    + Math.exp(-t * 400) * Math.sin(2 * Math.PI * 3200 * t) * 0.15;
+          }
+          var src = _spinAudioCtx.createBufferSource();
+          src.buffer = buf;
+
+          var hp = _spinAudioCtx.createBiquadFilter();
+          hp.type = 'highpass';
+          hp.frequency.value = 500;
+
+          var g = _spinAudioCtx.createGain();
+          g.gain.setValueAtTime(0.45, _spinAudioCtx.currentTime);
+
+          src.connect(hp); hp.connect(g); g.connect(_spinAudioCtx.destination);
+          src.start();
+
+          setTimeout(tick, delay);
+        }
+        tick();
+      } catch (e) { }
+    }
+
+    function stopTickAudio() { try { if (_spinAudioCtx) _spinAudioCtx.close(); } catch (e) { } }
+
+    function startCooldownTimer() {
+      if (spinCooldownTimer) clearInterval(spinCooldownTimer);
+      spinCooldownTimer = setInterval(function () {
+        var el = document.getElementById('spin-countdown');
+        if (!el) { clearInterval(spinCooldownTimer); return; }
+        var msLeft = getNextSunday() - new Date();
+        el.innerHTML = formatCooldownTime(msLeft);
+        if (msLeft <= 0) {
+          clearInterval(spinCooldownTimer);
+          spinUsed = false;
+          loadSpinPage();
+        }
+      }, 1000);
+    }
+
+    // Confetti animation
+    function launchConfetti() {
+      var canvas = document.createElement('canvas');
+      canvas.id = 'confetti-canvas';
+      canvas.className = 'confetti-wrap';
+      canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:999;width:100%;height:100%;';
+      document.body.appendChild(canvas);
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      var ctx = canvas.getContext('2d');
+      var pieces = [];
+      var colors = ['#FF6B2B', '#ff9f43', '#1e5c2a', '#ffd700', '#ff4444', '#4ecdc4', '#45aaf2'];
+      for (var i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
+          w: 8 + Math.random() * 8, h: 4 + Math.random() * 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: 2 + Math.random() * 4, angle: Math.random() * 360,
+          spin: (Math.random() - 0.5) * 8, dx: (Math.random() - 0.5) * 3
+        });
+      }
+      var frames = 0;
+      function drawConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(function (p) {
+          p.y += p.speed; p.x += p.dx; p.angle += p.spin;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle * Math.PI / 180);
+          ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        frames++;
+        if (frames < 150) requestAnimationFrame(drawConfetti);
+        else { canvas.remove(); }
+      }
+      requestAnimationFrame(drawConfetti);
+    }
+
+    // ============================================================
+    // CART MEIN SPIN REWARD KA SPECIAL DISPLAY
+    // ============================================================
+    var _origRenderCart = renderCart;
+    renderCart = function () {
+      _origRenderCart();
+      // Reward items ko lock karke special badge dikhao
+      var cartItems = document.querySelectorAll('.cart-item');
+      // Already handled in renderCart override below
+    };
     window.addEventListener('load', () => {
       setTimeout(initFirebasePush, 3000);
     });
+
+
+    // Pending reward - cart mein tab add hoga jab koi aur item bhi ho
+    var pendingRewardItem = null;
+
+    function showWinPopup(winItem, fullData) {
+      launchConfetti();
+      var overlay = document.createElement('div');
+      overlay.className = 'win-popup-overlay';
+      overlay.id = 'win-popup-overlay';
+      overlay.style.pointerEvents = 'all';
+      overlay.style.zIndex = '9999';
+
+      var imgHtml = (winItem.image && winItem.image.startsWith('http'))
+        ? '<img src="' + winItem.image + '" style="width:80px;height:80px;object-fit:cover;border-radius:12px;margin:.5rem auto;display:block;">'
+        : '<div style="font-size:3.5rem;margin:.3rem 0">&#127873;</div>';
+
+      overlay.innerHTML =
+        '<div class="win-popup-card" id="win-popup-card-inner" style="pointer-events:all;">' +
+        '<span class="win-emoji">&#127881;</span>' +
+        '<h2>Badhai Ho!</h2>' +
+        imgHtml +
+        '<div style="font-size:1.1rem;font-weight:800;color:var(--text);margin:.4rem 0">' + winItem.name + '</div>' +
+        '<div style="font-size:.9rem;color:var(--accent);font-weight:800;margin-bottom:.3rem">&#8377;' + winItem.price + ' ka item jeeta!</div>' +
+        '<p style="color:var(--muted);font-size:.82rem;margin-bottom:1rem">Koi bhi item cart mein dalo — yeh reward FREE add ho jayega!</p>' +
+        '<button id="win-add-cart-btn" style="width:100%;padding:.8rem;border-radius:12px;border:none;background:var(--green);color:#fff;font-family:\'Nunito\',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;margin-bottom:.5rem;pointer-events:all;">' +
+        '<i class="fa fa-bag-shopping"></i> Shopping Karo &amp; Reward Lo</button>' +
+        '<button id="win-later-btn" style="width:100%;padding:.75rem;border-radius:12px;border:2px solid var(--border);background:transparent;color:var(--muted);font-family:\'Nunito\',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;pointer-events:all;">Baad Mein</button>' +
+        '</div>';
+
+      document.body.appendChild(overlay);
+
+      var addBtn = document.getElementById('win-add-cart-btn');
+      var laterBtn = document.getElementById('win-later-btn');
+
+      if (addBtn) {
+        addBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          saveRewardAndGoShopping(winItem);
+        }, true);
+      }
+      if (laterBtn) {
+        laterBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          saveRewardForLater(winItem);
+          closeWinPopup();
+        }, true);
+      }
+
+      spinUsed = true;
+      // Sheet mein mark karo — server side save
+      if (currentUser) {
+        postToSheet({
+          action: 'markSpinUsed',
+          phone: currentUser.phone,
+          rewardName: winItem.name
+        });
+      }
+      startCooldownTimer();
+
+      var content = document.getElementById('spin-page-content');
+      if (content) {
+        var cooldownHtml = buildCooldownHtml(winItem.name);
+        setTimeout(function () {
+          if (content) content.innerHTML = cooldownHtml;
+          startCooldownTimer();
+        }, 500);
+      }
+    }
+
+    function closeWinPopup() {
+      var overlay = document.getElementById('win-popup-overlay');
+      if (overlay) overlay.remove();
+    }
+
+    function saveRewardForLater(winItem) {
+      pendingRewardItem = winItem;
+      try { localStorage.setItem('pendingReward', JSON.stringify(winItem)); } catch (e) { }
+      showToast('Reward save ho gaya! Koi item cart mein dalo aur reward free milega', 'success');
+    }
+
+    function saveRewardAndGoShopping(winItem) {
+      saveRewardForLater(winItem);
+      closeWinPopup();
+      showTab('home');
+    }
+
+    var _origAddToCart = addToCart;
+    addToCart = function (id, btn) {
+      _origAddToCart(id, btn);
+      if (!pendingRewardItem) {
+        try {
+          var saved = localStorage.getItem('pendingReward');
+          if (saved) pendingRewardItem = JSON.parse(saved);
+        } catch (e) { }
+      }
+      if (pendingRewardItem) {
+        var alreadyInCart = cart.find(function (c) { return c.isReward; });
+        if (!alreadyInCart) {
+          var pseudoId = 'WIN_' + Date.now();
+          cart.push({
+            id: pseudoId,
+            name: pendingRewardItem.name + ' [Spin Reward - FREE]',
+            name_hi: pendingRewardItem.name,
+            name_en: pendingRewardItem.name,
+            cat: 'Spin Reward',
+            desc: 'Lucky Spin se jeeta hua reward!',
+            price: 0,
+            img: pendingRewardItem.image || '',
+            qty: 1,
+            isReward: true
+          });
+          localStorage.setItem('kiranaCart', JSON.stringify(cart));
+          updateCartBadges();
+          showToast('Spin reward bhi cart mein add ho gaya!', 'success');
+          pendingRewardItem = null;
+          try { localStorage.removeItem('pendingReward'); } catch (e) { }
+        }
+      }
+    };
+
+    function buildCooldownHtml(rewardName) {
+      var nextSunday = getNextSunday();
+      var msLeft = nextSunday - new Date();
+      return '<div style="margin-top:1rem">' +
+        '<div style="background:linear-gradient(135deg,#1e5c2a,#2d7a3a);border-radius:16px;padding:1.2rem;text-align:center;color:#fff;margin-bottom:1rem">' +
+        '<i class="fa fa-gift" style="font-size:2rem;margin-bottom:.5rem;display:block;color:#ff9f43"></i>' +
+        '<div style="font-size:.85rem;opacity:.85;margin-bottom:.3rem">Tumne jeeta</div>' +
+        '<div style="font-size:1.2rem;font-weight:800">' + (rewardName || 'Reward') + '</div>' +
+        '</div>' +
+        '<div class="spin-cooldown-box">' +
+        '<i class="fa fa-clock" style="font-size:2rem;color:var(--accent);margin-bottom:.5rem;display:block"></i>' +
+        '<div style="font-size:.85rem;color:var(--muted);margin-bottom:.4rem">Next Spin In:</div>' +
+        '<div class="timer-big" id="spin-countdown">' + formatCooldownTime(msLeft) + '</div>' +
+        '<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Sunday midnight pe naya spin milega</div>' +
+        '</div></div>';
+    }
+
+
   </script>
 
   <script src="pwa-install.js" defer></script>
