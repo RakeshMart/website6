@@ -3924,7 +3924,7 @@
           id="cart-badge-bottom">0</span></button>
 
       <button class="nav-tab" id="tab-chat" onclick="showTab('chat')"><i class="fa fa-comments tab-icon"></i><span
-          class="tab-label" id="nav-chat-txt">Chat</span></button>
+          class="tab-label" id="nav-chat-txt">Chat</span><span class="tab-badge" id="chat-badge"></span></button>
       <button class="nav-tab" id="tab-profile" onclick="showTab('profile')"><i
           class="fa fa-circle-user tab-icon"></i><span class="tab-label" id="nav-profile-txt">Profile</span></button>
     </nav>
@@ -3943,7 +3943,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbygUMxmkplS-3YSe_BrjVi3qTK58bRvheSy0x2VQddc0zzKoKG9RyLg1bv-Ncp5WLd9/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxhqendGdA2VHDLEjOGFTENyZK2pFZ1TADm4KNO-qTEvmq-pNn5ccYyxVI7BrqvKpU/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
@@ -3951,7 +3951,7 @@
     var currentOrderId = ""; var selectedPayment = "upi";
     var currentProductId = null; var detailQty = 1;
     var activeCategory = 'All'; var activeTab = 'home';
-    var trackRefreshTimer = null; var chatRefreshTimer = null; var ordersRefreshTimer = null;
+    var trackRefreshTimer = null; var chatRefreshTimer = null; var ordersRefreshTimer = null; var chatBadgeTimer = null; var chatBadgeTimer = null;
     var searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
     var upiAppClicked = false; var currentCheckoutTotal = 0;
     var detailGalleryTimer = null;
@@ -4424,6 +4424,7 @@
       if (currentUser) fillProfileUI();
       loadProducts();
       startNotifPolling();
+      if (currentUser) startChatBadgePolling();
       setupScrollBehavior();
       updateNotifBadge();
     };
@@ -4438,12 +4439,15 @@
       currentUser = { fname: name, lname: '', phone: phone, addr: addr, location: '', dpUrl: '', registeredAt: new Date().toISOString() };
       localStorage.setItem('kiranaUser', JSON.stringify(currentUser)); document.getElementById('reg-modal').classList.remove('open'); fillProfileUI(); showToast('Swagat hai ' + name + '!', 'success');
       postToSheet({ action: 'saveCustomer', user: currentUser });
+      startChatBadgePolling();
     }
     function logoutUser() {
       if (!confirm('Logout karna chahte ho?')) return;
       localStorage.removeItem('kiranaUser'); currentUser = null; cart = []; localStorage.removeItem('kiranaCart'); updateCartBadges();
       document.getElementById('reg-name').value = ''; document.getElementById('reg-phone').value = ''; document.getElementById('reg-addr').value = '';
       document.getElementById('reg-modal').classList.add('open'); showToast('Logout ho gaye');
+      if (chatBadgeTimer) { clearInterval(chatBadgeTimer); chatBadgeTimer = null; }
+      updateChatBadge(0);
     }
     function fillProfileUI() {
       if (!currentUser) return; var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
@@ -4833,14 +4837,51 @@
     function trackOrder(orderId) { if (trackRefreshTimer) clearInterval(trackRefreshTimer); renderTrackModal(orderId); document.getElementById('track-modal').classList.add('open'); trackRefreshTimer = setInterval(function () { if (!document.getElementById('track-modal').classList.contains('open')) { clearInterval(trackRefreshTimer); trackRefreshTimer = null; return; } fetch(CONFIG.SCRIPT_URL + '?action=getOrders').then(function (res) { return res.json(); }).then(function (data) { if (data.orders && data.orders.length) { var lo = JSON.parse(localStorage.getItem('kiranaOrders') || '[]'); orders = data.orders.map(function (so) { var l = lo.find(function (x) { return x.id === so.id; }); var m = l ? Object.assign({}, so, { items: l.items || so.items }) : so; m.timeline = getTimeline(so.status); return m; }); } renderTrackModal(orderId); }).catch(function () { }); }, 5000); }
     function renderTrackModal(orderId) { var order = orders.find(function (o) { return o.id === orderId; }); if (!order) { showToast('Order nahi mila', 'error'); return; } if (!order.timeline || !order.timeline.length) order.timeline = getTimeline(order.status); document.getElementById('track-modal-content').innerHTML = '<div style="font-family:monospace;font-size:.8rem;color:var(--muted);margin-bottom:.8rem">' + order.id + '</div><div style="background:var(--surface2);border-radius:12px;padding:.8rem;margin-bottom:1rem;font-size:.82rem"><div style="font-weight:800;margin-bottom:.3rem"><i class="fa fa-user" style="color:var(--accent)"></i> ' + order.customer + '</div><div style="color:var(--muted)"><i class="fa fa-phone"></i> ' + order.phone + '</div><div style="color:var(--muted)"><i class="fa fa-location-dot"></i> ' + order.addr + '</div><div style="color:var(--accent);font-weight:800;margin-top:.3rem"><i class="fa fa-indian-rupee-sign"></i> ' + order.total + ' • ' + (order.payment || '').toUpperCase() + '</div></div><div class="timeline">' + order.timeline.map(function (tl) { return '<div class="timeline-item ' + (tl.done ? 'done' : '') + ' ' + (tl.active ? 'active' : '') + '"><div class="tl-dot"></div><div class="tl-label">' + getTimelineText(tl.key) + '</div><div class="tl-time">' + tl.time + '</div></div>'; }).join('') + '</div><p style="text-align:center;font-size:.7rem;color:var(--muted);margin-top:1rem"><i class="fa fa-rotate" style="color:var(--accent)"></i> Thank you for your order!</p>'; }
     function closeTrackModal() { document.getElementById('track-modal').classList.remove('open'); if (trackRefreshTimer) { clearInterval(trackRefreshTimer); trackRefreshTimer = null; } }
+    // ============================================================
+    // CHAT UNREAD BADGE (Customer side)
+    // ============================================================
+    var CHAT_READ_KEY = 'rakeshMartChatLastRead';
+    function getChatLastRead() { try { return Number(localStorage.getItem(CHAT_READ_KEY)) || 0; } catch (e) { return 0; } }
+    function setChatLastRead(ts) { try { localStorage.setItem(CHAT_READ_KEY, String(ts)); } catch (e) { } }
+    function updateChatBadge(count) {
+      var badge = document.getElementById('chat-badge');
+      if (!badge) return;
+      if (count > 0) { badge.textContent = count > 99 ? '99+' : count; badge.classList.add('show'); }
+      else { badge.classList.remove('show'); }
+    }
+    function markChatRead(chats) {
+      if (!chats || !chats.length) return;
+      var maxTs = 0;
+      chats.forEach(function (m) { if (m.timestamp > maxTs) maxTs = m.timestamp; });
+      if (maxTs > 0) setChatLastRead(maxTs);
+      updateChatBadge(0);
+    }
+    function checkChatUnread() {
+      if (!currentUser) return;
+      var phone = currentUser.phone.replace(/\D/g, '');
+      fetch(CONFIG.SCRIPT_URL + '?action=getChats&phone=' + phone)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data.chats || !data.chats.length) { updateChatBadge(0); return; }
+          var lastRead = getChatLastRead();
+          var unread = data.chats.filter(function (m) { return m.sender === 'admin' && m.timestamp > lastRead; });
+          updateChatBadge(unread.length);
+        }).catch(function () { });
+    }
+    function startChatBadgePolling() {
+      checkChatUnread();
+      if (chatBadgeTimer) clearInterval(chatBadgeTimer);
+      chatBadgeTimer = setInterval(checkChatUnread, 15000);
+    }
+
 
     // ============================================================
     // CHAT
     // ============================================================
-    function loadChat() { var loginEl = document.getElementById('chat-login-prompt'); var chatEl = document.getElementById('chat-container'); var msgsEl = document.getElementById('chat-messages'); if (!currentUser) { loginEl.style.display = 'flex'; chatEl.style.display = 'none'; return; } loginEl.style.display = 'none'; chatEl.style.display = 'flex'; startChatRefresh(); var phone = currentUser.phone.replace(/\D/g, ''); fetch(CONFIG.SCRIPT_URL + '?action=getChats&phone=' + phone).then(function (res) { return res.json(); }).then(function (data) { if (data.chats && data.chats.length) { _renderChat(data.chats); scrollChatToBottom(); } else { msgsEl.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><i class="fa fa-comment-dots" style="font-size:3rem;margin-bottom:.8rem;display:block;opacity:.4"></i><h3 style="font-size:.95rem;margin-bottom:.3rem">Koi message nahi abhi</h3><p style="font-size:.82rem">Ask anything. Get answers instantly.</p></div>'; } }).catch(function () { msgsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)"><i class="fa fa-triangle-exclamation"></i> Chat load nahi ho raha</div>'; }); }
-    function _renderChat(msgs) { var el = document.getElementById('chat-messages'); if (!msgs || !msgs.length) { el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><i class="fa fa-comment-dots"></i> Koi message nahi</div>'; return; } el.innerHTML = msgs.map(function (m) { var isMe = m.sender === 'customer'; var time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''; return '<div style="display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';gap:.1rem"><div style="font-size:.65rem;color:var(--muted);font-weight:600">' + (isMe ? 'You' : 'Support Team') + '</div><div style="max-width:75%;padding:.55rem .9rem;border-radius:' + (isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px') + ';background:' + (isMe ? 'var(--green)' : 'var(--surface2)') + ';color:' + (isMe ? '#fff' : 'var(--text)') + ';font-size:.85rem;line-height:1.5;word-break:break-word">' + m.text + '</div><span style="font-size:.62rem;color:var(--muted)">' + time + '</span></div>'; }).join(''); scrollChatToBottom(); }
+    function loadChat() { var loginEl = document.getElementById('chat-login-prompt'); var chatEl = document.getElementById('chat-container'); var msgsEl = document.getElementById('chat-messages'); if (!currentUser) { loginEl.style.display = 'flex'; chatEl.style.display = 'none'; return; } loginEl.style.display = 'none'; chatEl.style.display = 'flex'; startChatRefresh(); var phone = currentUser.phone.replace(/\D/g, ''); fetch(CONFIG.SCRIPT_URL + '?action=getChats&phone=' + phone).then(function (res) { return res.json(); }).then(function (data) { if (data.chats && data.chats.length) { _renderChat(data.chats); scrollChatToBottom(); markChatRead(data.chats); } else { msgsEl.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><i class="fa fa-comment-dots" style="font-size:3rem;margin-bottom:.8rem;display:block;opacity:.4"></i><h3 style="font-size:.95rem;margin-bottom:.3rem">Koi message nahi abhi</h3><p style="font-size:.82rem">Ask anything. Get answers instantly.</p></div>'; updateChatBadge(0); } }).catch(function () { msgsEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted)"><i class="fa fa-triangle-exclamation"></i> Chat load nahi ho raha</div>'; }); }
+    function _renderChat(msgs) { var el = document.getElementById('chat-messages'); if (!msgs || !msgs.length) { el.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><i class="fa fa-comment-dots"></i> Koi message nahi</div>'; return; } el.innerHTML = msgs.map(function (m) { var isMe = m.sender === 'customer'; var time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''; return '<div style="display:flex;flex-direction:column;align-items:' + (isMe ? 'flex-end' : 'flex-start') + ';gap:.1rem"><div style="font-size:.65rem;color:var(--muted);font-weight:600">' + (isMe ? 'You' : 'Support Team') + '</div><div style="max-width:75%;padding:.55rem .9rem;border-radius:' + (isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px') + ';background:' + (isMe ? 'var(--green)' : 'var(--accent)') + ';color:#fff;font-size:.85rem;line-height:1.5;word-break:break-word">' + m.text + '</div><span style="font-size:.62rem;color:var(--muted)">' + time + '</span></div>'; }).join(''); scrollChatToBottom(); }
     function scrollChatToBottom() { setTimeout(function () { var el = document.getElementById('chat-messages'); if (el) el.scrollTop = el.scrollHeight; }, 100); }
-    function startChatRefresh() { if (chatRefreshTimer) clearInterval(chatRefreshTimer); chatRefreshTimer = setInterval(function () { var chatTab = document.getElementById('chat-page'); if (chatTab && chatTab.classList.contains('active') && currentUser) { var phone = currentUser.phone.replace(/\D/g, ''); fetch(CONFIG.SCRIPT_URL + '?action=getChats&phone=' + phone).then(function (res) { return res.json(); }).then(function (data) { if (data.chats && data.chats.length) _renderChat(data.chats); }).catch(function () { }); } }, 10000); }
+    function startChatRefresh() { if (chatRefreshTimer) clearInterval(chatRefreshTimer); chatRefreshTimer = setInterval(function () { var chatTab = document.getElementById('chat-page'); if (chatTab && chatTab.classList.contains('active') && currentUser) { var phone = currentUser.phone.replace(/\D/g, ''); fetch(CONFIG.SCRIPT_URL + '?action=getChats&phone=' + phone).then(function (res) { return res.json(); }).then(function (data) { if (data.chats && data.chats.length) { _renderChat(data.chats); markChatRead(data.chats); } }).catch(function () { }); } }, 10000); }
     function sendChatMsg() { var inp = document.getElementById('chat-input'); var text = inp.value.trim(); if (!text || !currentUser) return; inp.value = ''; var msgBox = document.getElementById('chat-messages'); var now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }); var tempMsg = document.createElement('div'); tempMsg.innerHTML = '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.1rem"><div style="font-size:.65rem;color:var(--muted);font-weight:600">You</div><div style="max-width:75%;padding:.55rem .9rem;border-radius:16px 16px 4px 16px;background:var(--green);color:#fff;font-size:.85rem;line-height:1.5">' + text + '</div><span style="font-size:.62rem;color:var(--muted)">' + now + '</span></div>'; msgBox.appendChild(tempMsg); scrollChatToBottom(); fetch(CONFIG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'saveChat', phone: currentUser.phone, name: currentUser.fname, text: text }) }).then(function (res) { return res.json(); }).then(function (data) { if (data.success) setTimeout(loadChat, 1000); }).catch(function () { fetch(CONFIG.SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'saveChat', phone: currentUser.phone, name: currentUser.fname, text: text }) }); }); }
 
     // ============================================================
@@ -5796,8 +5837,8 @@
             var t = i / _spinAudioCtx.sampleRate;
             var env = Math.exp(-t * 180);
             data[i] = env * (Math.random() * 2 - 1) * 0.55
-                    + env * Math.sin(2 * Math.PI * 1100 * t) * 0.3
-                    + Math.exp(-t * 400) * Math.sin(2 * Math.PI * 3200 * t) * 0.15;
+              + env * Math.sin(2 * Math.PI * 1100 * t) * 0.3
+              + Math.exp(-t * 400) * Math.sin(2 * Math.PI * 3200 * t) * 0.15;
           }
           var src = _spinAudioCtx.createBufferSource();
           src.buffer = buf;
