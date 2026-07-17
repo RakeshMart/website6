@@ -4841,13 +4841,19 @@
               })
                 .then(function (r) { return r.json(); })
                 .then(function (verifyData) {
+                  console.log('Razorpay verify response:', verifyData);
                   if (verifyData.success) {
                     showToast('Payment successful!', 'success');
                     placeOrder();   // Ab normal order-place flow chalega
                   } else {
-                    showToast(verifyData.message || 'Payment verify nahi hua', 'error');
+                    showToast('VERIFY FAILED: ' + (verifyData.message || 'Unknown error'), 'error');
                     btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
                   }
+                })
+                .catch(function (err) {
+                  console.log('Razorpay verify fetch error:', err);
+                  showToast('Verify request hi fail ho gaya — network/CORS issue', 'error');
+                  btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
                 });
             },
             modal: {
