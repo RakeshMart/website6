@@ -5009,7 +5009,15 @@
       setInterval(function () { try { var sel = window.getSelection(); if (sel && !sel.isCollapsed) { var node = sel.anchorNode; if (node && node.nodeType === 3) node = node.parentNode; if (!isEditable(node)) sel.removeAllRanges(); } } catch (_) { } }, 200);
       document.addEventListener('dragstart', block, true); document.addEventListener('drag', block, true); document.addEventListener('drop', block, true);
       ['copy', 'cut', 'paste'].forEach(function (ev) { document.addEventListener(ev, function (e) { if (isEditable(e.target)) return; e.preventDefault(); e.stopPropagation(); }, true); });
-      document.addEventListener('keydown', function (e) { if (isEditable(document.activeElement)) return; var k = (e.key || '').toLowerCase(); var ctrl = e.ctrlKey || e.metaKey; if (e.keyCode === 123) { e.preventDefault(); return false; } if (k === 'printscreen') { e.preventDefault(); return false; } if (ctrl) { var blocked = ['c', 'x', 'v', 'u', 's', 'a', 'p', 'j', 'i', 'f', 'k', 'e', 'h', 'g']; if (blocked.indexOf(k) !== -1) { e.preventDefault(); return false; } } }, true);
+      document.addEventListener('keydown', function (e) {
+        // --- DevTools protection DISABLED ---
+        // if (isEditable(document.activeElement)) return; 
+        // var k = (e.key || '').toLowerCase(); 
+        // var ctrl = e.ctrlKey || e.metaKey; 
+        // if (e.keyCode === 123) { e.preventDefault(); return false; } 
+        // if (k === 'printscreen') { e.preventDefault(); return false; } 
+        // if (ctrl) { var blocked = ['c', 'x', 'v', 'u', 's', 'a', 'p', 'j', 'i', 'f', 'k', 'e', 'h', 'g']; if (blocked.indexOf(k) !== -1) { e.preventDefault(); return false; } } 
+      }, true);
       var longPressTimer = null; var LONG_PRESS_MS = 500;
       document.addEventListener('touchstart', function (e) { var target = e.target; if (target && (target.tagName === 'IMG' || target.closest('img, .img-protect-wrap'))) { longPressTimer = setTimeout(function () { e.preventDefault(); }, LONG_PRESS_MS); } }, { passive: false, capture: true });
       document.addEventListener('touchend', function () { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } }, true);
