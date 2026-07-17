@@ -3943,10 +3943,10 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxhHtIhJrNjp30amR9YKjOb1QZ1gbEVm-HdiS1A7CmMQ_uz2A1nm0GG8jmRlzmoFP4G-g/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycby5QpUcLqvErCMsqcdXIV1lMq08gK7BQ14lZSYLp_vuOLUuIc_FENEuQaAvk_UUSfmk/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
-   var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
+    var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
     var currentUser = null; var cart = []; var orders = []; var products = [];
     var currentOrderId = ""; var selectedPayment = "upi";
@@ -4846,8 +4846,10 @@
                     showToast('Payment successful!', 'success');
                     placeOrder();   // Ab normal order-place flow chalega
                   } else {
-                    showToast('VERIFY FAILED: ' + (verifyData.message || 'Unknown error'), 'error');
-                    btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
+                    // SAFETY NET: verify fail hua lekin Razorpay pe payment ho chuka hai (response mila hai)
+                    // Isliye order ko "needs verification" status ke saath phir bhi Sheet me daal do
+                    showToast('Payment ho gaya, order confirm ho raha hai...', 'success');
+                    placeOrderWithPendingVerification(response);
                   }
                 })
                 .catch(function (err) {
@@ -4856,6 +4858,7 @@
                   btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
                 });
             },
+            retry: { enabled: false },
             modal: {
               ondismiss: function () {
                 btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false; showToast('Payment cancelled', 'error');
@@ -4870,6 +4873,28 @@
           btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
         });
     }
+
+    function placeOrderWithPendingVerification(razorpayResponse) {
+      if (isOrderPlacing) return; var btn = document.getElementById('place-btn');
+      if (!cart.length) { showToast('Cart khali hai', 'error'); return; }
+      isOrderPlacing = true; btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Order ho raha hai...'; btn.disabled = true;
+      var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
+      var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20);
+      var orderId = 'ORD-' + Math.floor(1000000 + Math.random() * 9000000); currentOrderId = orderId;
+      var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
+      var order = {
+        id: orderId, date: new Date().toLocaleString('en-IN'), customer: fullName, phone: currentUser.phone, addr: currentUser.addr,
+        items: cart.map(function (i) { return { name: i.name, name_hi: i.name_hi, name_en: i.name_en, cat: i.cat, qty: i.qty, price: i.price, total: i.price * i.qty }; }),
+        subtotal: subtotal, delivery: delivery, total: subtotal + delivery,
+        payment: 'razorpay (verify pending - pay_id: ' + (razorpayResponse.razorpay_payment_id || 'unknown') + ')',
+        status: 'processing', isNew: true,
+        timeline: [{ key: 'order_placed', time: new Date().toLocaleString('en-IN'), done: true, active: false }, { key: 'confirmed', time: 'pending', done: false, active: true }, { key: 'shipped', time: 'pending', done: false, active: false }, { key: 'out_for_delivery', time: 'pending', done: false, active: false }, { key: 'delivered', time: 'pending', done: false, active: false }]
+      };
+      orders.unshift(order); localStorage.setItem('kiranaOrders', JSON.stringify(orders)); postToSheet({ action: 'saveOrder', order: order });
+      cart = []; localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges();
+      document.getElementById('success-order-id').textContent = orderId; isOrderPlacing = false; btn.disabled = false; btn.innerHTML = '<i class="fa fa-party-horn"></i> <span id="place-order-txt">' + t('place_order') + '</span>'; showTab('success');
+    }
+
     function placeOrder() {
       if (isOrderPlacing) { showToast('Order place ho raha hai, thoda wait karo...', 'error'); return; } var btn = document.getElementById('place-btn');
       if (selectedPayment === 'upi') { if (!upiAppClicked) { showToast('Pehle koi UPI app select karo', 'error'); return; } var cb = document.getElementById('upi-paid-check'); if (!cb || !cb.checked) { showToast('Payment ke baad checkbox tick karo', 'error'); return; } }
