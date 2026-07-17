@@ -4844,7 +4844,7 @@
                   console.log('Razorpay verify response:', verifyData);
                   if (verifyData.success) {
                     showToast('Payment successful!', 'success');
-                    placeOrder();   // Ab normal order-place flow chalega
+                    finalizeOrder('razorpay'); // Seedha order save karo — placeOrder() se loop nahi banega
                   } else {
                     // SAFETY NET: verify fail hua lekin Razorpay pe payment ho chuka hai (response mila hai)
                     // Isliye order ko "needs verification" status ke saath phir bhi Sheet me daal do
@@ -4898,14 +4898,19 @@
     function placeOrder() {
       if (isOrderPlacing) { showToast('Order place ho raha hai, thoda wait karo...', 'error'); return; } var btn = document.getElementById('place-btn');
       if (selectedPayment === 'upi') { if (!upiAppClicked) { showToast('Pehle koi UPI app select karo', 'error'); return; } var cb = document.getElementById('upi-paid-check'); if (!cb || !cb.checked) { showToast('Payment ke baad checkbox tick karo', 'error'); return; } }
-      if (selectedPayment === 'razorpay') { handleRazorpay(btn); return; }
       if (!cart.length) { showToast('Cart khali hai, pehle items dalo', 'error'); return; }
       var normalItems = cart.filter(function (i) { return !i.isReward; });
       if (!normalItems.length) { showToast('Spin reward ke saath koi normal item bhi dalo!', 'error'); return; }
+      if (selectedPayment === 'razorpay') { isOrderPlacing = true; btn.disabled = true; handleRazorpay(btn); return; }
+      finalizeOrder(selectedPayment);
+    }
+
+    function finalizeOrder(paymentLabel) {
+      var btn = document.getElementById('place-btn');
       isOrderPlacing = true; btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Order ho raha hai...'; btn.disabled = true;
       var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); var orderId = 'ORD-' + Math.floor(1000000 + Math.random() * 9000000); currentOrderId = orderId;
       var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
-      var order = { id: orderId, date: new Date().toLocaleString('en-IN'), customer: fullName, phone: currentUser.phone, addr: currentUser.addr, items: cart.map(function (i) { return { name: i.name, name_hi: i.name_hi, name_en: i.name_en, cat: i.cat, qty: i.qty, price: i.price, total: i.price * i.qty }; }), subtotal: subtotal, delivery: delivery, total: subtotal + delivery, payment: selectedPayment, status: 'processing', isNew: true, timeline: [{ key: 'order_placed', time: new Date().toLocaleString('en-IN'), done: true, active: false }, { key: 'confirmed', time: 'pending', done: false, active: true }, { key: 'shipped', time: 'pending', done: false, active: false }, { key: 'out_for_delivery', time: 'pending', done: false, active: false }, { key: 'delivered', time: 'pending', done: false, active: false }] };
+      var order = { id: orderId, date: new Date().toLocaleString('en-IN'), customer: fullName, phone: currentUser.phone, addr: currentUser.addr, items: cart.map(function (i) { return { name: i.name, name_hi: i.name_hi, name_en: i.name_en, cat: i.cat, qty: i.qty, price: i.price, total: i.price * i.qty }; }), subtotal: subtotal, delivery: delivery, total: subtotal + delivery, payment: paymentLabel, status: 'processing', isNew: true, timeline: [{ key: 'order_placed', time: new Date().toLocaleString('en-IN'), done: true, active: false }, { key: 'confirmed', time: 'pending', done: false, active: true }, { key: 'shipped', time: 'pending', done: false, active: false }, { key: 'out_for_delivery', time: 'pending', done: false, active: false }, { key: 'delivered', time: 'pending', done: false, active: false }] };
       orders.unshift(order); localStorage.setItem('kiranaOrders', JSON.stringify(orders)); postToSheet({ action: 'saveOrder', order: order });
       cart = []; localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges();
       document.getElementById('success-order-id').textContent = orderId; isOrderPlacing = false; btn.disabled = false; btn.innerHTML = '<i class="fa fa-party-horn"></i> <span id="place-order-txt">' + t('place_order') + '</span>'; showTab('success');
