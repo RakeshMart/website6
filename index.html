@@ -3946,6 +3946,7 @@
     var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzzDhoICoauvFhA8HT3ldeQcjs0stxNv0uP7G0y7RsQy_1qCI5NLBa4541Pd8Mx7-Velw/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
+   var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
     var currentUser = null; var cart = []; var orders = []; var products = [];
     var currentOrderId = ""; var selectedPayment = "upi";
@@ -4705,7 +4706,7 @@
         return s + i.price * i.qty;
       }, 0);
 
-      var delivery = subtotal >= 99 ? 0 : 20;
+      var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20);
       var total = subtotal + delivery;
 
       body.innerHTML =
@@ -4796,13 +4797,13 @@
       isOrderPlacing = false; document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); }); document.getElementById('checkout-page').classList.add('active');
       document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); }); document.getElementById('main-top-header').style.display = ''; document.querySelector('.bottom-nav').style.display = ''; document.body.classList.remove('static-page-open');
       document.getElementById('co-name').textContent = (currentUser.fname + ' ' + (currentUser.lname || '')).trim(); document.getElementById('co-phone').textContent = currentUser.phone; document.getElementById('co-addr').textContent = currentUser.addr;
-      renderCheckoutSummary(); var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; currentCheckoutTotal = subtotal + delivery;
+      renderCheckoutSummary(); var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); currentCheckoutTotal = subtotal + delivery;
       var amountEl = document.getElementById('upi-amount-display'); if (amountEl) amountEl.textContent = '₹' + currentCheckoutTotal;
       upiAppClicked = false; document.querySelectorAll('.upi-app-btn').forEach(function (b) { b.classList.remove('upi-clicked'); }); var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; var doneBox = document.getElementById('upi-done-box'); if (doneBox) doneBox.style.display = 'none'; var hint = document.getElementById('upi-fail-hint'); if (hint) hint.classList.remove('show'); var upiIdInput = document.getElementById('upi-id'); if (upiIdInput) upiIdInput.value = '';
       var placeBtn = document.getElementById('place-btn'); if (placeBtn) { placeBtn.disabled = false; placeBtn.innerHTML = '<i class="fa fa-party-horn"></i> <span id="place-order-txt">' + t('place_order') + '</span>'; }
       selectedPayment = 'upi'; selectPayment('upi'); renderUPIApps(currentCheckoutTotal, 'PENDING'); window.scrollTo(0, 0);
     }
-    function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
+    function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
     function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
     function handleRazorpay(btn) {
       // STEP 1: Apps Script se secure order mangwao (Secret sirf wahi hai, yaha nahi)
@@ -4871,7 +4872,7 @@
       var normalItems = cart.filter(function (i) { return !i.isReward; });
       if (!normalItems.length) { showToast('Spin reward ke saath koi normal item bhi dalo!', 'error'); return; }
       isOrderPlacing = true; btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Order ho raha hai...'; btn.disabled = true;
-      var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; var orderId = 'ORD-' + Math.floor(1000000 + Math.random() * 9000000); currentOrderId = orderId;
+      var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); var orderId = 'ORD-' + Math.floor(1000000 + Math.random() * 9000000); currentOrderId = orderId;
       var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
       var order = { id: orderId, date: new Date().toLocaleString('en-IN'), customer: fullName, phone: currentUser.phone, addr: currentUser.addr, items: cart.map(function (i) { return { name: i.name, name_hi: i.name_hi, name_en: i.name_en, cat: i.cat, qty: i.qty, price: i.price, total: i.price * i.qty }; }), subtotal: subtotal, delivery: delivery, total: subtotal + delivery, payment: selectedPayment, status: 'processing', isNew: true, timeline: [{ key: 'order_placed', time: new Date().toLocaleString('en-IN'), done: true, active: false }, { key: 'confirmed', time: 'pending', done: false, active: true }, { key: 'shipped', time: 'pending', done: false, active: false }, { key: 'out_for_delivery', time: 'pending', done: false, active: false }, { key: 'delivered', time: 'pending', done: false, active: false }] };
       orders.unshift(order); localStorage.setItem('kiranaOrders', JSON.stringify(orders)); postToSheet({ action: 'saveOrder', order: order });
