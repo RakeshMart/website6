@@ -3943,7 +3943,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzdRVm4OSA2dC1SPYXeh-hy0XILlJ6VoOYqsZDap2hIb184xM7uvlwPNbjKeaBCR-kA/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzzDhoICoauvFhA8HT3ldeQcjs0stxNv0uP7G0y7RsQy_1qCI5NLBa4541Pd8Mx7-Velw/exec" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
 
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
@@ -4804,7 +4804,65 @@
     }
     function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = subtotal >= 99 ? 0 : 20; document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
     function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
-    function handleRazorpay(btn) { var options = { key: "YOUR_RAZORPAY_KEY", amount: currentCheckoutTotal * 100, currency: "INR", name: "Rakesh Mart", description: "Order Payment", handler: function (response) { showToast('Payment successful!', 'success'); completeOrder('razorpay'); }, modal: { ondismiss: function () { btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false; showToast('Payment cancelled', 'error'); } } }; var rzp = new Razorpay(options); rzp.open(); }
+    function handleRazorpay(btn) {
+      // STEP 1: Apps Script se secure order mangwao (Secret sirf wahi hai, yaha nahi)
+      fetch(CONFIG.SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'createRazorpayOrder', amount: currentCheckoutTotal })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (orderData) {
+          if (!orderData.success) {
+            showToast(orderData.message || 'Payment order nahi bana', 'error');
+            btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
+            return;
+          }
+
+          var options = {
+            key: orderData.key_id,           // Sirf public Key ID — Secret kahi nahi
+            amount: orderData.amount,
+            currency: "INR",
+            name: "Rakesh Mart",
+            description: "Order Payment",
+            order_id: orderData.order_id,
+            handler: function (response) {
+              // STEP 2: Payment ke baad verify karwao
+              fetch(CONFIG.SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                  action: 'verifyRazorpayPayment',
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                })
+              })
+                .then(function (r) { return r.json(); })
+                .then(function (verifyData) {
+                  if (verifyData.success) {
+                    showToast('Payment successful!', 'success');
+                    placeOrder();   // Ab normal order-place flow chalega
+                  } else {
+                    showToast(verifyData.message || 'Payment verify nahi hua', 'error');
+                    btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
+                  }
+                });
+            },
+            modal: {
+              ondismiss: function () {
+                btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false; showToast('Payment cancelled', 'error');
+              }
+            }
+          };
+          var rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch(function () {
+          showToast('Network error, dobara try karo', 'error');
+          btn.innerHTML = '<i class="fa fa-party-horn"></i> ' + t('place_order'); btn.disabled = false; isOrderPlacing = false;
+        });
+    }
     function placeOrder() {
       if (isOrderPlacing) { showToast('Order place ho raha hai, thoda wait karo...', 'error'); return; } var btn = document.getElementById('place-btn');
       if (selectedPayment === 'upi') { if (!upiAppClicked) { showToast('Pehle koi UPI app select karo', 'error'); return; } var cb = document.getElementById('upi-paid-check'); if (!cb || !cb.checked) { showToast('Payment ke baad checkbox tick karo', 'error'); return; } }
