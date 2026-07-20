@@ -3973,6 +3973,10 @@
               <div class="p-icon"><i class="fa fa-credit-card"></i></div>
               <div class="p-label" id="card-label">Card</div>
             </div>
+            <div class="payment-opt" id="pay-paylater" style="display:none" onclick="selectPayment('paylater')">
+              <div class="p-icon"><i class="fa fa-clock"></i></div>
+              <div class="p-label">Pay Later</div>
+            </div>
           </div>
           <div id="upi-field">
             <div class="upi-amount-display">
@@ -4139,9 +4143,9 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwipClvzX2NG_xxDl-08_ngdO_E9vGVbVKBhFGmNBz-WebynRlmDdHnyyzy0v7Xp0b7/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwhSpK2fquvfSUZ1k8L5PQzc7WvNa1dta0Fb0Qg9zM30hr-PgdKa5F-qOhjlxfaBVHOcA/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
-    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true }; // default sab ON jab tak sheet se data na aaye
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true }; // default sab ON jab tak sheet se data na aaye
 
     function loadPaymentSettings() {
       fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
@@ -4152,7 +4156,8 @@
               upi: data.upi !== false,
               card: data.card !== false,
               cod: data.cod !== false,
-              razorpay: data.razorpay !== false
+              razorpay: data.razorpay !== false,
+              payLater: data.payLater !== false
             };
           }
           applyPaymentSettingsUI();
@@ -4166,6 +4171,27 @@
         var el = document.getElementById(map[key]);
         if (el) el.style.display = paymentSettings[key] ? '' : 'none';
       });
+      // Pay Later — sirf tab dikhega jab (1) setting sheet me global ON ho AND
+      // (2) is customer ka email pehle se (login/app-open ke time) verified/cached ho chuka ho
+      // Buy page pe koi wait nahi hota — ye cached value already currentUser me hoti hai
+      var payLaterEl = document.getElementById('pay-paylater');
+      if (payLaterEl) {
+        var eligible = currentUser && currentUser.payLaterEligible === true;
+        payLaterEl.style.display = (paymentSettings.payLater && eligible) ? '' : 'none';
+      }
+    }
+
+    // Email whitelist check — sirf login/app-open ke time call hoti hai, buy page ke time NAHI
+    function checkPayLaterEligibility() {
+      if (!currentUser || !currentUser.googleEmail) return;
+      fetch(CONFIG.SCRIPT_URL + '?action=checkPayLater&email=' + encodeURIComponent(currentUser.googleEmail))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          currentUser.payLaterEligible = !!(data && data.allowed);
+          localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+          applyPaymentSettingsUI();
+        })
+        .catch(function () { /* fail ho to Pay Later chupa hi rahega, koi dikkat nahi */ });
     }
 
     var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
@@ -4455,9 +4481,9 @@
     };
     var catImageMap = {};
     var translations = {
-      hi: { processing: "प्रोसेस में", confirmed: "कन्फर्म", shipped: "भेज दिया", delivered: "डिलीवर", cancelled: "रद्द", cod: "नकद", upi: "UPI", online: "Online", razorpay: "ऑनलाइन पेमेंट", track: "ट्रैक करो" },
-      hinglish: { processing: "Process ho raha hai", confirmed: "Confirm ho gaya", shipped: "Ship ho gaya", delivered: "Deliver ho gaya", cancelled: "Cancel ho gaya", cod: "Cash", upi: "UPI", online: "Online", razorpay: "Online Payment", track: "Track karo" },
-      en: { processing: "Processing", confirmed: "Confirmed", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", cod: "COD", upi: "UPI", online: "Online", razorpay: "Online Payment", track: "Track" }
+      hi: { processing: "प्रोसेस में", confirmed: "कन्फर्म", shipped: "भेज दिया", delivered: "डिलीवर", cancelled: "रद्द", cod: "नकद", upi: "UPI", online: "Online", razorpay: "ऑनलाइन पेमेंट", "pay later": "बाद में पेमेंट", track: "ट्रैक करो" },
+      hinglish: { processing: "Process ho raha hai", confirmed: "Confirm ho gaya", shipped: "Ship ho gaya", delivered: "Deliver ho gaya", cancelled: "Cancel ho gaya", cod: "Cash", upi: "UPI", online: "Online", razorpay: "Online Payment", "pay later": "Pay Later", track: "Track karo" },
+      en: { processing: "Processing", confirmed: "Confirmed", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", cod: "COD", upi: "UPI", online: "Online", razorpay: "Online Payment", "pay later": "Pay Later", track: "Track" }
     };
     var UI_TEXT = {
       tagline: { hi: "ताज़ा सामान, घर पे डिलीवरी", hinglish: "Taza saaman, ghar pe delivery", en: "Fresh groceries, home delivery" },
@@ -4644,7 +4670,7 @@
       try { var pr = localStorage.getItem('pendingReward'); if (pr) pendingRewardItem = JSON.parse(pr); } catch (e) { }
       var savedLang = localStorage.getItem("lang"); if (savedLang) currentLang = savedLang;
       updateLangButtons(); updateAllUIText();
-      if (currentUser) fillProfileUI();
+      if (currentUser) { fillProfileUI(); checkPayLaterEligibility(); }
       loadProducts();
       loadPaymentSettings();
       startNotifPolling();
@@ -4712,6 +4738,7 @@
         localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
         document.getElementById('google-signin-page').classList.remove('open');
         fillProfileUI();
+        checkPayLaterEligibility();
         showToast('Swagat hai ' + currentUser.fname + '!', 'success');
         postToSheet({
           action: 'saveCustomer',
@@ -5096,7 +5123,7 @@
       selectedPayment = defaultType; selectPayment(defaultType); renderUPIApps(currentCheckoutTotal, 'PENDING'); window.scrollTo(0, 0);
     }
     function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
-    function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
+    function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay', 'paylater'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
     function handleRazorpay(btn) {
       // STEP 1: Apps Script se secure order mangwao (Secret sirf wahi hai, yaha nahi)
       fetch(CONFIG.SCRIPT_URL, {
@@ -5194,7 +5221,7 @@
       var normalItems = cart.filter(function (i) { return !i.isReward; });
       if (!normalItems.length) { showToast('Spin reward ke saath koi normal item bhi dalo!', 'error'); return; }
       if (selectedPayment === 'razorpay') { isOrderPlacing = true; btn.disabled = true; handleRazorpay(btn); return; }
-      finalizeOrder(selectedPayment);
+      finalizeOrder(selectedPayment === 'paylater' ? 'pay later' : selectedPayment);
     }
 
     function finalizeOrder(paymentLabel) {
@@ -5243,8 +5270,8 @@
         var showCancel = (statusLower === 'processing' || statusLower === 'confirmed');
         var payKey = (o.payment || '').toLowerCase();
         var payLabel = translations[currentLang][payKey] || o.payment;
-        var payClass = payKey === 'cod' || payKey === 'cash' ? 'opr-cash' : 'opr-upi';
-        var payIcon = payKey === 'cod' || payKey === 'cash' ? 'fa-money-bill-wave' : 'fa-mobile-screen';
+        var payClass = (payKey === 'cod' || payKey === 'cash' || payKey === 'pay later') ? 'opr-cash' : 'opr-upi';
+        var payIcon = (payKey === 'cod' || payKey === 'cash') ? 'fa-money-bill-wave' : (payKey === 'pay later' ? 'fa-clock' : 'fa-mobile-screen');
         return '<div class="order-card ' + (idx === 0 ? 'new-order' : 'old-order') + '"><div class="order-top"><div><div class="order-id"><i class="fa fa-hashtag"></i> ' + o.id + '</div><div class="order-date"><i class="fa fa-clock"></i> ' + o.date + '</div></div><span class="order-status ' + sc + '">' + getStatusText(statusLower) + '</span></div>' + itemsTableHtml + '<div class="order-payment-row"><span class="opr-total"><i class="fa fa-indian-rupee-sign"></i> ' + o.total + '</span><span class="opr-method ' + payClass + '"><i class="fa ' + payIcon + '"></i> ' + payLabel + '</span></div><div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;align-items:center;"><button class="track-btn" onclick="trackOrder(\'' + o.id + '\')"><i class="fa fa-location-arrow"></i> ' + t('track') + '</button>' + (showCancel ? '<button class="cancel-btn" onclick="cancelOrder(\'' + o.id + '\')"><i class="fa fa-xmark"></i> Cancel</button>' : '') + '</div></div>';
       }).join('');
     }
