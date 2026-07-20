@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Rakesh Mart">
   <meta name="mobile-web-app-capable" content="yes">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <script>
     (function () {
@@ -2160,6 +2161,145 @@
       margin-bottom: .4rem;
     }
 
+    /* ===== ORDER ITEMS TABLE ===== */
+    .order-items-table-wrap {
+      margin: .6rem 0 .8rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    }
+
+    .order-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .78rem;
+      background: var(--surface);
+    }
+
+    .order-items-table thead tr {
+      background: linear-gradient(135deg, var(--green), var(--green2)) !important;
+    }
+
+    .order-items-table thead th {
+      background: transparent;
+      color: #fff !important;
+      font-weight: 800;
+      padding: .55rem .6rem;
+      text-align: left;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      border: none;
+    }
+
+    .order-items-table thead th:nth-child(2),
+    .order-items-table thead th:nth-child(3),
+    .order-items-table thead th:nth-child(4) {
+      text-align: center;
+    }
+
+    .order-items-table tbody tr {
+      background: var(--surface);
+    }
+
+    .order-items-table tbody tr:nth-child(even) {
+      background: var(--surface2) !important;
+    }
+
+    .order-items-table tbody td {
+      padding: .5rem .6rem;
+      color: var(--text);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    .order-items-table tbody td:last-child {
+      border-right: none;
+    }
+
+    .order-items-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .oit-name {
+      font-weight: 700;
+    }
+
+    .oit-qty,
+    .oit-price,
+    .oit-linetotal {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .oit-linetotal {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .order-items-table tfoot tr {
+      background: var(--accent-light) !important;
+    }
+
+    .order-items-table tfoot td {
+      background: transparent;
+      padding: .6rem .6rem;
+      font-weight: 800;
+      font-size: .88rem;
+      color: var(--accent-dark);
+      border-top: 2px solid var(--accent);
+      border-right: none;
+    }
+
+    .order-items-table tfoot td:first-child {
+      text-align: right;
+    }
+
+    .order-items-table tfoot td:last-child {
+      text-align: center;
+      font-size: .95rem;
+    }
+
+    /* Payment method row - order card ke total ke sath */
+    .order-payment-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: .6rem .8rem;
+      margin-top: .5rem;
+    }
+
+    .order-payment-row .opr-total {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .order-payment-row .opr-method {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .75rem;
+      font-weight: 800;
+      padding: .25rem .6rem;
+      border-radius: 50px;
+    }
+
+    .opr-cash {
+      background: rgba(0, 184, 148, .12);
+      color: var(--success);
+    }
+
+    .opr-upi,
+    .opr-online {
+      background: rgba(9, 132, 227, .12);
+      color: var(--info);
+    }
+
     .order-total {
       font-size: .85rem;
       font-weight: 800;
@@ -3228,6 +3368,53 @@
       background-position: center;
       background-repeat: no-repeat;
     }
+
+    /* GOOGLE SIGN-IN FULL SCREEN PAGE */
+    .google-signin-page {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .google-signin-page.open {
+      display: flex;
+    }
+
+    .gsi-back-btn {
+      position: absolute;
+      top: 1.2rem;
+      left: 1.2rem;
+      background: transparent;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .gsi-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin: 1rem 0 .3rem;
+      color: var(--text);
+    }
+
+    .gsi-subtitle {
+      font-size: .88rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    #google-signin-btn {
+      display: flex;
+      justify-content: center;
+    }
   </style>
 </head>
 
@@ -3255,9 +3442,18 @@
             id="reg-phone" placeholder="Enter Your Mobile No." maxlength="10" inputmode="numeric"></div>
         <div class="form-group"><label><i class="fa fa-location-dot"></i> Ghar ka Pata *</label><textarea id="reg-addr"
             rows="2" placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
-        <button class="place-order-btn" onclick="registerUser()"><i class="fa fa-check-circle"></i> Register Karo &amp;
-          Shopping Shuru Karo</button>
+        <button class="place-order-btn" onclick="goToGoogleStep()"><i class="fa fa-arrow-right"></i> Continue</button>
       </div>
+    </div>
+
+    <!-- GOOGLE SIGN-IN FULL SCREEN PAGE -->
+    <div class="google-signin-page" id="google-signin-page">
+      <button class="gsi-back-btn" onclick="backToStep1()"><i class="fa fa-arrow-left"></i></button>
+      <img src="https://raw.githubusercontent.com/RakeshMart/RakeshMart/main/Place_logo_left_202604282234.jpeg"
+        style="height:56px;border-radius:8px;margin-bottom:.5rem;" onerror="this.style.display='none'">
+      <div class="gsi-title">Continue with Google</div>
+      <div class="gsi-subtitle">Choose your Google Account</div>
+      <div id="google-signin-btn"></div>
     </div>
 
     <!-- DP MODAL -->
@@ -3767,7 +3963,7 @@
             </div>
             <div class="payment-opt" id="pay-razorpay" onclick="selectPayment('razorpay')">
               <div class="p-icon"><i class="fa fa-credit-card"></i></div>
-              <div class="p-label">Razorpay</div>
+              <div class="p-label">Online Payment</div>
             </div>
             <div class="payment-opt" id="pay-cod" onclick="selectPayment('cod')">
               <div class="p-icon"><i class="fa fa-money-bill-wave"></i></div>
@@ -3943,8 +4139,34 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycby5QpUcLqvErCMsqcdXIV1lMq08gK7BQ14lZSYLp_vuOLUuIc_FENEuQaAvk_UUSfmk/exec" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwipClvzX2NG_xxDl-08_ngdO_E9vGVbVKBhFGmNBz-WebynRlmDdHnyyzy0v7Xp0b7/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true }; // default sab ON jab tak sheet se data na aaye
+
+    function loadPaymentSettings() {
+      fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && typeof data === 'object') {
+            paymentSettings = {
+              upi: data.upi !== false,
+              card: data.card !== false,
+              cod: data.cod !== false,
+              razorpay: data.razorpay !== false
+            };
+          }
+          applyPaymentSettingsUI();
+        })
+        .catch(function () { /* fetch fail ho to default settings (sab ON) hi rahenge */ });
+    }
+
+    function applyPaymentSettingsUI() {
+      var map = { upi: 'pay-upi', razorpay: 'pay-razorpay', card: 'pay-online', cod: 'pay-cod' };
+      Object.keys(map).forEach(function (key) {
+        var el = document.getElementById(map[key]);
+        if (el) el.style.display = paymentSettings[key] ? '' : 'none';
+      });
+    }
 
     var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
     var currentLang = "hinglish"; var offerLabel = ""; var offerBannerImg = "";
@@ -4233,9 +4455,9 @@
     };
     var catImageMap = {};
     var translations = {
-      hi: { processing: "प्रोसेस में", confirmed: "कन्फर्म", shipped: "भेज दिया", delivered: "डिलीवर", cancelled: "रद्द", cod: "नकद", upi: "UPI", online: "Online", track: "ट्रैक करो" },
-      hinglish: { processing: "Process ho raha hai", confirmed: "Confirm ho gaya", shipped: "Ship ho gaya", delivered: "Deliver ho gaya", cancelled: "Cancel ho gaya", cod: "Cash", upi: "UPI", online: "Online", track: "Track karo" },
-      en: { processing: "Processing", confirmed: "Confirmed", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", cod: "COD", upi: "UPI", online: "Online", track: "Track" }
+      hi: { processing: "प्रोसेस में", confirmed: "कन्फर्म", shipped: "भेज दिया", delivered: "डिलीवर", cancelled: "रद्द", cod: "नकद", upi: "UPI", online: "Online", razorpay: "ऑनलाइन पेमेंट", track: "ट्रैक करो" },
+      hinglish: { processing: "Process ho raha hai", confirmed: "Confirm ho gaya", shipped: "Ship ho gaya", delivered: "Deliver ho gaya", cancelled: "Cancel ho gaya", cod: "Cash", upi: "UPI", online: "Online", razorpay: "Online Payment", track: "Track karo" },
+      en: { processing: "Processing", confirmed: "Confirmed", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled", cod: "COD", upi: "UPI", online: "Online", razorpay: "Online Payment", track: "Track" }
     };
     var UI_TEXT = {
       tagline: { hi: "ताज़ा सामान, घर पे डिलीवरी", hinglish: "Taza saaman, ghar pe delivery", en: "Fresh groceries, home delivery" },
@@ -4414,7 +4636,7 @@
     // ============================================================
     window.onload = function () {
       var saved = localStorage.getItem('kiranaUser');
-      if (saved) { try { currentUser = JSON.parse(saved); var modal = document.getElementById('reg-modal'); if (modal) modal.classList.remove('open'); } catch (e) { currentUser = null; } }
+      if (saved) { try { currentUser = JSON.parse(saved); var modal = document.getElementById('reg-modal'); if (modal) modal.classList.remove('open'); var gpage = document.getElementById('google-signin-page'); if (gpage) gpage.classList.remove('open'); } catch (e) { currentUser = null; } }
       if (!currentUser) { var modal = document.getElementById('reg-modal'); if (modal) modal.classList.add('open'); }
 
       var savedCart = localStorage.getItem('kiranaCart'); if (savedCart) { cart = JSON.parse(savedCart); updateCartBadges(); }
@@ -4424,6 +4646,7 @@
       updateLangButtons(); updateAllUIText();
       if (currentUser) fillProfileUI();
       loadProducts();
+      loadPaymentSettings();
       startNotifPolling();
       if (currentUser) startChatBadgePolling();
       setupScrollBehavior();
@@ -4433,19 +4656,84 @@
     // ============================================================
     // USER AUTH
     // ============================================================
-    function registerUser() {
+    var pendingReg = null; // Step 1 ka data — Google login hone tak yahi rakhega
+
+    function goToGoogleStep() {
       var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim();
       if (!name || !phone || !addr) { showToast('Sabhi fields zaroori hain', 'error'); return; }
       if (phone.length < 10) { showToast('Sahi phone number dalo', 'error'); return; }
-      currentUser = { fname: name, lname: '', phone: phone, addr: addr, location: '', dpUrl: '', registeredAt: new Date().toISOString() };
-      localStorage.setItem('kiranaUser', JSON.stringify(currentUser)); document.getElementById('reg-modal').classList.remove('open'); fillProfileUI(); showToast('Swagat hai ' + name + '!', 'success');
-      postToSheet({ action: 'saveCustomer', user: currentUser });
-      startChatBadgePolling();
+      pendingReg = { fname: name, phone: phone, addr: addr };
+      document.getElementById('reg-modal').classList.remove('open');
+      document.getElementById('google-signin-page').classList.add('open');
+      initGoogleSignIn();
+    }
+
+    function backToStep1() {
+      document.getElementById('google-signin-page').classList.remove('open');
+      document.getElementById('reg-modal').classList.add('open');
+    }
+
+    var gsiInitialized = false;
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+        showToast('Google Sign-In load nahi ho paya, internet check karo', 'error');
+        return;
+      }
+      if (!gsiInitialized) {
+        google.accounts.id.initialize({ client_id: CONFIG.GOOGLE_CLIENT_ID, callback: handleGoogleCredential, auto_select: false });
+        gsiInitialized = true;
+      }
+      var btnWrap = document.getElementById('google-signin-btn');
+      btnWrap.innerHTML = '';
+      google.accounts.id.renderButton(btnWrap, { type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: 280 });
+      google.accounts.id.prompt(); // Account chooser auto bhi khulne ki koshish karega (browser/history pe depend karta hai)
+    }
+
+    function parseJwtGoogle(token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    }
+
+    function handleGoogleCredential(response) {
+      try {
+        var payload = parseJwtGoogle(response.credential);
+        if (!pendingReg) { showToast('Pehle Step 1 fill karo', 'error'); return; }
+        currentUser = {
+          fname: pendingReg.fname, lname: '', phone: pendingReg.phone, addr: pendingReg.addr,
+          location: '', dpUrl: '', registeredAt: new Date().toISOString(),
+          googleUid: payload.sub, googleName: payload.name || '', googleEmail: payload.email || '',
+          googlePhoto: payload.picture || '', emailVerified: !!payload.email_verified,
+          login: true
+        };
+        localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+        document.getElementById('google-signin-page').classList.remove('open');
+        fillProfileUI();
+        showToast('Swagat hai ' + currentUser.fname + '!', 'success');
+        postToSheet({
+          action: 'saveCustomer',
+          user: {
+            fname: currentUser.fname, phone: currentUser.phone, addr: currentUser.addr,
+            googleUid: currentUser.googleUid, googleName: currentUser.googleName,
+            googleEmail: currentUser.googleEmail, googlePhoto: currentUser.googlePhoto
+          }
+        });
+        startChatBadgePolling();
+        pendingReg = null;
+      } catch (err) {
+        console.log('Google login error:', err);
+        showToast('Google Sign-In fail ho gaya, dobara try karo', 'error');
+      }
     }
     function logoutUser() {
       if (!confirm('Logout karna chahte ho?')) return;
+      try { if (typeof google !== 'undefined' && google.accounts && google.accounts.id) { google.accounts.id.disableAutoSelect(); } } catch (e) { }
       localStorage.removeItem('kiranaUser'); currentUser = null; cart = []; localStorage.removeItem('kiranaCart'); updateCartBadges();
       document.getElementById('reg-name').value = ''; document.getElementById('reg-phone').value = ''; document.getElementById('reg-addr').value = '';
+      document.getElementById('google-signin-page').classList.remove('open');
       document.getElementById('reg-modal').classList.add('open'); showToast('Logout ho gaye');
       if (chatBadgeTimer) { clearInterval(chatBadgeTimer); chatBadgeTimer = null; }
       updateChatBadge(0);
@@ -4801,7 +5089,11 @@
       var amountEl = document.getElementById('upi-amount-display'); if (amountEl) amountEl.textContent = '₹' + currentCheckoutTotal;
       upiAppClicked = false; document.querySelectorAll('.upi-app-btn').forEach(function (b) { b.classList.remove('upi-clicked'); }); var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; var doneBox = document.getElementById('upi-done-box'); if (doneBox) doneBox.style.display = 'none'; var hint = document.getElementById('upi-fail-hint'); if (hint) hint.classList.remove('show'); var upiIdInput = document.getElementById('upi-id'); if (upiIdInput) upiIdInput.value = '';
       var placeBtn = document.getElementById('place-btn'); if (placeBtn) { placeBtn.disabled = false; placeBtn.innerHTML = '<i class="fa fa-party-horn"></i> <span id="place-order-txt">' + t('place_order') + '</span>'; }
-      selectedPayment = 'upi'; selectPayment('upi'); renderUPIApps(currentCheckoutTotal, 'PENDING'); window.scrollTo(0, 0);
+      applyPaymentSettingsUI();
+      var payOrder = [{ type: 'upi', key: 'upi' }, { type: 'razorpay', key: 'razorpay' }, { type: 'online', key: 'card' }, { type: 'cod', key: 'cod' }];
+      var defaultType = 'upi';
+      for (var pi = 0; pi < payOrder.length; pi++) { if (paymentSettings[payOrder[pi].key]) { defaultType = payOrder[pi].type; break; } }
+      selectedPayment = defaultType; selectPayment(defaultType); renderUPIApps(currentCheckoutTotal, 'PENDING'); window.scrollTo(0, 0);
     }
     function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
     function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
@@ -4922,11 +5214,39 @@
       else { showToast('Is order ko cancel nahi kar sakte — already ' + statusLower + ' hai', 'error'); }
     }
     function getTimeline(status) { var base = [{ key: 'order_placed', done: true, active: false }, { key: 'confirmed', done: false, active: false }, { key: 'shipped', done: false, active: false }, { key: 'out_for_delivery', done: false, active: false }, { key: 'delivered', done: false, active: false }]; var statusLower = (status || "").toLowerCase().trim(); var map = { "processing": 1, "confirmed": 2, "shipped": 3, "out for delivery": 4, "delivered": 5, "cancelled": 0 }; var step = map[statusLower] !== undefined ? map[statusLower] : 1; return base.map(function (item, i) { return Object.assign({}, item, { done: i < step, active: i === step - 1, time: i < step ? "Done ✅" : "Pending" }); }); }
+    function buildOrderItemsTable(items) {
+      var arr = Array.isArray(items) ? items : [];
+      if (!arr.length) return '';
+      var grandTotal = 0;
+      var rows = arr.map(function (i) {
+        var qty = i.qty || 1;
+        var price = Number(i.price) || 0;
+        var lineTotal = Number(i.total) || (price * qty);
+        grandTotal += lineTotal;
+        return '<tr><td class="oit-name">' + getName(i) + '</td><td class="oit-qty">' + qty + '</td><td class="oit-price">₹' + price + '</td><td class="oit-linetotal">₹' + lineTotal + '</td></tr>';
+      }).join('');
+      return '<div class="order-items-table-wrap"><table class="order-items-table">' +
+        '<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+        '<tfoot><tr><td colspan="3">' + t('total') + '</td><td>₹' + grandTotal + '</td></tr></tfoot>' +
+        '</table></div>';
+    }
+
     function renderOrders() {
       var body = document.getElementById('orders-body'); var myOrders = currentUser ? orders.filter(function (o) { return String(o.phone).replace(/\D/g, '') === String(currentUser.phone).replace(/\D/g, ''); }) : orders;
       if (!myOrders.length) { body.innerHTML = '<div class="empty"><i class="fa fa-box-open"></i><h3>' + t('no_orders') + '</h3><p>' + t('no_orders_sub') + '</p></div>'; return; }
       var statusClass = { 'processing': 's-processing', 'confirmed': 's-processing', 'shipped': 's-shipped', 'out for delivery': 's-shipped', 'delivered': 's-delivered', 'cancelled': 's-cancelled' };
-      body.innerHTML = myOrders.map(function (o, idx) { var statusLower = (o.status || 'processing').toLowerCase().trim(); var sc = statusClass[statusLower] || 's-processing'; var itemsStr = Array.isArray(o.items) ? o.items.map(function (i) { return getName(i) + ' ×' + i.qty; }).join(', ') : (o.items || ''); var showCancel = (statusLower === 'processing' || statusLower === 'confirmed'); return '<div class="order-card ' + (idx === 0 ? 'new-order' : 'old-order') + '"><div class="order-top"><div><div class="order-id"><i class="fa fa-hashtag"></i> ' + o.id + '</div><div class="order-date"><i class="fa fa-clock"></i> ' + o.date + '</div></div><span class="order-status ' + sc + '">' + getStatusText(statusLower) + '</span></div><div class="order-items"><i class="fa fa-bag-shopping" style="color:var(--accent)"></i> ' + itemsStr + '</div><div class="order-total"><i class="fa fa-indian-rupee-sign"></i> ' + o.total + ' • ' + (translations[currentLang][o.payment] || o.payment) + '</div><div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;align-items:center;"><button class="track-btn" onclick="trackOrder(\'' + o.id + '\')"><i class="fa fa-location-arrow"></i> ' + t('track') + '</button>' + (showCancel ? '<button class="cancel-btn" onclick="cancelOrder(\'' + o.id + '\')"><i class="fa fa-xmark"></i> Cancel</button>' : '') + '</div></div>'; }).join('');
+      body.innerHTML = myOrders.map(function (o, idx) {
+        var statusLower = (o.status || 'processing').toLowerCase().trim();
+        var sc = statusClass[statusLower] || 's-processing';
+        var itemsTableHtml = buildOrderItemsTable(o.items);
+        var showCancel = (statusLower === 'processing' || statusLower === 'confirmed');
+        var payKey = (o.payment || '').toLowerCase();
+        var payLabel = translations[currentLang][payKey] || o.payment;
+        var payClass = payKey === 'cod' || payKey === 'cash' ? 'opr-cash' : 'opr-upi';
+        var payIcon = payKey === 'cod' || payKey === 'cash' ? 'fa-money-bill-wave' : 'fa-mobile-screen';
+        return '<div class="order-card ' + (idx === 0 ? 'new-order' : 'old-order') + '"><div class="order-top"><div><div class="order-id"><i class="fa fa-hashtag"></i> ' + o.id + '</div><div class="order-date"><i class="fa fa-clock"></i> ' + o.date + '</div></div><span class="order-status ' + sc + '">' + getStatusText(statusLower) + '</span></div>' + itemsTableHtml + '<div class="order-payment-row"><span class="opr-total"><i class="fa fa-indian-rupee-sign"></i> ' + o.total + '</span><span class="opr-method ' + payClass + '"><i class="fa ' + payIcon + '"></i> ' + payLabel + '</span></div><div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;align-items:center;"><button class="track-btn" onclick="trackOrder(\'' + o.id + '\')"><i class="fa fa-location-arrow"></i> ' + t('track') + '</button>' + (showCancel ? '<button class="cancel-btn" onclick="cancelOrder(\'' + o.id + '\')"><i class="fa fa-xmark"></i> Cancel</button>' : '') + '</div></div>';
+      }).join('');
     }
     function loadOrdersFromSheet() { fetch(CONFIG.SCRIPT_URL + '?action=getOrders').then(function (res) { return res.json(); }).then(function (data) { if (data.orders && data.orders.length) { var lo = JSON.parse(localStorage.getItem('kiranaOrders') || '[]'); orders = data.orders.map(function (so) { var l = lo.find(function (x) { return x.id === so.id; }); var m = l ? Object.assign({}, so, { items: l.items || so.items }) : so; m.timeline = getTimeline(so.status); return m; }); lo.forEach(function (lo) { if (!orders.find(function (o) { return o.id === lo.id; })) orders.unshift(lo); }); localStorage.setItem('kiranaOrders', JSON.stringify(orders)); } else { var saved = localStorage.getItem('kiranaOrders'); if (saved) orders = JSON.parse(saved); } renderOrders(); }).catch(function () { var saved = localStorage.getItem('kiranaOrders'); if (saved) orders = JSON.parse(saved); renderOrders(); }); }
     function trackOrder(orderId) { if (trackRefreshTimer) clearInterval(trackRefreshTimer); renderTrackModal(orderId); document.getElementById('track-modal').classList.add('open'); trackRefreshTimer = setInterval(function () { if (!document.getElementById('track-modal').classList.contains('open')) { clearInterval(trackRefreshTimer); trackRefreshTimer = null; return; } fetch(CONFIG.SCRIPT_URL + '?action=getOrders').then(function (res) { return res.json(); }).then(function (data) { if (data.orders && data.orders.length) { var lo = JSON.parse(localStorage.getItem('kiranaOrders') || '[]'); orders = data.orders.map(function (so) { var l = lo.find(function (x) { return x.id === so.id; }); var m = l ? Object.assign({}, so, { items: l.items || so.items }) : so; m.timeline = getTimeline(so.status); return m; }); } renderTrackModal(orderId); }).catch(function () { }); }, 5000); }
