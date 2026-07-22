@@ -3781,6 +3781,18 @@
       </div>
     </div>
 
+    <!-- PAY LATER INFO MODAL -->
+    <div class="track-modal" id="paylater-info-modal">
+      <div class="track-sheet">
+        <div class="sheet-handle"></div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;">
+          <div class="back-icon-btn" onclick="closePayLaterInfoModal()"><i class="fa fa-arrow-left"></i></div>
+          <div style="font-weight:800;font-size:.95rem;">Pay Later — Credit Details</div>
+        </div>
+        <div id="paylater-modal-content"></div>
+      </div>
+    </div>
+
     <!-- NOTIFICATION PANEL - NEW DESIGN -->
     <div id="notif-panel">
       <div class="notif-sheet">
@@ -4143,7 +4155,8 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxrqOWWfmyN0RSOc5B0X3FUgIpHet2wnKUpZjrQGqYRnzfbX2ZYXGj_aN7BqVhFz2TzaA/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyFl4iYCSC2eLXL0C7HpxyuPAbvh687vHmYm6Y9xZtIh14S59iJG6EbwK8r5cuFu3N0JA/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbxD2Q2uD-xpmjZNwNsQOXI_fW_2lgfcsz_MYbg_H4_n5XGgKVt2TNEqhalrsUDTvNbA/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
     var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true }; // default sab ON jab tak sheet se data na aaye
 
@@ -4181,15 +4194,42 @@
       }
     }
 
-    // Email whitelist check — sirf login/app-open ke time call hoti hai, buy page ke time NAHI
+    // Email whitelist + Udhar Khata (subscription/membership) check — sirf login/app-open ke time, buy page ke time NAHI
     function checkPayLaterEligibility() {
       if (!currentUser || !currentUser.googleEmail) return;
       fetch(CONFIG.SCRIPT_URL + '?action=checkPayLater&email=' + encodeURIComponent(currentUser.googleEmail))
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          currentUser.payLaterEligible = !!(data && data.allowed);
-          localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
-          applyPaymentSettingsUI();
+          var emailAllowed = !!(data && data.allowed);
+          if (!emailAllowed) {
+            currentUser.payLaterEligible = false;
+            localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+            applyPaymentSettingsUI();
+            return;
+          }
+          if (!UDHAR_API_URL || UDHAR_API_URL.indexOf('PASTE_') === 0) {
+            // Udhar Khata URL abhi set nahi hai — sirf email whitelist se allow karo
+            currentUser.payLaterEligible = true;
+            localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+            applyPaymentSettingsUI();
+            return;
+          }
+          // Email pass ho gaya — ab Udhar Khata se subscription + membership + credit limit check karo
+          fetch(UDHAR_API_URL + '?action=checkPayLaterEligibility&mobile=' + encodeURIComponent(currentUser.phone))
+            .then(function (r2) { return r2.json(); })
+            .then(function (udharData) {
+              currentUser.payLaterEligible = !!(udharData && udharData.allowed);
+              currentUser.payLaterCreditLimit = (udharData && udharData.creditLimit) || 0;
+              currentUser.payLaterTotalUdhar = (udharData && udharData.totalUdhar) || 0;
+              currentUser.payLaterRemaining = (udharData && udharData.remaining) || 0;
+              localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+              applyPaymentSettingsUI();
+            })
+            .catch(function () {
+              currentUser.payLaterEligible = false;
+              localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+              applyPaymentSettingsUI();
+            });
         })
         .catch(function () { /* fail ho to Pay Later chupa hi rahega, koi dikkat nahi */ });
     }
@@ -5123,7 +5163,30 @@
       selectedPayment = defaultType; selectPayment(defaultType); renderUPIApps(currentCheckoutTotal, 'PENDING'); window.scrollTo(0, 0);
     }
     function renderCheckoutSummary() { var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); document.getElementById('checkout-summary').innerHTML = cart.map(function (i) { return '<div class="sum-row"><span>' + getName(i) + ' ×' + i.qty + '</span><span>₹' + (i.price * i.qty) + '</span></div>'; }).join('') + '<div class="sum-row"><span><i class="fa fa-truck"></i> ' + t('delivery') + '</span><span>' + (delivery === 0 ? t('free_del') : '₹' + delivery) + '</span></div><div class="sum-row total"><span>' + t('grand_total') + '</span><span style="color:var(--accent)">₹' + (subtotal + delivery) + '</span></div>'; }
-    function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay', 'paylater'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } }
+    function selectPayment(type) { selectedPayment = type;['cod', 'upi', 'online', 'razorpay', 'paylater'].forEach(function (t) { var el = document.getElementById('pay-' + t); if (el) el.classList.remove('active'); }); var activeEl = document.getElementById('pay-' + type); if (activeEl) activeEl.classList.add('active'); var upiField = document.getElementById('upi-field'); if (upiField) upiField.style.display = (type === 'upi') ? 'block' : 'none'; if (type !== 'upi') { upiAppClicked = false; var cb = document.getElementById('upi-paid-check'); if (cb) cb.checked = false; } if (type === 'paylater') showPayLaterInfoModal(); }
+
+    // Pay Later select karte hi credit limit ka notice dikhata hai
+    function showPayLaterInfoModal() {
+      var limit = (currentUser && currentUser.payLaterCreditLimit) || 0;
+      var used = (currentUser && currentUser.payLaterTotalUdhar) || 0;
+      var remaining = Math.max(0, limit - used);
+      var contentEl = document.getElementById('paylater-modal-content');
+      if (!contentEl) return;
+      contentEl.innerHTML =
+        '<div style="text-align:center;padding:.5rem 0 1rem"><i class="fa fa-clock" style="font-size:2rem;color:var(--accent)"></i></div>' +
+        '<div style="background:var(--surface2);border-radius:12px;padding:1rem;font-size:.85rem;line-height:2">' +
+        '<div style="display:flex;justify-content:space-between"><span>Aapki Credit Limit</span><b>₹' + limit + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between"><span>Ab tak ka Udhar</span><b>₹' + used + '</b></div>' +
+        '<div style="display:flex;justify-content:space-between;color:var(--green)"><span>Aur kitna kharid sakte ho</span><b>₹' + remaining + '</b></div>' +
+        '</div>' +
+        '<p style="font-size:.75rem;color:var(--muted);text-align:center;margin-top:.8rem">Ye sirf jaankari ke liye hai.</p>' +
+        '<button style="width:100%;margin-top:1rem;padding:.9rem;border:none;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;font-size:.9rem" onclick="closePayLaterInfoModal()">OK</button>';
+      document.getElementById('paylater-info-modal').classList.add('open');
+    }
+    function closePayLaterInfoModal() {
+      var el = document.getElementById('paylater-info-modal');
+      if (el) el.classList.remove('open');
+    }
     function handleRazorpay(btn) {
       // STEP 1: Apps Script se secure order mangwao (Secret sirf wahi hai, yaha nahi)
       fetch(CONFIG.SCRIPT_URL, {
