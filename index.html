@@ -4197,6 +4197,11 @@
     // Email whitelist + Udhar Khata (subscription/membership) check — sirf login/app-open ke time, buy page ke time NAHI
     function checkPayLaterEligibility() {
       if (!currentUser || !currentUser.googleEmail) return;
+      // Har baar check shuru karte hi purana result HATA do (turant hide) —
+      // taaki network fail ho jaaye to bhi purana/stale "true" kabhi na dikhe
+      currentUser.payLaterEligible = false;
+      applyPaymentSettingsUI();
+
       fetch(CONFIG.SCRIPT_URL + '?action=checkPayLater&email=' + encodeURIComponent(currentUser.googleEmail))
         .then(function (r) { return r.json(); })
         .then(function (data) {
@@ -4231,7 +4236,12 @@
               applyPaymentSettingsUI();
             });
         })
-        .catch(function () { /* fail ho to Pay Later chupa hi rahega, koi dikkat nahi */ });
+        .catch(function () {
+          // Network/fetch fail ho gaya — purana cached "true" kabhi wapas na aaye
+          currentUser.payLaterEligible = false;
+          localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
+          applyPaymentSettingsUI();
+        });
     }
 
     var FREE_DELIVERY_MODE = true; // true = delivery hamesha FREE, false = normal ₹20 rule wapas
