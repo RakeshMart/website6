@@ -5153,14 +5153,63 @@
       postToSheet({ action: 'saveCustomer', user: currentUser });
     }
     function getLiveLocation() {
-      var btn = document.getElementById('loc-btn-text'); btn.textContent = 'Location dhundh raha hai...';
+      var btn = document.getElementById('loc-btn-text'); btn.textContent = 'Precise location dhundh raha hai...';
       if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
-      navigator.geolocation.getCurrentPosition(function (pos) { document.getElementById('edit-location').value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5); btn.textContent = 'Location mil gayi!'; showToast('Location mil gayi!', 'success'); }, function () { btn.textContent = 'Current Location Use Karo'; showToast('Location access nahi mili', 'error'); });
+      var bestPos = null; var attempts = 0; var maxAttempts = 3;
+      function tryGetLocation() {
+        attempts++;
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
+          // Agar accuracy 30 meter se behtar hai, ya max attempts ho gaye, to final karo
+          if (bestPos.coords.accuracy <= 30 || attempts >= maxAttempts) {
+            document.getElementById('edit-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
+            btn.textContent = 'Location mil gayi! (±' + Math.round(bestPos.coords.accuracy) + 'm)';
+            showToast('Precise location mil gayi! ✓', 'success');
+          } else {
+            btn.textContent = 'Aur precise ho raha hai... (' + attempts + '/' + maxAttempts + ')';
+            setTimeout(tryGetLocation, 800);
+          }
+        }, function (err) {
+          if (bestPos) {
+            document.getElementById('edit-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
+            btn.textContent = 'Location mil gayi! (±' + Math.round(bestPos.coords.accuracy) + 'm)';
+            showToast('Location mil gayi (thodi kam precise)', 'success');
+          } else {
+            btn.textContent = 'Current Location Use Karo';
+            showToast('Location access nahi mili — GPS/Location ON karo', 'error');
+          }
+        }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+      }
+      tryGetLocation();
     }
     function getRegLiveLocation() {
-      var btn = document.getElementById('reg-loc-btn-text'); btn.textContent = 'Location dhundh raha hai...';
+      var btn = document.getElementById('reg-loc-btn-text'); btn.textContent = 'Precise location dhundh raha hai...';
       if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
-      navigator.geolocation.getCurrentPosition(function (pos) { document.getElementById('reg-location').value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5); btn.textContent = 'Location mil gayi! ✓'; showToast('Location mil gayi!', 'success'); }, function () { btn.textContent = 'Yahan Click Karo — Current Location Use Karo'; showToast('Location access nahi mili, manually likho', 'error'); });
+      var bestPos = null; var attempts = 0; var maxAttempts = 3;
+      function tryGetLocation() {
+        attempts++;
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
+          if (bestPos.coords.accuracy <= 30 || attempts >= maxAttempts) {
+            document.getElementById('reg-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
+            btn.textContent = 'Location mil gayi! ✓ (±' + Math.round(bestPos.coords.accuracy) + 'm)';
+            showToast('Precise location mil gayi! ✓', 'success');
+          } else {
+            btn.textContent = 'Aur precise ho raha hai... (' + attempts + '/' + maxAttempts + ')';
+            setTimeout(tryGetLocation, 800);
+          }
+        }, function (err) {
+          if (bestPos) {
+            document.getElementById('reg-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
+            btn.textContent = 'Location mil gayi! ✓ (±' + Math.round(bestPos.coords.accuracy) + 'm)';
+            showToast('Location mil gayi (thodi kam precise)', 'success');
+          } else {
+            btn.textContent = 'Yahan Click Karo — Current Location Use Karo';
+            showToast('Location access nahi mili — GPS/Location ON karo, manually likho', 'error');
+          }
+        }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+      }
+      tryGetLocation();
     }
 
     // ============================================================
