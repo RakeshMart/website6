@@ -3686,6 +3686,13 @@
             id="reg-phone" placeholder="Enter Your Mobile No." maxlength="10" inputmode="numeric"></div>
         <div class="form-group"><label><i class="fa fa-location-dot"></i> Ghar ka Pata *</label><textarea id="reg-addr"
             rows="2" placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
+        <div class="form-group">
+          <label><i class="fa fa-location-crosshairs"></i> Live Location <span style="color:var(--accent)">(Zaroori)</span></label>
+          <button type="button" onclick="getRegLiveLocation()"
+            style="padding:.7rem .8rem;background:var(--accent-light);border:1.5px solid rgba(240,81,26,.35);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--accent-dark);"><i
+              class="fa fa-location-crosshairs" style="color:var(--accent)"></i><span id="reg-loc-btn-text">Yahan Click Karo — Current Location Use Karo</span></button>
+          <input type="text" id="reg-location" placeholder="Ya manually likho (jaise: 26.2989, 73.0243)" style="margin-top:.4rem">
+        </div>
         <button class="place-order-btn" onclick="goToGoogleStep()"><i class="fa fa-arrow-right"></i> Continue</button>
       </div>
     </div>
@@ -4463,7 +4470,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwMeE3cBRV1j70HRuAcnGZjHm1blmzdQhCt98Guv_KIvpPJ0YbpizTcpOHUiDq_e8P1pg/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxP0r5F1uqQwxw745Eh8izWb446lqA_WH2vPJcs5R70Zlk2HI_-Jnn9h6MxevsvbwhKvA/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
     var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true }; // default sab ON jab tak sheet se data na aaye
@@ -5044,10 +5051,11 @@
     var pendingReg = null; // Step 1 ka data — Google login hone tak yahi rakhega
 
     function goToGoogleStep() {
-      var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim();
+      var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim(); var location = document.getElementById('reg-location').value.trim();
       if (!name || !phone || !addr) { showToast('Sabhi fields zaroori hain', 'error'); return; }
       if (phone.length < 10) { showToast('Sahi phone number dalo', 'error'); return; }
-      pendingReg = { fname: name, phone: phone, addr: addr };
+      if (!location) { showToast('Live Location zaroori hai — button dabao ya manually likho', 'error'); return; }
+      pendingReg = { fname: name, phone: phone, addr: addr, location: location };
       document.getElementById('reg-modal').classList.remove('open');
       document.getElementById('google-signin-page').classList.add('open');
       initGoogleSignIn();
@@ -5089,7 +5097,7 @@
         if (!pendingReg) { showToast('Pehle Step 1 fill karo', 'error'); return; }
         currentUser = {
           fname: pendingReg.fname, lname: '', phone: pendingReg.phone, addr: pendingReg.addr,
-          location: '', dpUrl: '', registeredAt: new Date().toISOString(),
+          location: pendingReg.location || '', dpUrl: '', registeredAt: new Date().toISOString(),
           googleUid: payload.sub, googleName: payload.name || '', googleEmail: payload.email || '',
           googlePhoto: payload.picture || '', emailVerified: !!payload.email_verified,
           login: true
@@ -5102,7 +5110,7 @@
         postToSheet({
           action: 'saveCustomer',
           user: {
-            fname: currentUser.fname, phone: currentUser.phone, addr: currentUser.addr,
+            fname: currentUser.fname, phone: currentUser.phone, addr: currentUser.addr, location: currentUser.location,
             googleUid: currentUser.googleUid, googleName: currentUser.googleName,
             googleEmail: currentUser.googleEmail, googlePhoto: currentUser.googlePhoto
           }
@@ -5148,6 +5156,11 @@
       var btn = document.getElementById('loc-btn-text'); btn.textContent = 'Location dhundh raha hai...';
       if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
       navigator.geolocation.getCurrentPosition(function (pos) { document.getElementById('edit-location').value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5); btn.textContent = 'Location mil gayi!'; showToast('Location mil gayi!', 'success'); }, function () { btn.textContent = 'Current Location Use Karo'; showToast('Location access nahi mili', 'error'); });
+    }
+    function getRegLiveLocation() {
+      var btn = document.getElementById('reg-loc-btn-text'); btn.textContent = 'Location dhundh raha hai...';
+      if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
+      navigator.geolocation.getCurrentPosition(function (pos) { document.getElementById('reg-location').value = pos.coords.latitude.toFixed(5) + ', ' + pos.coords.longitude.toFixed(5); btn.textContent = 'Location mil gayi! ✓'; showToast('Location mil gayi!', 'success'); }, function () { btn.textContent = 'Yahan Click Karo — Current Location Use Karo'; showToast('Location access nahi mili, manually likho', 'error'); });
     }
 
     // ============================================================
