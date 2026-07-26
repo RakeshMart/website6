@@ -5936,6 +5936,7 @@
       function endDrag(e) {
         if (!isDragging || (e && e.pointerId !== activePointerId)) return;
         isDragging = false;
+        try { outer.releasePointerCapture(activePointerId); } catch (err) { }
         track.style.transition = 'transform 0.55s cubic-bezier(.22,1,.36,1)';
         var diff = currentX - startX;
         if (Math.abs(diff) > 40) { sliderMove(diff < 0 ? 1 : -1); }
