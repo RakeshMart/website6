@@ -3720,43 +3720,47 @@
       width: 100%;
       height: 100%;
       touch-action: none;
+      position: relative;
+      z-index: 1;
     }
 
     .lp-center-pin {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -100%);
-      z-index: 20;
+      transform: translate(-50%, -100%) translateZ(0);
+      z-index: 550;
       pointer-events: none;
       font-size: 2.6rem;
       color: var(--accent);
       filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35));
       transition: transform .12s ease;
+      will-change: transform;
     }
 
     .lp-center-pin.bounce {
-      transform: translate(-50%, -115%);
+      transform: translate(-50%, -115%) translateZ(0);
     }
 
     .lp-center-pin-shadow {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, 4px);
+      transform: translate(-50%, 4px) translateZ(0);
       width: 14px;
       height: 6px;
       background: rgba(0, 0, 0, .25);
       border-radius: 50%;
-      z-index: 19;
+      z-index: 549;
       filter: blur(1px);
+      will-change: transform;
     }
 
     .lp-mylocation-btn {
       position: absolute;
       right: 1rem;
       bottom: 1rem;
-      z-index: 25;
+      z-index: 600;
       width: 46px;
       height: 46px;
       border-radius: 50%;
@@ -3769,13 +3773,15 @@
       cursor: pointer;
       color: var(--accent);
       font-size: 1.15rem;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .lp-maptype-btn {
       position: absolute;
       right: 1rem;
       bottom: 4.2rem;
-      z-index: 25;
+      z-index: 600;
       width: 46px;
       height: 46px;
       border-radius: 50%;
@@ -3788,6 +3794,8 @@
       cursor: pointer;
       color: var(--green);
       font-size: 1.1rem;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .lp-maptype-btn.active {
@@ -3800,7 +3808,9 @@
       top: 3.6rem;
       left: .8rem;
       right: .8rem;
-      z-index: 28;
+      z-index: 700;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .lp-search-box {
@@ -4045,7 +4055,7 @@
       position: absolute;
       inset: 0;
       background: #fff;
-      z-index: 40;
+      z-index: 850;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -4109,7 +4119,7 @@
               class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="reg-manualaddr-btn-text">Address
               Manually Likho (Gali, Landmark...)</span></button>
         </div>
-        <div class="form-group" id="reg-location-block">
+        <div class="form-group" id="reg-location-block" style="display:none">
           <label><i class="fa fa-location-crosshairs"></i> Live Location <span
               style="color:var(--muted)">(Optional)</span></label>
           <button type="button" onclick="openLocationPicker('reg')"
@@ -4470,7 +4480,7 @@
               class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="edit-manualaddr-btn-text">Address
               Manually Likho (Gali, Landmark...)</span></button>
         </div>
-        <div class="form-group" id="edit-location-block">
+        <div class="form-group" id="edit-location-block" style="display:none">
           <label>Live Location (Optional)</label>
           <button type="button" onclick="openLocationPicker('edit')"
             style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);"><i
@@ -4976,7 +4986,7 @@
     var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzauOMe0BwbXJEegO5IyFkjICl1JuxXf2FRJd5shg0BYlam4HKQ_EGMXQmANxeJj4_W/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
-    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: true, otherAddress: true }; // default sab ON jab tak sheet se data na aaye
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega)
 
     function loadPaymentSettings() {
       fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
@@ -5686,6 +5696,29 @@
     var lpGeocodeTimer = null;
     var lpGeocodeAbort = null;
 
+    function buildManualAddrQuery(context) {
+      var src = context === 'reg' ? regManualAddr : editManualAddr;
+      var parts = [src.houseNo, src.gali, src.landmark, src.area].filter(function (x) { return x && x.trim(); });
+      return parts.join(', ');
+    }
+
+    function searchAndCenterMap(query) {
+      fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&addressdetails=1&limit=1', {
+        headers: { 'Accept-Language': 'en' }
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (results) {
+          if (results && results.length) {
+            var lat = parseFloat(results[0].lat), lng = parseFloat(results[0].lon);
+            if (lpMap) lpMap.setView([lat, lng], 17);
+            lpReverseGeocode(lat, lng);
+          } else {
+            lpUseMyLocation(true); // Address se kuch nahi mila — GPS try karo
+          }
+        })
+        .catch(function () { lpUseMyLocation(true); });
+    }
+
     function openLocationPicker(context) {
       lpContext = context;
       document.getElementById('loc-picker-page').classList.add('open');
@@ -5703,10 +5736,14 @@
         if (!isNaN(parts[0]) && !isNaN(parts[1])) { startLat = parts[0]; startLng = parts[1]; hasExisting = true; }
       }
 
+      // Manual address (Gali/Landmark/Area) fill ho chuka ho to usi jagah ka search karo
+      var manualQuery = hasExisting ? '' : buildManualAddrQuery(context);
+
       setTimeout(function () {
         initLpMap(startLat, startLng);
-        if (!hasExisting) lpUseMyLocation(true);
-        else lpReverseGeocode(startLat, startLng);
+        if (hasExisting) { lpReverseGeocode(startLat, startLng); }
+        else if (manualQuery) { searchAndCenterMap(manualQuery); }
+        else { lpUseMyLocation(true); }
       }, 60);
     }
 
