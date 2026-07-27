@@ -3770,6 +3770,117 @@
       font-size: 1.15rem;
     }
 
+    .lp-maptype-btn {
+      position: absolute;
+      right: 1rem;
+      bottom: 4.2rem;
+      z-index: 25;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--green);
+      font-size: 1.1rem;
+    }
+
+    .lp-maptype-btn.active {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .lp-search-wrap {
+      position: absolute;
+      top: 3.6rem;
+      left: .8rem;
+      right: .8rem;
+      z-index: 28;
+    }
+
+    .lp-search-box {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 14px rgba(0, 0, 0, .18);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .6rem .9rem;
+    }
+
+    .lp-search-box i.fa-magnifying-glass {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .lp-search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: .88rem;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .lp-search-clear {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .85rem;
+      display: none;
+    }
+
+    .lp-search-results {
+      background: #fff;
+      border-radius: 12px;
+      margin-top: .4rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+      max-height: 260px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .lp-search-results.show {
+      display: block;
+    }
+
+    .lp-search-result-item {
+      padding: .65rem .9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      font-size: .82rem;
+    }
+
+    .lp-search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .lp-search-result-item:hover {
+      background: var(--surface2);
+    }
+
+    .lp-search-result-item i {
+      color: var(--muted);
+      margin-top: .15rem;
+      flex-shrink: 0;
+    }
+
+    .lp-search-loading {
+      padding: .8rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
     .lp-bottom-sheet {
       position: relative;
       z-index: 30;
@@ -4023,8 +4134,20 @@
       </div>
       <div class="lp-map-wrap">
         <div id="lp-map"></div>
+        <div class="lp-search-wrap">
+          <div class="lp-search-box">
+            <i class="fa fa-magnifying-glass"></i>
+            <input type="text" id="lp-search-input" placeholder="Jagah, gali, ya area search karo..."
+              oninput="lpOnSearchInput()">
+            <button class="lp-search-clear" id="lp-search-clear" onclick="lpClearSearch()"><i
+                class="fa fa-xmark"></i></button>
+          </div>
+          <div class="lp-search-results" id="lp-search-results"></div>
+        </div>
         <div class="lp-center-pin-shadow"></div>
         <i class="fa fa-location-dot lp-center-pin" id="lp-center-pin"></i>
+        <button class="lp-maptype-btn" id="lp-maptype-btn" onclick="lpToggleMapType()" title="Satellite View"><i
+            class="fa fa-satellite" id="lp-maptype-icon"></i></button>
         <button class="lp-mylocation-btn" onclick="lpUseMyLocation()" title="My Location"><i
             class="fa fa-location-crosshairs"></i></button>
         <div class="lp-permission-box" id="lp-permission-box">
@@ -5551,12 +5674,22 @@
       if (lpMap) { lpMap.remove(); lpMap = null; }
     }
 
+    var lpDefaultLayer = null;
+    var lpSatelliteLayer = null;
+    var lpIsSatellite = false;
+
     function initLpMap(lat, lng) {
       if (lpMap) { lpMap.remove(); lpMap = null; }
       lpMap = L.map('lp-map', { zoomControl: false, attributionControl: false }).setView([lat, lng], 17);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19
-      }).addTo(lpMap);
+
+      lpDefaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
+      lpSatelliteLayer = L.layerGroup([
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }),
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, opacity: .9 })
+      ]);
+
+      lpIsSatellite = false;
+      lpDefaultLayer.addTo(lpMap);
       L.control.zoom({ position: 'bottomleft' }).addTo(lpMap);
 
       lpMap.on('movestart', function () {
@@ -5636,6 +5769,84 @@
     }
 
     function lpRetryPermission() { lpUseMyLocation(false); }
+
+    function lpToggleMapType() {
+      if (!lpMap) return;
+      lpIsSatellite = !lpIsSatellite;
+      var btn = document.getElementById('lp-maptype-btn');
+      var icon = document.getElementById('lp-maptype-icon');
+      if (lpIsSatellite) {
+        lpMap.removeLayer(lpDefaultLayer);
+        lpSatelliteLayer.addTo(lpMap);
+        btn.classList.add('active');
+        icon.className = 'fa fa-map';
+        btn.title = 'Default View';
+      } else {
+        lpMap.removeLayer(lpSatelliteLayer);
+        lpDefaultLayer.addTo(lpMap);
+        btn.classList.remove('active');
+        icon.className = 'fa fa-satellite';
+        btn.title = 'Satellite View';
+      }
+    }
+
+    // ===== SEARCH BAR (Nominatim search — jaisa Google Maps search) =====
+    var lpSearchTimer = null;
+    var lpSearchAbort = null;
+
+    function lpOnSearchInput() {
+      var q = document.getElementById('lp-search-input').value.trim();
+      var clearBtn = document.getElementById('lp-search-clear');
+      var resultsBox = document.getElementById('lp-search-results');
+      clearBtn.style.display = q ? 'block' : 'none';
+      if (lpSearchTimer) clearTimeout(lpSearchTimer);
+      if (!q) { resultsBox.classList.remove('show'); resultsBox.innerHTML = ''; return; }
+      resultsBox.innerHTML = '<div class="lp-search-loading"><span class="lp-spinner" style="display:inline-block;vertical-align:middle;margin-right:.4rem"></span>Dhundh rahe hain...</div>';
+      resultsBox.classList.add('show');
+      lpSearchTimer = setTimeout(function () { lpDoSearch(q); }, 500);
+    }
+
+    function lpDoSearch(q) {
+      if (lpSearchAbort) { try { lpSearchAbort.abort(); } catch (e) { } }
+      var controller = new AbortController();
+      lpSearchAbort = controller;
+      // Location-biased search (Pali, Rajasthan area ke aas paas results priority)
+      var viewboxBias = '&viewbox=72.5,26.6,73.5,25.9&bounded=0';
+      fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&addressdetails=1&limit=6' + viewboxBias, {
+        headers: { 'Accept-Language': 'en' }, signal: controller.signal
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (results) {
+          var resultsBox = document.getElementById('lp-search-results');
+          if (!results || !results.length) {
+            resultsBox.innerHTML = '<div class="lp-search-loading">Kuch nahi mila, kuch aur try karo</div>';
+            return;
+          }
+          resultsBox.innerHTML = results.map(function (r) {
+            var name = r.display_name || '';
+            var safeName = name.replace(/'/g, "\\'");
+            return '<div class="lp-search-result-item" onclick="lpSelectSearchResult(' + r.lat + ',' + r.lon + ',\'' + safeName.replace(/"/g, '&quot;') + '\')"><i class="fa fa-location-dot"></i><span>' + name + '</span></div>';
+          }).join('');
+        })
+        .catch(function (err) {
+          if (err.name === 'AbortError') return;
+          document.getElementById('lp-search-results').innerHTML = '<div class="lp-search-loading">Search fail hui, dobara try karo</div>';
+        });
+    }
+
+    function lpSelectSearchResult(lat, lng, name) {
+      document.getElementById('lp-search-results').classList.remove('show');
+      document.getElementById('lp-search-input').value = name;
+      document.getElementById('lp-search-clear').style.display = 'block';
+      if (lpMap) lpMap.setView([lat, lng], 18);
+    }
+
+    function lpClearSearch() {
+      document.getElementById('lp-search-input').value = '';
+      document.getElementById('lp-search-clear').style.display = 'none';
+      document.getElementById('lp-search-results').classList.remove('show');
+      document.getElementById('lp-search-results').innerHTML = '';
+    }
 
     function lpAskConfirm() {
       if (lpCurrentLat === null) return;
