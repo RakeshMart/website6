@@ -3719,6 +3719,7 @@
     #lp-map {
       width: 100%;
       height: 100%;
+      touch-action: none;
     }
 
     .lp-center-pin {
@@ -4102,13 +4103,19 @@
             id="reg-phone" placeholder="Enter Your Mobile No." maxlength="10" inputmode="numeric"></div>
         <div class="form-group"><label><i class="fa fa-location-dot"></i> Ghar ka Pata *</label><textarea id="reg-addr"
             rows="2" placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
-        <div class="form-group">
+        <div class="form-group" id="reg-manualaddr-block">
+          <button type="button" onclick="openManualAddress('reg')"
+            style="padding:.7rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
+              class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="reg-manualaddr-btn-text">Address
+              Manually Likho (Gali, Landmark...)</span></button>
+        </div>
+        <div class="form-group" id="reg-location-block">
           <label><i class="fa fa-location-crosshairs"></i> Live Location <span
-              style="color:var(--accent)">(Zaroori)</span></label>
+              style="color:var(--muted)">(Optional)</span></label>
           <button type="button" onclick="openLocationPicker('reg')"
             style="padding:.7rem .8rem;background:var(--accent-light);border:1.5px solid rgba(240,81,26,.35);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--accent-dark);"><i
               class="fa fa-map-location-dot" style="color:var(--accent)"></i><span id="reg-loc-btn-text">Map Se Apni
-              Exact Location Choose Karo</span></button>
+              Exact Location Choose Karo (Optional)</span></button>
           <input type="text" id="reg-location" placeholder="Ya manually likho (jaise: 26.2989, 73.0243)"
             style="margin-top:.4rem" readonly>
         </div>
@@ -4176,15 +4183,24 @@
       </div>
     </div>
 
-    <!-- CONFIRM DIALOG -->
-    <div id="lp-confirm-dialog">
-      <div class="lp-dialog-card">
-        <h3>Confirm Location</h3>
-        <p>Are you sure you want to use this location?</p>
-        <div class="lp-dialog-actions">
-          <button class="lp-dialog-cancel" onclick="lpCancelConfirm()">Cancel</button>
-          <button class="lp-dialog-confirm" onclick="lpFinalConfirm()">Confirm</button>
-        </div>
+    <!-- MANUAL ADDRESS MODAL (Gali, Landmark, House No, Area) -->
+    <div class="dp-overlay" id="manualaddr-modal">
+      <div class="dp-sheet" style="max-height:92vh;overflow-y:auto;">
+        <div class="sheet-handle"></div>
+        <div style="font-size:1.1rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem"><i
+            class="fa fa-pen-to-square" style="color:var(--accent)"></i> Address Details (Manually)</div>
+        <div class="form-group"><label>House/Flat No.</label><input type="text" id="ma-houseno"
+            placeholder="Jaise: 12, Ground Floor"></div>
+        <div class="form-group"><label>Gali/Mohalla ka Naam</label><input type="text" id="ma-gali"
+            placeholder="Jaise: Shastri Nagar Gali No. 3"></div>
+        <div class="form-group"><label>Nearby Landmark</label><input type="text" id="ma-landmark"
+            placeholder="Jaise: Hanuman Mandir ke paas"></div>
+        <div class="form-group"><label>Area/Colony</label><input type="text" id="ma-area"
+            placeholder="Jaise: Sardarpura"></div>
+        <button class="place-order-btn" onclick="saveManualAddress()"><i class="fa fa-floppy-disk"></i> Save
+          Karo</button>
+        <button onclick="closeManualAddress()"
+          style="width:100%;padding:.7rem;margin-top:.5rem;background:transparent;border:none;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer;font-size:.88rem;">Cancel</button>
       </div>
     </div>
 
@@ -4448,7 +4464,13 @@
             maxlength="10" inputmode="numeric"></div>
         <div class="form-group"><label>Pata *</label><textarea id="edit-addr" rows="2"
             placeholder="Ghar ka pata..."></textarea></div>
-        <div class="form-group">
+        <div class="form-group" id="edit-manualaddr-block">
+          <button type="button" onclick="openManualAddress('edit')"
+            style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
+              class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="edit-manualaddr-btn-text">Address
+              Manually Likho (Gali, Landmark...)</span></button>
+        </div>
+        <div class="form-group" id="edit-location-block">
           <label>Live Location (Optional)</label>
           <button type="button" onclick="openLocationPicker('edit')"
             style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);"><i
@@ -4951,10 +4973,10 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxP0r5F1uqQwxw745Eh8izWb446lqA_WH2vPJcs5R70Zlk2HI_-Jnn9h6MxevsvbwhKvA/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzauOMe0BwbXJEegO5IyFkjICl1JuxXf2FRJd5shg0BYlam4HKQ_EGMXQmANxeJj4_W/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
-    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true }; // default sab ON jab tak sheet se data na aaye
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: true, otherAddress: true }; // default sab ON jab tak sheet se data na aaye
 
     function loadPaymentSettings() {
       fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
@@ -4966,7 +4988,9 @@
               card: data.card !== false,
               cod: data.cod !== false,
               razorpay: data.razorpay !== false,
-              payLater: data.payLater !== false
+              payLater: data.payLater !== false,
+              currentLocation: data.currentLocation !== false,
+              otherAddress: data.otherAddress !== false
             };
           }
           applyPaymentSettingsUI();
@@ -4982,12 +5006,20 @@
       });
       // Pay Later — sirf tab dikhega jab (1) setting sheet me global ON ho AND
       // (2) is customer ka email pehle se (login/app-open ke time) verified/cached ho chuka ho
-      // Buy page pe koi wait nahi hota — ye cached value already currentUser me hoti hai
       var payLaterEl = document.getElementById('pay-paylater');
       if (payLaterEl) {
         var eligible = currentUser && currentUser.payLaterEligible === true;
         payLaterEl.style.display = (paymentSettings.payLater && eligible) ? '' : 'none';
       }
+      // Live Location aur Manual Address block — "setting" sheet ke "Currect Location" / "Other address" se ON/OFF
+      ['reg-location-block', 'edit-location-block'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = paymentSettings.currentLocation ? '' : 'none';
+      });
+      ['reg-manualaddr-block', 'edit-manualaddr-block'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = paymentSettings.otherAddress ? '' : 'none';
+      });
     }
 
     // Email whitelist + Udhar Khata (subscription/membership) check — sirf login/app-open ke time, buy page ke time NAHI
@@ -5530,13 +5562,16 @@
     // USER AUTH
     // ============================================================
     var pendingReg = null; // Step 1 ka data — Google login hone tak yahi rakhega
+    var regManualAddr = { houseNo: '', gali: '', landmark: '', area: '' };
+    var editManualAddr = { houseNo: '', gali: '', landmark: '', area: '' };
+    var maContext = null; // 'reg' ya 'edit' — manual address modal kahan se khula
 
     function goToGoogleStep() {
       var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim(); var location = document.getElementById('reg-location').value.trim();
       if (!name || !phone || !addr) { showToast('Sabhi fields zaroori hain', 'error'); return; }
       if (phone.length < 10) { showToast('Sahi phone number dalo', 'error'); return; }
-      if (!location) { showToast('Live Location zaroori hai — button dabao ya manually likho', 'error'); return; }
-      pendingReg = { fname: name, phone: phone, addr: addr, location: location };
+      // Live Location ab OPTIONAL hai — bina location ke bhi aage badh sakte hain
+      pendingReg = { fname: name, phone: phone, addr: addr, location: location, houseNo: regManualAddr.houseNo, gali: regManualAddr.gali, landmark: regManualAddr.landmark, area: regManualAddr.area };
       document.getElementById('reg-modal').classList.remove('open');
       document.getElementById('google-signin-page').classList.add('open');
       initGoogleSignIn();
@@ -5581,6 +5616,7 @@
           location: pendingReg.location || '', dpUrl: '', registeredAt: new Date().toISOString(),
           googleUid: payload.sub, googleName: payload.name || '', googleEmail: payload.email || '',
           googlePhoto: payload.picture || '', emailVerified: !!payload.email_verified,
+          houseNo: pendingReg.houseNo || '', gali: pendingReg.gali || '', landmark: pendingReg.landmark || '', area: pendingReg.area || '',
           login: true
         };
         localStorage.setItem('kiranaUser', JSON.stringify(currentUser));
@@ -5593,7 +5629,8 @@
           user: {
             fname: currentUser.fname, phone: currentUser.phone, addr: currentUser.addr, location: currentUser.location,
             googleUid: currentUser.googleUid, googleName: currentUser.googleName,
-            googleEmail: currentUser.googleEmail, googlePhoto: currentUser.googlePhoto
+            googleEmail: currentUser.googleEmail, googlePhoto: currentUser.googlePhoto,
+            houseNo: currentUser.houseNo, gali: currentUser.gali, landmark: currentUser.landmark, area: currentUser.area
           }
         });
         startChatBadgePolling();
@@ -5624,12 +5661,16 @@
       if (!currentUser) return;
       document.getElementById('edit-fname').value = currentUser.fname || ''; document.getElementById('edit-lname').value = currentUser.lname || '';
       document.getElementById('edit-phone').value = currentUser.phone || ''; document.getElementById('edit-addr').value = currentUser.addr || ''; document.getElementById('edit-location').value = currentUser.location || '';
+      editManualAddr = { houseNo: currentUser.houseNo || '', gali: currentUser.gali || '', landmark: currentUser.landmark || '', area: currentUser.area || '' };
+      var editMaBtn = document.getElementById('edit-manualaddr-btn-text');
+      if (editMaBtn) editMaBtn.textContent = (editManualAddr.gali || editManualAddr.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Gali, Landmark...)';
       document.getElementById('edit-modal').classList.add('open');
     }
     function saveProfile() {
       var fname = document.getElementById('edit-fname').value.trim(); var phone = document.getElementById('edit-phone').value.trim(); var addr = document.getElementById('edit-addr').value.trim();
       if (!fname || !phone || !addr) { showToast('Naam, Phone aur Pata zaroori hai', 'error'); return; }
       currentUser.fname = fname; currentUser.lname = document.getElementById('edit-lname').value.trim(); currentUser.phone = phone; currentUser.addr = addr; currentUser.location = document.getElementById('edit-location').value.trim();
+      currentUser.houseNo = editManualAddr.houseNo || ''; currentUser.gali = editManualAddr.gali || ''; currentUser.landmark = editManualAddr.landmark || ''; currentUser.area = editManualAddr.area || '';
       localStorage.setItem('kiranaUser', JSON.stringify(currentUser)); fillProfileUI(); document.getElementById('edit-modal').classList.remove('open'); showToast('Profile save ho gayi', 'success');
       postToSheet({ action: 'saveCustomer', user: currentUser });
     }
@@ -5680,7 +5721,7 @@
 
     function initLpMap(lat, lng) {
       if (lpMap) { lpMap.remove(); lpMap = null; }
-      lpMap = L.map('lp-map', { zoomControl: false, attributionControl: false }).setView([lat, lng], 17);
+      lpMap = L.map('lp-map', { zoomControl: false, attributionControl: false, dragging: true, tap: true, touchZoom: true, bounceAtZoomLimits: false }).setView([lat, lng], 17);
 
       lpDefaultLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
       lpSatelliteLayer = L.layerGroup([
@@ -5746,26 +5787,28 @@
       document.getElementById('lp-addr-loading').style.display = 'flex';
       document.getElementById('lp-addr-display').style.display = 'none';
 
-      var bestPos = null; var attempts = 0; var maxAttempts = 3;
-      function tryGet() {
+      var bestPos = null; var attempts = 0; var maxAttempts = 3; var lowAccuracyTried = false;
+      function tryGet(highAccuracy) {
         attempts++;
         navigator.geolocation.getCurrentPosition(function (pos) {
           if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
-          if (bestPos.coords.accuracy <= 30 || attempts >= maxAttempts) {
+          if (bestPos.coords.accuracy <= 50 || attempts >= maxAttempts) {
             lpMap.setView([bestPos.coords.latitude, bestPos.coords.longitude], 18);
           } else {
-            setTimeout(tryGet, 700);
+            setTimeout(function () { tryGet(highAccuracy); }, 700);
           }
         }, function (err) {
+          // Mobile pe GPS fix slow/fail ho to ek baar network-based (low accuracy) location try karo
+          if (highAccuracy && !lowAccuracyTried) { lowAccuracyTried = true; tryGet(false); return; }
           if (bestPos) { lpMap.setView([bestPos.coords.latitude, bestPos.coords.longitude], 18); return; }
           document.getElementById('lp-permission-box').classList.add('show');
           var txt = document.getElementById('lp-permission-text');
           if (err.code === 1) txt.textContent = 'Location permission denied hai. Browser settings se allow karo, ya map ko haath se move karke apni jagah select karo.';
           else txt.textContent = 'GPS/Location signal nahi mil raha. Location ON karo ya map ko haath se move karke jagah select karo.';
           document.getElementById('lp-addr-loading').style.display = 'none';
-        }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+        }, { enableHighAccuracy: highAccuracy, timeout: 15000, maximumAge: 30000 });
       }
-      tryGet();
+      tryGet(true);
     }
 
     function lpRetryPermission() { lpUseMyLocation(false); }
@@ -5869,6 +5912,36 @@
       }
       showToast('Location select ho gayi ✓', 'success');
       closeLocationPicker();
+    }
+
+    // ============================================================
+    // MANUAL ADDRESS (Gali, Landmark, House No, Area) — L,M,N,O column
+    // ============================================================
+    function openManualAddress(context) {
+      maContext = context;
+      var src = context === 'reg' ? regManualAddr : editManualAddr;
+      document.getElementById('ma-houseno').value = src.houseNo || '';
+      document.getElementById('ma-gali').value = src.gali || '';
+      document.getElementById('ma-landmark').value = src.landmark || '';
+      document.getElementById('ma-area').value = src.area || '';
+      document.getElementById('manualaddr-modal').classList.add('open');
+    }
+    function closeManualAddress() {
+      document.getElementById('manualaddr-modal').classList.remove('open');
+    }
+    function saveManualAddress() {
+      var obj = {
+        houseNo: document.getElementById('ma-houseno').value.trim(),
+        gali: document.getElementById('ma-gali').value.trim(),
+        landmark: document.getElementById('ma-landmark').value.trim(),
+        area: document.getElementById('ma-area').value.trim()
+      };
+      var btnId = maContext === 'reg' ? 'reg-manualaddr-btn-text' : 'edit-manualaddr-btn-text';
+      if (maContext === 'reg') { regManualAddr = obj; } else { editManualAddr = obj; }
+      var btnEl = document.getElementById(btnId);
+      if (btnEl) btnEl.textContent = (obj.gali || obj.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Gali, Landmark...)';
+      closeManualAddress();
+      showToast('Address details save ho gaye ✓', 'success');
     }
 
     // ============================================================
