@@ -34,6 +34,8 @@
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     :root {
@@ -3658,6 +3660,309 @@
       display: flex;
       justify-content: center;
     }
+
+    /* ============ LOCATION PICKER MAP (Flipkart style) ============ */
+    #loc-picker-page {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      z-index: 700;
+      display: none;
+      flex-direction: column;
+    }
+
+    #loc-picker-page.open {
+      display: flex;
+    }
+
+    .lp-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: #fff;
+      padding: .8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+    }
+
+    .lp-header h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .lp-back {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .lp-map-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #lp-map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .lp-center-pin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      z-index: 20;
+      pointer-events: none;
+      font-size: 2.6rem;
+      color: var(--accent);
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35));
+      transition: transform .12s ease;
+    }
+
+    .lp-center-pin.bounce {
+      transform: translate(-50%, -115%);
+    }
+
+    .lp-center-pin-shadow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 4px);
+      width: 14px;
+      height: 6px;
+      background: rgba(0, 0, 0, .25);
+      border-radius: 50%;
+      z-index: 19;
+      filter: blur(1px);
+    }
+
+    .lp-mylocation-btn {
+      position: absolute;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 25;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #fff;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 1.15rem;
+    }
+
+    .lp-bottom-sheet {
+      position: relative;
+      z-index: 30;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 -6px 24px rgba(0, 0, 0, .15);
+      padding: 1rem 1.1rem calc(1rem + env(safe-area-inset-bottom));
+    }
+
+    .lp-addr-row {
+      display: flex;
+      align-items: flex-start;
+      gap: .7rem;
+      margin-bottom: .8rem;
+      min-height: 46px;
+    }
+
+    .lp-addr-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .lp-addr-text {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .lp-addr-coords {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: .25rem;
+      font-family: monospace;
+    }
+
+    .lp-addr-loading {
+      font-size: .85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .lp-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(240, 81, 26, .25);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: lpSpin .7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes lpSpin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .lp-confirm-btn {
+      width: 100%;
+      padding: .9rem;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(255, 107, 43, .35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+    }
+
+    .lp-confirm-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Confirm mini-dialog */
+    #lp-confirm-dialog {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      z-index: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+
+    #lp-confirm-dialog.open {
+      display: flex;
+    }
+
+    .lp-dialog-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1.4rem 1.2rem;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+      animation: winPopIn .3s cubic-bezier(.175, .885, .32, 1.275);
+    }
+
+    .lp-dialog-card h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: .5rem;
+    }
+
+    .lp-dialog-card p {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .lp-dialog-actions {
+      display: flex;
+      gap: .6rem;
+    }
+
+    .lp-dialog-actions button {
+      flex: 1;
+      padding: .7rem;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .85rem;
+      cursor: pointer;
+      border: none;
+    }
+
+    .lp-dialog-cancel {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1.5px solid var(--border) !important;
+    }
+
+    .lp-dialog-confirm {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .lp-permission-box {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      z-index: 40;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      gap: .8rem;
+    }
+
+    .lp-permission-box.show {
+      display: flex;
+    }
+
+    .lp-permission-box i {
+      font-size: 2.6rem;
+      color: var(--accent);
+    }
+
+    .lp-permission-box h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .lp-permission-box p {
+      font-size: .82rem;
+      color: var(--muted);
+      max-width: 280px;
+    }
   </style>
 </head>
 
@@ -3687,11 +3992,14 @@
         <div class="form-group"><label><i class="fa fa-location-dot"></i> Ghar ka Pata *</label><textarea id="reg-addr"
             rows="2" placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
         <div class="form-group">
-          <label><i class="fa fa-location-crosshairs"></i> Live Location <span style="color:var(--accent)">(Zaroori)</span></label>
-          <button type="button" onclick="getRegLiveLocation()"
+          <label><i class="fa fa-location-crosshairs"></i> Live Location <span
+              style="color:var(--accent)">(Zaroori)</span></label>
+          <button type="button" onclick="openLocationPicker('reg')"
             style="padding:.7rem .8rem;background:var(--accent-light);border:1.5px solid rgba(240,81,26,.35);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--accent-dark);"><i
-              class="fa fa-location-crosshairs" style="color:var(--accent)"></i><span id="reg-loc-btn-text">Yahan Click Karo — Current Location Use Karo</span></button>
-          <input type="text" id="reg-location" placeholder="Ya manually likho (jaise: 26.2989, 73.0243)" style="margin-top:.4rem">
+              class="fa fa-map-location-dot" style="color:var(--accent)"></i><span id="reg-loc-btn-text">Map Se Apni
+              Exact Location Choose Karo</span></button>
+          <input type="text" id="reg-location" placeholder="Ya manually likho (jaise: 26.2989, 73.0243)"
+            style="margin-top:.4rem" readonly>
         </div>
         <button class="place-order-btn" onclick="goToGoogleStep()"><i class="fa fa-arrow-right"></i> Continue</button>
       </div>
@@ -3705,6 +4013,56 @@
       <div class="gsi-title">Continue with Google</div>
       <div class="gsi-subtitle">Choose your Google Account</div>
       <div id="google-signin-btn"></div>
+    </div>
+
+    <!-- FULL-SCREEN LOCATION PICKER (Flipkart style) -->
+    <div id="loc-picker-page">
+      <div class="lp-header">
+        <button class="lp-back" onclick="closeLocationPicker()"><i class="fa fa-arrow-left"></i></button>
+        <h3>Select Delivery Location</h3>
+      </div>
+      <div class="lp-map-wrap">
+        <div id="lp-map"></div>
+        <div class="lp-center-pin-shadow"></div>
+        <i class="fa fa-location-dot lp-center-pin" id="lp-center-pin"></i>
+        <button class="lp-mylocation-btn" onclick="lpUseMyLocation()" title="My Location"><i
+            class="fa fa-location-crosshairs"></i></button>
+        <div class="lp-permission-box" id="lp-permission-box">
+          <i class="fa fa-location-dot"></i>
+          <h4>Location Access Chahiye</h4>
+          <p id="lp-permission-text">Apna sahi ghar dhundne ke liye location permission allow karo, ya map ko haath se
+            move karke jagah select karo.</p>
+          <button class="lp-confirm-btn" style="max-width:220px" onclick="lpRetryPermission()"><i
+              class="fa fa-rotate-right"></i> Dobara Try Karo</button>
+        </div>
+      </div>
+      <div class="lp-bottom-sheet">
+        <div class="lp-addr-row" id="lp-addr-row">
+          <div class="lp-addr-icon"><i class="fa fa-location-dot"></i></div>
+          <div style="flex:1">
+            <div class="lp-addr-loading" id="lp-addr-loading"><span class="lp-spinner"></span> Address dhundh rahe
+              hain...</div>
+            <div id="lp-addr-display" style="display:none">
+              <div class="lp-addr-text" id="lp-addr-text">—</div>
+              <div class="lp-addr-coords" id="lp-addr-coords">—</div>
+            </div>
+          </div>
+        </div>
+        <button class="lp-confirm-btn" id="lp-confirm-btn" onclick="lpAskConfirm()" disabled><i class="fa fa-check"></i>
+          Confirm Location</button>
+      </div>
+    </div>
+
+    <!-- CONFIRM DIALOG -->
+    <div id="lp-confirm-dialog">
+      <div class="lp-dialog-card">
+        <h3>Confirm Location</h3>
+        <p>Are you sure you want to use this location?</p>
+        <div class="lp-dialog-actions">
+          <button class="lp-dialog-cancel" onclick="lpCancelConfirm()">Cancel</button>
+          <button class="lp-dialog-confirm" onclick="lpFinalConfirm()">Confirm</button>
+        </div>
+      </div>
     </div>
 
     <!-- DP MODAL -->
@@ -3969,11 +4327,11 @@
             placeholder="Ghar ka pata..."></textarea></div>
         <div class="form-group">
           <label>Live Location (Optional)</label>
-          <button type="button" onclick="getLiveLocation()"
+          <button type="button" onclick="openLocationPicker('edit')"
             style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);"><i
-              class="fa fa-location-crosshairs" style="color:var(--accent)"></i><span id="loc-btn-text">Current Location
-              Use Karo</span></button>
-          <input type="text" id="edit-location" placeholder="Ya manually likho..." style="margin-top:.4rem">
+              class="fa fa-map-location-dot" style="color:var(--accent)"></i><span id="loc-btn-text">Map Se Location
+              Choose Karo</span></button>
+          <input type="text" id="edit-location" placeholder="Ya manually likho..." style="margin-top:.4rem" readonly>
         </div>
         <button class="place-order-btn" onclick="saveProfile()"><i class="fa fa-floppy-disk"></i> Save Karo</button>
         <button onclick="document.getElementById('edit-modal').classList.remove('open')"
@@ -5152,64 +5510,154 @@
       localStorage.setItem('kiranaUser', JSON.stringify(currentUser)); fillProfileUI(); document.getElementById('edit-modal').classList.remove('open'); showToast('Profile save ho gayi', 'success');
       postToSheet({ action: 'saveCustomer', user: currentUser });
     }
-    function getLiveLocation() {
-      var btn = document.getElementById('loc-btn-text'); btn.textContent = 'Precise location dhundh raha hai...';
-      if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
-      var bestPos = null; var attempts = 0; var maxAttempts = 3;
-      function tryGetLocation() {
-        attempts++;
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
-          // Agar accuracy 30 meter se behtar hai, ya max attempts ho gaye, to final karo
-          if (bestPos.coords.accuracy <= 30 || attempts >= maxAttempts) {
-            document.getElementById('edit-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
-            btn.textContent = 'Location mil gayi! (±' + Math.round(bestPos.coords.accuracy) + 'm)';
-            showToast('Precise location mil gayi! ✓', 'success');
-          } else {
-            btn.textContent = 'Aur precise ho raha hai... (' + attempts + '/' + maxAttempts + ')';
-            setTimeout(tryGetLocation, 800);
-          }
-        }, function (err) {
-          if (bestPos) {
-            document.getElementById('edit-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
-            btn.textContent = 'Location mil gayi! (±' + Math.round(bestPos.coords.accuracy) + 'm)';
-            showToast('Location mil gayi (thodi kam precise)', 'success');
-          } else {
-            btn.textContent = 'Current Location Use Karo';
-            showToast('Location access nahi mili — GPS/Location ON karo', 'error');
-          }
-        }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+    // ============================================================
+    // FULL-SCREEN LOCATION PICKER (Flipkart/Swiggy style)
+    // Leaflet.js + OpenStreetMap tiles + Nominatim reverse geocoding
+    // ============================================================
+    var lpMap = null;
+    var lpContext = null;          // 'reg' or 'edit' — jahan se khula
+    var lpCurrentLat = null;
+    var lpCurrentLng = null;
+    var lpCurrentAddr = '';
+    var lpGeocodeTimer = null;
+    var lpGeocodeAbort = null;
+
+    function openLocationPicker(context) {
+      lpContext = context;
+      document.getElementById('loc-picker-page').classList.add('open');
+      document.getElementById('lp-confirm-btn').disabled = true;
+      document.getElementById('lp-addr-loading').style.display = 'flex';
+      document.getElementById('lp-addr-display').style.display = 'none';
+      document.getElementById('lp-permission-box').classList.remove('show');
+
+      // Existing value ho to usi pe map kholo, warna current GPS location try karo
+      var existingVal = context === 'reg' ? document.getElementById('reg-location').value : document.getElementById('edit-location').value;
+      var startLat = 26.2989, startLng = 73.0243; // Pali, Rajasthan fallback
+      var hasExisting = false;
+      if (existingVal && existingVal.indexOf(',') > -1) {
+        var parts = existingVal.split(',').map(function (s) { return parseFloat(s.trim()); });
+        if (!isNaN(parts[0]) && !isNaN(parts[1])) { startLat = parts[0]; startLng = parts[1]; hasExisting = true; }
       }
-      tryGetLocation();
+
+      setTimeout(function () {
+        initLpMap(startLat, startLng);
+        if (!hasExisting) lpUseMyLocation(true);
+        else lpReverseGeocode(startLat, startLng);
+      }, 60);
     }
-    function getRegLiveLocation() {
-      var btn = document.getElementById('reg-loc-btn-text'); btn.textContent = 'Precise location dhundh raha hai...';
-      if (!navigator.geolocation) { showToast('Location support nahi', 'error'); return; }
+
+    function closeLocationPicker() {
+      document.getElementById('loc-picker-page').classList.remove('open');
+      if (lpMap) { lpMap.remove(); lpMap = null; }
+    }
+
+    function initLpMap(lat, lng) {
+      if (lpMap) { lpMap.remove(); lpMap = null; }
+      lpMap = L.map('lp-map', { zoomControl: false, attributionControl: false }).setView([lat, lng], 17);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+      }).addTo(lpMap);
+      L.control.zoom({ position: 'bottomleft' }).addTo(lpMap);
+
+      lpMap.on('movestart', function () {
+        document.getElementById('lp-center-pin').classList.add('bounce');
+      });
+      lpMap.on('moveend', function () {
+        document.getElementById('lp-center-pin').classList.remove('bounce');
+        var c = lpMap.getCenter();
+        lpCurrentLat = c.lat; lpCurrentLng = c.lng;
+        document.getElementById('lp-confirm-btn').disabled = false;
+        scheduleLpReverseGeocode(c.lat, c.lng);
+      });
+
+      lpCurrentLat = lat; lpCurrentLng = lng;
+      document.getElementById('lp-confirm-btn').disabled = false;
+    }
+
+    function scheduleLpReverseGeocode(lat, lng) {
+      document.getElementById('lp-addr-loading').style.display = 'flex';
+      document.getElementById('lp-addr-display').style.display = 'none';
+      if (lpGeocodeTimer) clearTimeout(lpGeocodeTimer);
+      lpGeocodeTimer = setTimeout(function () { lpReverseGeocode(lat, lng); }, 700);
+    }
+
+    function lpReverseGeocode(lat, lng) {
+      if (lpGeocodeAbort) { try { lpGeocodeAbort.abort(); } catch (e) { } }
+      var controller = new AbortController();
+      lpGeocodeAbort = controller;
+      fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=18&addressdetails=1', {
+        headers: { 'Accept-Language': 'en' }, signal: controller.signal
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var addr = (data && data.display_name) ? data.display_name : 'Address nahi mila, coordinates use honge';
+          lpCurrentAddr = addr;
+          document.getElementById('lp-addr-text').textContent = addr;
+          document.getElementById('lp-addr-coords').textContent = lat.toFixed(6) + ', ' + lng.toFixed(6);
+          document.getElementById('lp-addr-loading').style.display = 'none';
+          document.getElementById('lp-addr-display').style.display = 'block';
+        })
+        .catch(function (err) {
+          if (err.name === 'AbortError') return;
+          lpCurrentAddr = lat.toFixed(6) + ', ' + lng.toFixed(6);
+          document.getElementById('lp-addr-text').textContent = 'Address load nahi hua (coordinates save honge)';
+          document.getElementById('lp-addr-coords').textContent = lat.toFixed(6) + ', ' + lng.toFixed(6);
+          document.getElementById('lp-addr-loading').style.display = 'none';
+          document.getElementById('lp-addr-display').style.display = 'block';
+        });
+    }
+
+    function lpUseMyLocation(silent) {
+      if (!navigator.geolocation) { if (!silent) showToast('Location support nahi', 'error'); return; }
+      document.getElementById('lp-permission-box').classList.remove('show');
+      document.getElementById('lp-addr-loading').style.display = 'flex';
+      document.getElementById('lp-addr-display').style.display = 'none';
+
       var bestPos = null; var attempts = 0; var maxAttempts = 3;
-      function tryGetLocation() {
+      function tryGet() {
         attempts++;
         navigator.geolocation.getCurrentPosition(function (pos) {
           if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
           if (bestPos.coords.accuracy <= 30 || attempts >= maxAttempts) {
-            document.getElementById('reg-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
-            btn.textContent = 'Location mil gayi! ✓ (±' + Math.round(bestPos.coords.accuracy) + 'm)';
-            showToast('Precise location mil gayi! ✓', 'success');
+            lpMap.setView([bestPos.coords.latitude, bestPos.coords.longitude], 18);
           } else {
-            btn.textContent = 'Aur precise ho raha hai... (' + attempts + '/' + maxAttempts + ')';
-            setTimeout(tryGetLocation, 800);
+            setTimeout(tryGet, 700);
           }
         }, function (err) {
-          if (bestPos) {
-            document.getElementById('reg-location').value = bestPos.coords.latitude.toFixed(6) + ', ' + bestPos.coords.longitude.toFixed(6);
-            btn.textContent = 'Location mil gayi! ✓ (±' + Math.round(bestPos.coords.accuracy) + 'm)';
-            showToast('Location mil gayi (thodi kam precise)', 'success');
-          } else {
-            btn.textContent = 'Yahan Click Karo — Current Location Use Karo';
-            showToast('Location access nahi mili — GPS/Location ON karo, manually likho', 'error');
-          }
-        }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+          if (bestPos) { lpMap.setView([bestPos.coords.latitude, bestPos.coords.longitude], 18); return; }
+          document.getElementById('lp-permission-box').classList.add('show');
+          var txt = document.getElementById('lp-permission-text');
+          if (err.code === 1) txt.textContent = 'Location permission denied hai. Browser settings se allow karo, ya map ko haath se move karke apni jagah select karo.';
+          else txt.textContent = 'GPS/Location signal nahi mil raha. Location ON karo ya map ko haath se move karke jagah select karo.';
+          document.getElementById('lp-addr-loading').style.display = 'none';
+        }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
       }
-      tryGetLocation();
+      tryGet();
+    }
+
+    function lpRetryPermission() { lpUseMyLocation(false); }
+
+    function lpAskConfirm() {
+      if (lpCurrentLat === null) return;
+      document.getElementById('lp-confirm-dialog').classList.add('open');
+    }
+    function lpCancelConfirm() {
+      document.getElementById('lp-confirm-dialog').classList.remove('open');
+    }
+    function lpFinalConfirm() {
+      document.getElementById('lp-confirm-dialog').classList.remove('open');
+      var coordStr = lpCurrentLat.toFixed(6) + ', ' + lpCurrentLng.toFixed(6);
+      if (lpContext === 'reg') {
+        document.getElementById('reg-location').value = coordStr;
+        document.getElementById('reg-loc-btn-text').textContent = 'Location Set ✓ — Dobara Change Karo';
+        var addrHint = document.getElementById('reg-addr');
+        if (addrHint && !addrHint.value.trim() && lpCurrentAddr) addrHint.value = lpCurrentAddr;
+      } else {
+        document.getElementById('edit-location').value = coordStr;
+        document.getElementById('loc-btn-text').textContent = 'Location Set ✓ — Dobara Change Karo';
+      }
+      showToast('Location select ho gayi ✓', 'success');
+      closeLocationPicker();
     }
 
     // ============================================================
