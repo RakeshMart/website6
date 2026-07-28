@@ -5561,6 +5561,7 @@
       updateLangButtons(); updateAllUIText();
       if (currentUser) { fillProfileUI(); checkPayLaterEligibility(); }
       loadProducts();
+      fetchSpinStatusForSlider();
       loadPaymentSettings();
       startNotifPolling();
       if (currentUser) startChatBadgePolling();
@@ -6668,19 +6669,22 @@
         sliderItems.push({ type: 'offer', img: offerBannerImg, label: offerLabel || 'Special Offers' });
       }
 
-      // Slide 2: Spin slide — PEHLE localStorage se try karo
-      var savedSliderImg = '';
-      try { savedSliderImg = localStorage.getItem('spinSliderImg') || ''; } catch (e) { }
-      var finalSpinImg = (spinSliderImg && spinSliderImg.startsWith('http'))
-        ? spinSliderImg
-        : savedSliderImg;
-      sliderItems.push({ type: 'spin', img: finalSpinImg, label: 'Lucky Spin' });
+      // Slide 2: Spin slide — SIRF tab dikhega jab spin ACTUALLY enabled hai (sheet E2 = YES)
+      if (spinEnabled) {
+        var savedSliderImg = '';
+        try { savedSliderImg = localStorage.getItem('spinSliderImg') || ''; } catch (e) { }
+        var finalSpinImg = (spinSliderImg && spinSliderImg.startsWith('http'))
+          ? spinSliderImg
+          : savedSliderImg;
+        sliderItems.push({ type: 'spin', img: finalSpinImg, label: 'Lucky Spin' });
+      }
 
       // Agar koi items nahi to slider hide karo
       if (sliderItems.length === 0) {
         document.getElementById('special-offers-slider-wrap').style.display = 'none';
         return;
       }
+      document.getElementById('special-offers-slider-wrap').style.display = '';
 
       track.innerHTML = sliderItems.map(function (item, idx) {
         if (item.type === 'spin') {
@@ -6710,9 +6714,13 @@
         return '<div onclick="goToSlide2(' + idx + ')" style="width:' + (idx === 0 ? '18px' : '6px') + ';height:6px;border-radius:50px;background:' + (idx === 0 ? activeBg : inactiveBg) + ';cursor:pointer;transition:width .35s cubic-bezier(.22,1,.36,1),background .35s;' + (idx === 0 ? 'box-shadow:0 0 6px rgba(240,81,26,.7);' : '') + '" id="sdot-' + idx + '"></div>';
       }).join('');
 
-      // Swipe support
-      enableSliderSwipe();
-      startSliderAuto();
+      // Swipe support — sirf tab jab 1 se zyada slide ho
+      if (sliderItems.length > 1) {
+        enableSliderSwipe();
+        startSliderAuto();
+      } else {
+        if (sliderAutoTimer) { clearInterval(sliderAutoTimer); sliderAutoTimer = null; }
+      }
     }
 
     function goToSlide2(idx) {
@@ -6841,6 +6849,20 @@
         box(sc, 'Sec', '#f0511a') +
         '</div>';
     }
+    // Home page load hote hi spin ka asli status (ON/OFF) pata karo — sheet E2 se
+    function fetchSpinStatusForSlider() {
+      var phoneParam = currentUser ? ('&phone=' + encodeURIComponent(currentUser.phone)) : '';
+      fetch(CONFIG.SCRIPT_URL + '?action=getSpinData' + phoneParam)
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          spinEnabled = !!data.spinEnabled;
+          spinSliderImg = data.sliderImg || '';
+          try { if (spinSliderImg) localStorage.setItem('spinSliderImg', spinSliderImg); } catch (e) { }
+          buildSliderSlides();
+        })
+        .catch(function () { });
+    }
+
     function loadSpinPage() {
       var content = document.getElementById('spin-page-content');
       if (!content) return;
