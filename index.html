@@ -6857,7 +6857,10 @@
         .then(function (data) {
           spinEnabled = !!data.spinEnabled;
           spinSliderImg = data.sliderImg || '';
-          try { if (spinSliderImg) localStorage.setItem('spinSliderImg', spinSliderImg); } catch (e) { }
+          try {
+            if (spinSliderImg) localStorage.setItem('spinSliderImg', spinSliderImg);
+            else localStorage.removeItem('spinSliderImg');
+          } catch (e) { }
           buildSliderSlides();
         })
         .catch(function () { });
@@ -6903,9 +6906,10 @@
           spinUsed = data.spinUsed;
           lastSpinDate = data.lastSpinDate || null;
           spinSliderImg = data.sliderImg || '';
-          // localStorage mein save karo future ke liye
+          // localStorage mein save karo future ke liye (khaali ho to purani cache bhi hata do)
           try {
             if (spinSliderImg) localStorage.setItem('spinSliderImg', spinSliderImg);
+            else localStorage.removeItem('spinSliderImg');
           } catch (e) { }
           buildSliderSlides();
 
