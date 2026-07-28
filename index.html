@@ -4111,8 +4111,9 @@
             placeholder="Enter Your Name"></div>
         <div class="form-group"><label><i class="fa fa-phone"></i> Phone Number *</label><input type="tel"
             id="reg-phone" placeholder="Enter Your Mobile No." maxlength="10" inputmode="numeric"></div>
-        <div class="form-group"><label><i class="fa fa-location-dot"></i> Ghar ka Pata *</label><textarea id="reg-addr"
-            rows="2" placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
+        <div class="form-group" id="reg-mainaddr-block" style="display:none"><label><i class="fa fa-location-dot"></i>
+            Ghar ka Pata *</label><textarea id="reg-addr" rows="2"
+            placeholder="Gali no., Mohalla, Sheher..."></textarea></div>
         <div class="form-group" id="reg-manualaddr-block">
           <button type="button" onclick="openManualAddress('reg')"
             style="padding:.7rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
@@ -4472,8 +4473,8 @@
             placeholder="Sharma (optional)"></div>
         <div class="form-group"><label>Phone *</label><input type="tel" id="edit-phone" placeholder="7742474578"
             maxlength="10" inputmode="numeric"></div>
-        <div class="form-group"><label>Pata *</label><textarea id="edit-addr" rows="2"
-            placeholder="Ghar ka pata..."></textarea></div>
+        <div class="form-group" id="edit-mainaddr-block" style="display:none"><label>Pata *</label><textarea
+            id="edit-addr" rows="2" placeholder="Ghar ka pata..."></textarea></div>
         <div class="form-group" id="edit-manualaddr-block">
           <button type="button" onclick="openManualAddress('edit')"
             style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
@@ -4983,10 +4984,10 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzauOMe0BwbXJEegO5IyFkjICl1JuxXf2FRJd5shg0BYlam4HKQ_EGMXQmANxeJj4_W/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyxOWASn8TiU6MQuajeJfx8EyeSqx6bIzev6dfOqQW38uWlDCzL8xe4GEfejrlnEnOI/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
-    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega)
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega), Main Address default OFF (sheet se ON ho to hi dikhega)
 
     function loadPaymentSettings() {
       fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
@@ -5000,7 +5001,8 @@
               razorpay: data.razorpay !== false,
               payLater: data.payLater !== false,
               currentLocation: data.currentLocation !== false,
-              otherAddress: data.otherAddress !== false
+              otherAddress: data.otherAddress !== false,
+              mainAddress: data.mainAddress === true
             };
           }
           applyPaymentSettingsUI();
@@ -5029,6 +5031,10 @@
       ['reg-manualaddr-block', 'edit-manualaddr-block'].forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.style.display = paymentSettings.otherAddress ? '' : 'none';
+      });
+      ['reg-mainaddr-block', 'edit-mainaddr-block'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = paymentSettings.mainAddress ? '' : 'none';
       });
     }
 
@@ -5579,7 +5585,7 @@
 
     function goToGoogleStep() {
       var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim(); var location = document.getElementById('reg-location').value.trim();
-      if (!name || !phone || !addr) { showToast('Sabhi fields zaroori hain', 'error'); return; }
+      if (!name || !phone || (paymentSettings.mainAddress && !addr)) { showToast('Sabhi fields zaroori hain', 'error'); return; }
       if (phone.length < 10) { showToast('Sahi phone number dalo', 'error'); return; }
       // Live Location ab OPTIONAL hai — bina location ke bhi aage badh sakte hain
       pendingReg = { fname: name, phone: phone, addr: addr, location: location, houseNo: regManualAddr.houseNo, gali: regManualAddr.gali, landmark: regManualAddr.landmark, area: regManualAddr.area };
@@ -5679,7 +5685,7 @@
     }
     function saveProfile() {
       var fname = document.getElementById('edit-fname').value.trim(); var phone = document.getElementById('edit-phone').value.trim(); var addr = document.getElementById('edit-addr').value.trim();
-      if (!fname || !phone || !addr) { showToast('Naam, Phone aur Pata zaroori hai', 'error'); return; }
+      if (!fname || !phone || (paymentSettings.mainAddress && !addr)) { showToast('Naam, Phone zaroori hai', 'error'); return; }
       currentUser.fname = fname; currentUser.lname = document.getElementById('edit-lname').value.trim(); currentUser.phone = phone; currentUser.addr = addr; currentUser.location = document.getElementById('edit-location').value.trim();
       currentUser.houseNo = editManualAddr.houseNo || ''; currentUser.gali = editManualAddr.gali || ''; currentUser.landmark = editManualAddr.landmark || ''; currentUser.area = editManualAddr.area || '';
       localStorage.setItem('kiranaUser', JSON.stringify(currentUser)); fillProfileUI(); document.getElementById('edit-modal').classList.remove('open'); showToast('Profile save ho gayi', 'success');
