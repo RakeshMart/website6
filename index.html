@@ -4799,7 +4799,7 @@
               <i class="fa fa-bell"></i>
               <span class="wp-badge" id="wp-notif-badge">0</span>
             </button>
-            <button class="wp-icon-btn" onclick="showTab('cart')" title="Cart">
+            <button class="wp-icon-btn" onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
               <i class="fa fa-bag-shopping"></i>
               <span class="wp-badge" id="wp-cart-badge">0</span>
             </button>
@@ -6443,7 +6443,7 @@
       localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); playAddToCartSound();
       if (btn) { var toast = btn.querySelector('.btn-toast'); if (toast) { toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 1500); } }
     }
-    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); var ctop = document.getElementById('cart-badge-top'); if (ctop) ctop.textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } var wpCart = document.getElementById('wp-cart-badge'); if (wpCart) wpCart.textContent = total; }
+    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); var ctop = document.getElementById('cart-badge-top'); if (ctop) ctop.textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } var wpCart = document.getElementById('wp-cart-badge'); if (wpCart) { wpCart.textContent = total; wpCart.classList.toggle('show', total > 0); } }
     function removeFromCart(id) { cart = cart.filter(function (c) { return c.id != id; }); localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); renderCart(); }
     function changeCartQty(id, d) { var item = cart.find(function (c) { return c.id == id; }); if (item) { item.qty = Math.max(1, item.qty + d); localStorage.setItem('kiranaCart', JSON.stringify(cart)); renderCart(); updateCartBadges(); } }
 
