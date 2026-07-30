@@ -8316,23 +8316,18 @@
     // (jaise p.price ki jagah p.mrp/p.salePrice), to yahan sirf
     // wahi field naam badal dena — baaki structure same rahega.
     function buildWishlistCardHtml(p) {
+      var stars = ''; for (var i = 0; i < Math.round(p.rating || 4); i++)stars += '<i class="fa fa-star"></i>'; for (var i = Math.round(p.rating || 4); i < 5; i++)stars += '<i class="fa-regular fa-star"></i>';
+      var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
+      if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.outerHTML=\'<i class=fa fa-box style=font-size:3rem></i>\'" loading="lazy">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:3rem;color:var(--muted)"></i>'; }
       var wCode = p.wishlistCode || '';
-      var name = getName(p);
-      var img = p.image || p.img || '';
       return '<div class="product-card" onclick="showProduct(' + p.id + ')">' +
-        '<div class="product-img">' +
-        (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
-        '<button class="wishlist-heart-btn active" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(name).replace(/'/g, "\\'") + '\',this)"><i class="fa-solid fa-heart"></i></button>' +
-        '<img src="' + img + '" alt="' + name + '" loading="lazy">' +
-        '</div>' +
-        '<div class="product-info">' +
-        '<div class="product-cat">' + (p.category || '') + '</div>' +
-        '<div class="product-name">' + name + '</div>' +
-        '<div class="product-rating"><i class="fa fa-star"></i> ' + (p.rating || '') + '</div>' +
-        '<div class="product-price"><span class="price-now">₹' + (p.price || '') + '</span>' +
-        (p.mrp ? '<span class="price-old">₹' + p.mrp + '</span>' : '') + '</div>' +
-        '<button class="cart-add-btn" onclick="event.stopPropagation();addToCart(' + p.id + ')"><i class="fa fa-plus"></i> Cart mein Dalo</button>' +
-        '</div></div>';
+        '<div class="product-img">' + (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
+        '<button class="wishlist-heart-btn active" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(getName(p)).replace(/'/g, "\\'") + '\',this)"><i class="fa-solid fa-heart"></i></button>' +
+        imgHtml + '</div>' +
+        '<div class="product-body"><div class="product-cat">' + getProductCatDisplay(p) + '</div><div class="product-name">' + getName(p) + '</div><div class="product-desc">' + getDesc(p) + '</div>' +
+        '<div class="product-rating">' + stars + ' <span>' + (p.rating || 4.0) + '</span></div>' +
+        '<div class="price-row"><span class="price">₹' + p.price + '</span>' + (p.orig ? '<span class="price-old">₹' + p.orig + '</span>' : '') +
+        '</div><button class="add-btn" onclick="event.stopPropagation();addToCart(' + p.id + ',this)"><i class="fa fa-plus"></i> ' + t('add_cart') + '<div class="btn-toast"><i class="fa fa-check"></i> Added!</div></button></div></div>';
     }
 
   </script>
