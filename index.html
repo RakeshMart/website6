@@ -4791,7 +4791,9 @@
       style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
       <div class="wp-header">
         <div class="wp-header-top">
-          <div class="wp-logo"><img src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg" alt="Rakesh Mart"></div>
+          <div class="wp-logo"><img
+              src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg"
+              alt="Rakesh Mart"></div>
           <div class="wp-header-icons">
             <button class="wp-icon-btn" onclick="openNotifPanel()" title="Notifications">
               <i class="fa fa-bell"></i>
@@ -8295,7 +8297,7 @@
     function renderWishlistPage(filterText) {
       var grid = document.getElementById('wishlist-products-grid');
       if (!grid) return;
-      var items = allProducts.filter(function (p) { return p.wishlistCode && wishlistCodesSet[p.wishlistCode]; });
+      var items = products.filter(function (p) { return p.wishlistCode && wishlistCodesSet[p.wishlistCode]; });
       if (filterText) {
         var q = filterText.toLowerCase();
         items = items.filter(function (p) { return String(getName(p)).toLowerCase().indexOf(q) !== -1; });
