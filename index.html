@@ -4118,7 +4118,7 @@
           <button type="button" onclick="openManualAddress('reg')"
             style="padding:.7rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
               class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="reg-manualaddr-btn-text">Address
-              Manually Likho (Gali, Landmark...)</span></button>
+              Manually Likho (Road, Area...)</span></button>
         </div>
         <div class="form-group" id="reg-location-block" style="display:none">
           <label><i class="fa fa-location-crosshairs"></i> Live Location <span
@@ -4200,14 +4200,14 @@
         <div class="sheet-handle"></div>
         <div style="font-size:1.1rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem"><i
             class="fa fa-pen-to-square" style="color:var(--accent)"></i> Address Details (Manually)</div>
-        <div class="form-group"><label>House/Flat No.</label><input type="text" id="ma-houseno"
-            placeholder="Jaise: 12, Ground Floor"></div>
-        <div class="form-group"><label>Gali/Mohalla ka Naam</label><input type="text" id="ma-gali"
-            placeholder="Jaise: Shastri Nagar Gali No. 3"></div>
-        <div class="form-group"><label>Nearby Landmark</label><input type="text" id="ma-landmark"
+        <div class="form-group"><label id="ma-houseno-label">Road ka Naam</label><input type="text" id="ma-houseno"
+            placeholder="Jaise: Mahatma Gandhi Road"></div>
+        <div class="form-group"><label id="ma-gali-label">Area ka Naam</label><input type="text" id="ma-gali"
+            placeholder="Jaise: Shastri Nagar"></div>
+        <div class="form-group"><label id="ma-landmark-label">Nearby Landmark</label><input type="text" id="ma-landmark"
             placeholder="Jaise: Hanuman Mandir ke paas"></div>
-        <div class="form-group"><label>Area/Colony</label><input type="text" id="ma-area"
-            placeholder="Jaise: Sardarpura"></div>
+        <div class="form-group"><label id="ma-area-label">City</label><input type="text" id="ma-area"
+            placeholder="Jaise: Pali"></div>
         <button class="place-order-btn" onclick="saveManualAddress()"><i class="fa fa-floppy-disk"></i> Save
           Karo</button>
         <button onclick="closeManualAddress()"
@@ -4479,7 +4479,7 @@
           <button type="button" onclick="openManualAddress('edit')"
             style="padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.85rem;display:flex;align-items:center;gap:.5rem;width:100%;color:var(--text);margin-bottom:.6rem;"><i
               class="fa fa-pen-to-square" style="color:var(--accent)"></i><span id="edit-manualaddr-btn-text">Address
-              Manually Likho (Gali, Landmark...)</span></button>
+              Manually Likho (Road, Area...)</span></button>
         </div>
         <div class="form-group" id="edit-location-block" style="display:none">
           <label>Live Location (Optional)</label>
@@ -5434,7 +5434,15 @@
       track_order: { hi: "ट्रैक करो", hinglish: "Track Karo", en: "Track Order" },
       shopping: { hi: "शॉपिंग", hinglish: "Shopping", en: "Shopping" },
       cod_label: { hi: "कैश ऑन डिलीवरी", hinglish: "Cash on Delivery", en: "Cash on Delivery" },
-      card_label: { hi: "कार्ड", hinglish: "Card", en: "Card" }
+      card_label: { hi: "कार्ड", hinglish: "Card", en: "Card" },
+      ma_road_label: { hi: "सड़क का नाम", hinglish: "Road ka Naam", en: "Road Name" },
+      ma_area_label: { hi: "इलाके का नाम", hinglish: "Area ka Naam", en: "Area Name" },
+      ma_landmark_label: { hi: "नज़दीकी लैंडमार्क", hinglish: "Nearby Landmark", en: "Nearby Landmark" },
+      ma_city_label: { hi: "शहर", hinglish: "City", en: "City" },
+      ma_road_ph: { hi: "जैसे: महात्मा गांधी रोड", hinglish: "Jaise: Mahatma Gandhi Road", en: "e.g. Mahatma Gandhi Road" },
+      ma_area_ph: { hi: "जैसे: शास्त्री नगर", hinglish: "Jaise: Shastri Nagar", en: "e.g. Shastri Nagar" },
+      ma_landmark_ph: { hi: "जैसे: हनुमान मंदिर के पास", hinglish: "Jaise: Hanuman Mandir ke paas", en: "e.g. Near Hanuman Mandir" },
+      ma_city_ph: { hi: "जैसे: पाली", hinglish: "Jaise: Pali", en: "e.g. Pali" }
     };
 
     function t(key) { if (UI_TEXT[key]) return UI_TEXT[key][currentLang] || UI_TEXT[key]['hinglish']; return key; }
@@ -5469,6 +5477,14 @@
       set('nav-chat-txt', 'nav_chat'); set('nav-profile-txt', 'nav_profile');
       set('cod-label', 'cod_label'); set('card-label', 'card_label');
       var si = document.getElementById('search-input'); if (si) si.placeholder = t('search_ph');
+      var mhL = document.getElementById('ma-houseno-label'); if (mhL) mhL.textContent = t('ma_road_label');
+      var mgL = document.getElementById('ma-gali-label'); if (mgL) mgL.textContent = t('ma_area_label');
+      var mlL = document.getElementById('ma-landmark-label'); if (mlL) mlL.textContent = t('ma_landmark_label');
+      var maL = document.getElementById('ma-area-label'); if (maL) maL.textContent = t('ma_city_label');
+      var mhI = document.getElementById('ma-houseno'); if (mhI) mhI.placeholder = t('ma_road_ph');
+      var mgI = document.getElementById('ma-gali'); if (mgI) mgI.placeholder = t('ma_area_ph');
+      var mlI = document.getElementById('ma-landmark'); if (mlI) mlI.placeholder = t('ma_landmark_ph');
+      var maI = document.getElementById('ma-area'); if (maI) maI.placeholder = t('ma_city_ph');
     }
     function updateLangButtons() { document.querySelectorAll(".menu-lang-switch button").forEach(function (b) { b.classList.remove("active"); }); var lm = ['hi', 'hinglish', 'en']; document.querySelectorAll('.menu-lang-switch button').forEach(function (b, i) { if (lm[i] === currentLang) b.classList.add("active"); }); }
     function setLang(lang) { currentLang = lang; localStorage.setItem("lang", lang); updateLangButtons(); updateAllUIText(); renderCategories(); renderProducts(); }
@@ -5680,7 +5696,7 @@
       document.getElementById('edit-phone').value = currentUser.phone || ''; document.getElementById('edit-addr').value = currentUser.addr || ''; document.getElementById('edit-location').value = currentUser.location || '';
       editManualAddr = { houseNo: currentUser.houseNo || '', gali: currentUser.gali || '', landmark: currentUser.landmark || '', area: currentUser.area || '' };
       var editMaBtn = document.getElementById('edit-manualaddr-btn-text');
-      if (editMaBtn) editMaBtn.textContent = (editManualAddr.gali || editManualAddr.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Gali, Landmark...)';
+      if (editMaBtn) editMaBtn.textContent = (editManualAddr.gali || editManualAddr.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Road, Area...)';
       document.getElementById('edit-modal').classList.add('open');
     }
     function saveProfile() {
@@ -5983,7 +5999,7 @@
       var btnId = maContext === 'reg' ? 'reg-manualaddr-btn-text' : 'edit-manualaddr-btn-text';
       if (maContext === 'reg') { regManualAddr = obj; } else { editManualAddr = obj; }
       var btnEl = document.getElementById(btnId);
-      if (btnEl) btnEl.textContent = (obj.gali || obj.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Gali, Landmark...)';
+      if (btnEl) btnEl.textContent = (obj.gali || obj.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Road, Area...)';
       closeManualAddress();
       showToast('Address details save ho gaye ✓', 'success');
     }
