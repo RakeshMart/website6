@@ -1208,25 +1208,28 @@
       position: absolute;
       top: .5rem;
       right: .5rem;
-      z-index: 3;
+      z-index: 150;
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .92);
+      background: transparent;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
-      font-size: .95rem;
-      color: #ccc;
+      box-shadow: none;
+      font-size: 1.05rem;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .55), 0 0 3px rgba(0, 0, 0, .4);
       transition: transform .2s, color .2s;
       overflow: visible;
+      pointer-events: auto;
     }
 
     .wishlist-heart-btn.active {
       color: #e0245e;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .3);
     }
 
     .wishlist-heart-btn.pop {
