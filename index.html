@@ -1204,6 +1204,87 @@
       color: #fff;
     }
 
+    .wishlist-heart-btn {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+      z-index: 3;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .92);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+      font-size: .95rem;
+      color: #ccc;
+      transition: transform .2s, color .2s;
+      overflow: visible;
+    }
+
+    .wishlist-heart-btn.active {
+      color: #e0245e;
+    }
+
+    .wishlist-heart-btn.pop {
+      animation: wishPop .4s ease;
+    }
+
+    @keyframes wishPop {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(1.4);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .wish-burst-piece {
+      position: fixed;
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform, opacity;
+    }
+
+    .wish-fall-heart {
+      position: fixed;
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 9998;
+      color: rgba(224, 36, 94, .35);
+      will-change: transform, opacity;
+    }
+
+    .wishlist-header-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--accent);
+      color: #fff;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      font-size: .6rem;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+    }
+
+    .wishlist-header-badge.show {
+      display: flex;
+    }
+
     .product-body {
       padding: 10px;
       display: flex;
@@ -4590,6 +4671,23 @@
       </div>
     </div>
 
+    <!-- WISHLIST PANEL -->
+    <div id="wishlist-panel"
+      style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);">
+      <div class="notif-sheet">
+        <div class="notif-sheet-header">
+          <div class="notif-sheet-handle"></div>
+          <div class="notif-sheet-title-row">
+            <div class="notif-sheet-title"><i class="fa fa-heart" style="color:#e0245e"></i> Wishlist</div>
+            <button class="notif-close-btn" onclick="closeWishlistPanel()"><i class="fa fa-xmark"></i></button>
+          </div>
+        </div>
+        <div id="wishlist-list"
+          style="flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.6rem;max-height:60vh">
+        </div>
+      </div>
+    </div>
+
     <!-- TOP HEADER -->
     <div class="top-header" id="main-top-header">
       <div class="brand-bar" id="brand-bar">
@@ -4605,9 +4703,9 @@
             <span class="notif-badge" id="notif-badge">0</span>
           </button>
           <button class="hamburger-btn" onclick="openMenu()"><i class="fa fa-bars"></i></button>
-          <button class="icon-btn" onclick="showTab('cart')">
-            <i class="fa fa-bag-shopping"></i>
-            <span class="cart-badge" id="cart-badge-top">0</span>
+          <button class="icon-btn" onclick="openWishlistPanel()" title="Wishlist">
+            <i class="fa fa-heart"></i>
+            <span class="wishlist-header-badge" id="wishlist-header-badge">0</span>
           </button>
         </div>
       </div>
@@ -4984,7 +5082,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbygnFks0GFrwWf-teg9jKWgZgR0vdNJ1cECbunN3PZHkyzPGQG6I3sAhqZnxkG1vtA43w/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzhou_QJ0_DA5_E-hCPZNFq51eicSqHI65oZfoZWlZo0whzfo0buYeDTY1lm4bHCTfx/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
     var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega), Main Address default OFF (sheet se ON ho to hi dikhega)
@@ -5581,7 +5679,7 @@
       try { var pr = localStorage.getItem('pendingReward'); if (pr) pendingRewardItem = JSON.parse(pr); } catch (e) { }
       var savedLang = localStorage.getItem("lang"); if (savedLang) currentLang = savedLang;
       updateLangButtons(); updateAllUIText();
-      if (currentUser) { fillProfileUI(); checkPayLaterEligibility(); }
+      if (currentUser) { fillProfileUI(); checkPayLaterEligibility(); loadWishlistState(); }
       loadProducts();
       fetchSpinStatusForSlider();
       loadPaymentSettings();
@@ -6158,8 +6256,12 @@
         var isOffer = activeCategory === '__OFFER__'; var stars = ''; for (var i = 0; i < Math.round(p.rating || 4); i++)stars += '<i class="fa fa-star"></i>'; for (var i = Math.round(p.rating || 4); i < 5; i++)stars += '<i class="fa-regular fa-star"></i>';
         var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
         if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.outerHTML=\'<i class=fa fa-box style=font-size:3rem></i>\'" loading="lazy">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:3rem;color:var(--muted)"></i>'; }
+        var wCode = p.wishlistCode || '';
+        var isWished = wCode && wishlistCodesSet[wCode];
         return '<div class="product-card' + (isOffer ? ' offer-product' : '') + '" onclick="showProduct(' + p.id + ')">' +
-          '<div class="product-img">' + (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') + imgHtml + '</div>' +
+          '<div class="product-img">' + (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
+          (wCode ? '<button class="wishlist-heart-btn' + (isWished ? ' active' : '') + '" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(getName(p)).replace(/'/g, "\\'") + '\',this)"><i class="fa' + (isWished ? '-solid' : '-regular') + ' fa-heart"></i></button>' : '') +
+          imgHtml + '</div>' +
           '<div class="product-body"><div class="product-cat">' + getProductCatDisplay(p) + '</div><div class="product-name">' + getName(p) + '</div><div class="product-desc">' + getDesc(p) + '</div>' +
           '<div class="product-rating">' + stars + ' <span>' + (p.rating || 4.0) + '</span></div>' +
           '<div class="price-row"><span class="price">₹' + p.price + '</span>' + (p.orig ? '<span class="price-old">₹' + p.orig + '</span>' : '') +
@@ -6210,7 +6312,7 @@
       localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); playAddToCartSound();
       if (btn) { var toast = btn.querySelector('.btn-toast'); if (toast) { toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 1500); } }
     }
-    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); document.getElementById('cart-badge-top').textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } }
+    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); var ctop = document.getElementById('cart-badge-top'); if (ctop) ctop.textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } }
     function removeFromCart(id) { cart = cart.filter(function (c) { return c.id != id; }); localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); renderCart(); }
     function changeCartQty(id, d) { var item = cart.find(function (c) { return c.id == id; }); if (item) { item.qty = Math.max(1, item.qty + d); localStorage.setItem('kiranaCart', JSON.stringify(cart)); renderCart(); updateCartBadges(); } }
 
@@ -7917,7 +8019,141 @@
         '<div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Sunday midnight pe naya spin milega</div>' +
         '</div></div>';
     }
+    // ============================================================
+    // WISHLIST SYSTEM
+    // ============================================================
+    var wishlistCodesSet = {}; // { code: itemName }
 
+    function loadWishlistState() {
+      if (!currentUser) { wishlistCodesSet = {}; updateWishlistHeaderBadge(); return; }
+      fetch(CONFIG.SCRIPT_URL + '?action=getWishlist&mobile=' + encodeURIComponent(currentUser.phone))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          wishlistCodesSet = {};
+          (data.items || []).forEach(function (it) { wishlistCodesSet[it.wishlistCode] = it.itemName; });
+          updateWishlistHeaderBadge();
+          renderProducts();
+        })
+        .catch(function () { });
+    }
+
+    function updateWishlistHeaderBadge() {
+      var count = Object.keys(wishlistCodesSet).length;
+      var badge = document.getElementById('wishlist-header-badge');
+      if (!badge) return;
+      if (count > 0) { badge.textContent = count > 99 ? '99+' : count; badge.classList.add('show'); }
+      else { badge.classList.remove('show'); }
+    }
+
+    function toggleWishlist(code, itemName, btnEl) {
+      if (!currentUser) { showToast('Wishlist ke liye pehle login karo', 'error'); return; }
+      var isActive = !!wishlistCodesSet[code];
+      var icon = btnEl.querySelector('i');
+      if (isActive) {
+        delete wishlistCodesSet[code];
+        btnEl.classList.remove('active');
+        if (icon) { icon.classList.remove('fa-solid'); icon.classList.add('fa-regular'); }
+        postToSheet({ action: 'removeFromWishlist', mobile: currentUser.phone, wishlistCode: code });
+        showToast('Wishlist se hata diya', 'success');
+      } else {
+        wishlistCodesSet[code] = itemName;
+        btnEl.classList.add('active', 'pop');
+        setTimeout(function () { btnEl.classList.remove('pop'); }, 400);
+        if (icon) { icon.classList.remove('fa-regular'); icon.classList.add('fa-solid'); }
+        postToSheet({
+          action: 'addToWishlist', item: {
+            name: currentUser.fname || '', mobile: currentUser.phone, email: currentUser.googleEmail || '',
+            wishlistCode: code, itemName: itemName
+          }
+        });
+        playWishlistSound();
+        launchWishlistBurst(btnEl);
+        showToast('Wishlist mein add ho gaya ❤️', 'success');
+      }
+      updateWishlistHeaderBadge();
+    }
+
+    function playWishlistSound() {
+      try {
+        var ctx = _getSfxCtx(); if (!ctx) return;
+        var t0 = ctx.currentTime;
+        _sfxTone(ctx, 880, t0, 0.1, { type: 'sine', gain: 0.16, glideTo: 1200 });
+        _sfxTone(ctx, 1320, t0 + 0.08, 0.14, { type: 'sine', gain: 0.12 });
+      } catch (e) { }
+    }
+
+    function launchWishlistBurst(btnEl) {
+      var rect = btnEl.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+      var colors = ['#e0245e', '#ff6b81', '#ffb6c1', '#ff4757', '#c44569', '#ff9ff3'];
+      var count = 10;
+      for (var i = 0; i < count; i++) {
+        (function (i) {
+          var piece = document.createElement('div');
+          piece.className = 'wish-burst-piece';
+          piece.innerHTML = '<i class="fa-solid fa-heart"></i>';
+          piece.style.left = cx + 'px'; piece.style.top = cy + 'px';
+          piece.style.color = colors[i % colors.length];
+          document.body.appendChild(piece);
+          var angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+          var dist = 40 + Math.random() * 50;
+          var dx = Math.cos(angle) * dist, dy = Math.sin(angle) * dist;
+          var start = null; var dur = 550 + Math.random() * 250;
+          function anim(ts) {
+            if (!start) start = ts;
+            var p = Math.min((ts - start) / dur, 1);
+            var ease = 1 - Math.pow(1 - p, 2);
+            piece.style.transform = 'translate(' + (dx * ease) + 'px,' + (dy * ease) + 'px) scale(' + (1 - p * 0.6) + ')';
+            piece.style.opacity = String(1 - p);
+            if (p < 1) requestAnimationFrame(anim); else piece.remove();
+          }
+          requestAnimationFrame(anim);
+        })(i);
+      }
+      // Alternate: ek falling halka heart niche girta hua
+      if (!btnEl._wishFallToggle) btnEl._wishFallToggle = true; else btnEl._wishFallToggle = !btnEl._wishFallToggle;
+      if (btnEl._wishFallToggle) {
+        var fall = document.createElement('div');
+        fall.className = 'wish-fall-heart';
+        fall.innerHTML = '<i class="fa-regular fa-heart"></i>';
+        fall.style.left = cx + 'px'; fall.style.top = cy + 'px';
+        document.body.appendChild(fall);
+        var fstart = null; var fdur = 800;
+        function fanim(ts) {
+          if (!fstart) fstart = ts;
+          var p = Math.min((ts - fstart) / fdur, 1);
+          fall.style.transform = 'translateY(' + (p * 60) + 'px)';
+          fall.style.opacity = String(1 - p);
+          if (p < 1) requestAnimationFrame(fanim); else fall.remove();
+        }
+        requestAnimationFrame(fanim);
+      }
+    }
+
+    function openWishlistPanel() {
+      if (!currentUser) { showToast('Pehle login karo', 'error'); return; }
+      renderWishlistPanel();
+      document.getElementById('wishlist-panel').style.display = 'flex';
+    }
+    function closeWishlistPanel() { document.getElementById('wishlist-panel').style.display = 'none'; }
+    function renderWishlistPanel() {
+      var el = document.getElementById('wishlist-list'); if (!el) return;
+      var codes = Object.keys(wishlistCodesSet);
+      if (!codes.length) { el.innerHTML = '<div class="notif-empty"><i class="fa fa-heart-crack"></i><p>Wishlist khali hai</p></div>'; return; }
+      el.innerHTML = codes.map(function (code) {
+        var name = wishlistCodesSet[code];
+        return '<div class="notif-card unread"><div class="notif-card-icon"><i class="fa fa-heart" style="color:#e0245e"></i></div>' +
+          '<div class="notif-card-body"><div class="notif-card-text">' + name + '</div></div>' +
+          '<button class="notif-card-dismiss" onclick="removeWishlistItem(\'' + code + '\')" title="Remove"><i class="fa fa-xmark"></i></button></div>';
+      }).join('');
+    }
+    function removeWishlistItem(code) {
+      delete wishlistCodesSet[code];
+      postToSheet({ action: 'removeFromWishlist', mobile: currentUser.phone, wishlistCode: code });
+      updateWishlistHeaderBadge(); renderWishlistPanel(); renderProducts();
+      showToast('Wishlist se hata diya', 'success');
+    }
+    document.getElementById('wishlist-panel').addEventListener('click', function (e) { if (e.target === this) closeWishlistPanel(); });
 
   </script>
 
