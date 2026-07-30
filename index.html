@@ -1288,6 +1288,118 @@
       display: flex;
     }
 
+    /* WISHLIST FULL PAGE */
+    .wp-header {
+      background: linear-gradient(135deg, #0f3d2e, #145c3f);
+      padding: .9rem 1rem .8rem;
+    }
+
+    .wp-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .7rem;
+    }
+
+    .wp-logo img {
+      height: 34px;
+    }
+
+    .wp-header-icons {
+      display: flex;
+      gap: .6rem;
+    }
+
+    .wp-icon-btn {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .14);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .wp-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--accent, #ff5722);
+      color: #fff;
+      font-size: .6rem;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+    }
+
+    .wp-badge.show {
+      display: flex;
+    }
+
+    .wp-search-wrap {
+      display: none;
+      margin-top: .2rem;
+    }
+
+    .wp-search-wrap.show {
+      display: block;
+    }
+
+    .wp-search-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      border-radius: 24px;
+      padding: .7rem 1rem;
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      font-size: .9rem;
+    }
+
+    .wp-search-input::placeholder {
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .wp-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .wp-title-row {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: .8rem;
+      color: #222;
+    }
+
+    .wp-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #888;
+    }
+
+    .wp-empty i {
+      font-size: 2.4rem;
+      color: #e0245e;
+      margin-bottom: .6rem;
+      display: block;
+    }
+
     .product-body {
       padding: 10px;
       display: flex;
@@ -4674,20 +4786,34 @@
       </div>
     </div>
 
-    <!-- WISHLIST PANEL -->
-    <div id="wishlist-panel"
-      style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);">
-      <div class="notif-sheet">
-        <div class="notif-sheet-header">
-          <div class="notif-sheet-handle"></div>
-          <div class="notif-sheet-title-row">
-            <div class="notif-sheet-title"><i class="fa fa-heart" style="color:#e0245e"></i> Wishlist</div>
-            <button class="notif-close-btn" onclick="closeWishlistPanel()"><i class="fa fa-xmark"></i></button>
+    <!-- WISHLIST FULL PAGE -->
+    <div id="wishlist-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><img src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg" alt="Rakesh Mart"></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="openNotifPanel()" title="Notifications">
+              <i class="fa fa-bell"></i>
+              <span class="wp-badge" id="wp-notif-badge">0</span>
+            </button>
+            <button class="wp-icon-btn" onclick="showTab('cart')" title="Cart">
+              <i class="fa fa-bag-shopping"></i>
+              <span class="wp-badge" id="wp-cart-badge">0</span>
+            </button>
+            <button class="wp-icon-btn" onclick="closeWishlistPage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
           </div>
         </div>
-        <div id="wishlist-list"
-          style="flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.6rem;max-height:60vh">
+        <div class="wp-search-wrap" id="wp-search-wrap">
+          <input type="text" class="wp-search-input" id="wp-search-input" placeholder="Wishlist me dhundho..."
+            oninput="filterWishlistPage()">
         </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-heart" style="color:#e0245e"></i> Mera Wishlist</div>
+        <div class="products-grid" id="wishlist-products-grid"></div>
       </div>
     </div>
 
@@ -4706,7 +4832,7 @@
             <span class="notif-badge" id="notif-badge">0</span>
           </button>
           <button class="hamburger-btn" onclick="openMenu()"><i class="fa fa-bars"></i></button>
-          <button class="icon-btn" onclick="openWishlistPanel()" title="Wishlist">
+          <button class="icon-btn" onclick="openWishlistPage()" title="Wishlist">
             <i class="fa fa-heart"></i>
             <span class="wishlist-header-badge" id="wishlist-header-badge">0</span>
           </button>
@@ -6315,7 +6441,7 @@
       localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); playAddToCartSound();
       if (btn) { var toast = btn.querySelector('.btn-toast'); if (toast) { toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 1500); } }
     }
-    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); var ctop = document.getElementById('cart-badge-top'); if (ctop) ctop.textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } }
+    function updateCartBadges() { var total = cart.reduce(function (s, i) { return s + i.qty; }, 0); var ctop = document.getElementById('cart-badge-top'); if (ctop) ctop.textContent = total; document.getElementById('cart-badge-bottom').textContent = total; var badge = document.getElementById('tab-cart').querySelector('.tab-badge'); if (badge) { badge.textContent = total; badge.classList.toggle('show', total > 0); } var wpCart = document.getElementById('wp-cart-badge'); if (wpCart) wpCart.textContent = total; }
     function removeFromCart(id) { cart = cart.filter(function (c) { return c.id != id; }); localStorage.setItem('kiranaCart', JSON.stringify(cart)); updateCartBadges(); renderCart(); }
     function changeCartQty(id, d) { var item = cart.find(function (c) { return c.id == id; }); if (item) { item.qty = Math.max(1, item.qty + d); localStorage.setItem('kiranaCart', JSON.stringify(cart)); renderCart(); updateCartBadges(); } }
 
@@ -8074,6 +8200,13 @@
         showToast('Wishlist mein add ho gaya ❤️', 'success');
       }
       updateWishlistHeaderBadge();
+      var wp = document.getElementById('wishlist-page');
+      if (wp && wp.style.display === 'flex') {
+        toggleWishlistSearchBar();
+        var si = document.getElementById('wp-search-input');
+        renderWishlistPage(si ? si.value : '');
+        syncWishlistPageBadges();
+      }
     }
 
     function playWishlistSound() {
@@ -8133,30 +8266,72 @@
       }
     }
 
-    function openWishlistPanel() {
+    function openWishlistPage() {
       if (!currentUser) { showToast('Pehle login karo', 'error'); return; }
-      renderWishlistPanel();
-      document.getElementById('wishlist-panel').style.display = 'flex';
+      document.getElementById('wishlist-page').style.display = 'flex';
+      var si = document.getElementById('wp-search-input'); if (si) si.value = '';
+      toggleWishlistSearchBar();
+      renderWishlistPage();
+      syncWishlistPageBadges();
     }
-    function closeWishlistPanel() { document.getElementById('wishlist-panel').style.display = 'none'; }
-    function renderWishlistPanel() {
-      var el = document.getElementById('wishlist-list'); if (!el) return;
-      var codes = Object.keys(wishlistCodesSet);
-      if (!codes.length) { el.innerHTML = '<div class="notif-empty"><i class="fa fa-heart-crack"></i><p>Wishlist khali hai</p></div>'; return; }
-      el.innerHTML = codes.map(function (code) {
-        var name = wishlistCodesSet[code];
-        return '<div class="notif-card unread"><div class="notif-card-icon"><i class="fa fa-heart" style="color:#e0245e"></i></div>' +
-          '<div class="notif-card-body"><div class="notif-card-text">' + name + '</div></div>' +
-          '<button class="notif-card-dismiss" onclick="removeWishlistItem(\'' + code + '\')" title="Remove"><i class="fa fa-xmark"></i></button></div>';
-      }).join('');
+    function closeWishlistPage() {
+      document.getElementById('wishlist-page').style.display = 'none';
+      showTab('home');
     }
-    function removeWishlistItem(code) {
-      delete wishlistCodesSet[code];
-      postToSheet({ action: 'removeFromWishlist', mobile: currentUser.phone, wishlistCode: code });
-      updateWishlistHeaderBadge(); renderWishlistPanel(); renderProducts();
-      showToast('Wishlist se hata diya', 'success');
+    function toggleWishlistSearchBar() {
+      var wrap = document.getElementById('wp-search-wrap');
+      var count = Object.keys(wishlistCodesSet).length;
+      if (!wrap) return;
+      if (count >= 10) wrap.classList.add('show'); else wrap.classList.remove('show');
     }
-    document.getElementById('wishlist-panel').addEventListener('click', function (e) { if (e.target === this) closeWishlistPanel(); });
+    function syncWishlistPageBadges() {
+      var notifMain = document.getElementById('notif-badge');
+      var wpNotif = document.getElementById('wp-notif-badge');
+      if (notifMain && wpNotif) wpNotif.textContent = notifMain.textContent;
+      var total = cart.reduce(function (s, i) { return s + i.qty; }, 0);
+      var wpCart = document.getElementById('wp-cart-badge');
+      if (wpCart) wpCart.textContent = total;
+    }
+    function renderWishlistPage(filterText) {
+      var grid = document.getElementById('wishlist-products-grid');
+      if (!grid) return;
+      var items = allProducts.filter(function (p) { return p.wishlistCode && wishlistCodesSet[p.wishlistCode]; });
+      if (filterText) {
+        var q = filterText.toLowerCase();
+        items = items.filter(function (p) { return String(getName(p)).toLowerCase().indexOf(q) !== -1; });
+      }
+      if (!items.length) {
+        grid.innerHTML = '<div class="wp-empty"><i class="fa fa-heart-crack"></i><p>Wishlist khali hai</p></div>';
+        return;
+      }
+      grid.innerHTML = items.map(function (p) { return buildWishlistCardHtml(p); }).join('');
+    }
+    function filterWishlistPage() {
+      renderWishlistPage(document.getElementById('wp-search-input').value);
+    }
+    // NOTE: Ye card home page ke product card jaisa hi dikhega.
+    // Agar aapke asli product object mein field naam alag hain
+    // (jaise p.price ki jagah p.mrp/p.salePrice), to yahan sirf
+    // wahi field naam badal dena — baaki structure same rahega.
+    function buildWishlistCardHtml(p) {
+      var wCode = p.wishlistCode || '';
+      var name = getName(p);
+      var img = p.image || p.img || '';
+      return '<div class="product-card" onclick="showProduct(' + p.id + ')">' +
+        '<div class="product-img">' +
+        (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
+        '<button class="wishlist-heart-btn active" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(name).replace(/'/g, "\\'") + '\',this)"><i class="fa-solid fa-heart"></i></button>' +
+        '<img src="' + img + '" alt="' + name + '" loading="lazy">' +
+        '</div>' +
+        '<div class="product-info">' +
+        '<div class="product-cat">' + (p.category || '') + '</div>' +
+        '<div class="product-name">' + name + '</div>' +
+        '<div class="product-rating"><i class="fa fa-star"></i> ' + (p.rating || '') + '</div>' +
+        '<div class="product-price"><span class="price-now">₹' + (p.price || '') + '</span>' +
+        (p.mrp ? '<span class="price-old">₹' + p.mrp + '</span>' : '') + '</div>' +
+        '<button class="cart-add-btn" onclick="event.stopPropagation();addToCart(' + p.id + ')"><i class="fa fa-plus"></i> Cart mein Dalo</button>' +
+        '</div></div>';
+    }
 
   </script>
 
