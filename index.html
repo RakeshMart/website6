@@ -87,6 +87,11 @@
       padding-bottom: 0;
     }
 
+    body.fixed-page-open {
+      overflow: hidden;
+      height: 100vh;
+    }
+
     h1,
     h2,
     h3 {
@@ -1800,6 +1805,690 @@
       background: transparent;
       border: 2px solid var(--accent);
       color: var(--accent);
+    }
+
+    .btn-schedule {
+      background: #22c55e;
+      color: #fff;
+    }
+
+    .btn-schedule:hover {
+      background: #16a34a;
+    }
+
+    .add-btn-green {
+      background: #22c55e !important;
+    }
+
+    .add-more-btn {
+      width: 100%;
+      margin-top: 1rem;
+      padding: .9rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      font-weight: 800;
+      font-size: .92rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, .35);
+      transition: all .25s ease;
+    }
+
+    .add-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(34, 197, 94, .45);
+    }
+
+    .add-more-btn:active {
+      transform: translateY(0);
+    }
+
+    .freq-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1rem;
+      margin-top: 1.2rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .07);
+      border: 1px solid rgba(34, 197, 94, .15);
+    }
+
+    .freq-card-header {
+      font-weight: 800;
+      font-size: .95rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: .8rem;
+    }
+
+    .freq-card-header i {
+      color: #22c55e;
+    }
+
+    .freq-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: .8rem;
+    }
+
+    .freq-opt {
+      flex: 1 1 auto;
+      min-width: 88px;
+      padding: .55rem .7rem;
+      border-radius: 12px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      color: var(--text);
+      font-weight: 700;
+      font-size: .78rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      transition: all .2s ease;
+    }
+
+    .freq-opt i {
+      font-size: .78rem;
+    }
+
+    .freq-opt:hover {
+      border-color: #22c55e;
+      color: #16a34a;
+    }
+
+    .freq-opt.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, .35);
+    }
+
+    .freq-detail {
+      border-top: 1px dashed #e3e7e5;
+      padding-top: .8rem;
+    }
+
+    .freq-row {
+      margin-bottom: .9rem;
+    }
+
+    .freq-label {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-weight: 700;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .5rem;
+    }
+
+    .freq-date-input,
+    .freq-time-select {
+      width: 100%;
+      padding: .65rem .8rem;
+      border-radius: 12px;
+      border: 1.5px solid #e3e7e5;
+      font-family: 'Nunito', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--text);
+      background: #f8faf9;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+      gap: .4rem;
+    }
+
+    .date-cell {
+      padding: .5rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-weight: 700;
+      font-size: .78rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .date-cell:hover {
+      border-color: #22c55e;
+    }
+
+    .date-cell.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+      gap: .4rem;
+    }
+
+    .day-toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+      gap: .4rem;
+    }
+
+    .day-toggle {
+      padding: .6rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-weight: 700;
+      font-size: .78rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: all .2s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .day-toggle:hover {
+      border-color: #22c55e;
+    }
+
+    .day-toggle.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .time-picker-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      flex-wrap: wrap;
+    }
+
+    .time-fmt-btn {
+      padding: .5rem .8rem;
+      border-radius: 10px;
+      border: 1.5px solid #22c55e;
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      color: #16a34a;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      transition: .2s;
+      flex-shrink: 0;
+    }
+
+    .time-fmt-btn:hover {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+    }
+
+    .time-picker-box {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: linear-gradient(135deg, #ffffff, #f8faf9);
+      border: 1.5px solid #e3e7e5;
+      border-radius: 16px;
+      padding: .6rem .9rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+    }
+
+    .tp-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .tp-arrow {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: .68rem;
+      box-shadow: 0 2px 6px rgba(34, 197, 94, .35);
+      transition: .15s;
+    }
+
+    .tp-arrow:hover {
+      transform: scale(1.1);
+    }
+
+    .tp-arrow:active {
+      transform: scale(.9);
+    }
+
+    .tp-input {
+      width: 46px;
+      text-align: center;
+      padding: .45rem 0;
+      border-radius: 10px;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      outline: none;
+    }
+
+    .tp-input:focus {
+      border-color: #22c55e;
+      background: #fff;
+    }
+
+    .tp-ampm-val {
+      width: 46px;
+      text-align: center;
+      padding: .45rem 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      font-family: 'Baloo 2', sans-serif;
+      font-size: .85rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(34, 197, 94, .3);
+    }
+
+    .tp-colon {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--muted);
+      padding-bottom: .3rem;
+    }
+
+    .tp-col-ampm {
+      margin-left: .2rem;
+    }
+
+    .skip-selector {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .skip-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid #e3e7e5;
+      background: #f8faf9;
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .skip-btn:hover {
+      border-color: #22c55e;
+      color: #16a34a;
+    }
+
+    .skip-btn.active {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(34, 197, 94, .35);
+      transform: scale(1.08);
+    }
+
+    .automation-tab-btn {
+      flex: 1;
+      padding: .5rem;
+      border-radius: 9px;
+      border: none;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .8rem;
+      cursor: pointer;
+      background: transparent;
+      color: rgba(255, 255, 255, .75);
+      transition: .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+    }
+
+    .automation-tab-btn.active {
+      background: #fff;
+      color: #16a34a;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    }
+
+    .auto-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .7rem;
+      padding-top: .7rem;
+      border-top: 1px dashed #e3e7e5;
+    }
+
+    .auto-cancel-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .auto-status-wrap {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .auto-status-label {
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    .auto-status-label.on {
+      color: #16a34a;
+    }
+
+    .auto-status-label.off {
+      color: var(--danger);
+    }
+
+    .auto-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .auto-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .auto-switch-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--danger);
+      border-radius: 50px;
+      transition: .25s;
+    }
+
+    .auto-switch-slider::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: .25s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+    }
+
+    .auto-switch input:checked+.auto-switch-slider {
+      background: #22c55e;
+    }
+
+    .auto-switch input:checked+.auto-switch-slider::before {
+      transform: translateX(20px);
+    }
+
+    .disc-check-zoom {
+      animation: discZoom .4s ease;
+    }
+
+    @keyframes discZoom {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .alt-understand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(9, 132, 227, .1);
+      border: 1.5px solid rgba(9, 132, 227, .3);
+      color: var(--info);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: .78rem;
+      padding: .5rem .9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: .4rem;
+    }
+
+    .alt-understand-panel {
+      margin-top: .8rem;
+      background: #f8faf9;
+      border: 1.5px solid #e3e7e5;
+      border-radius: 14px;
+      padding: .9rem;
+      position: relative;
+    }
+
+    .alt-understand-close {
+      position: absolute;
+      top: .6rem;
+      right: .6rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: var(--surface2);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+    }
+
+    .alt-week-block {
+      margin-bottom: .8rem;
+    }
+
+    .alt-week-title {
+      font-weight: 800;
+      font-size: .8rem;
+      color: var(--green);
+      margin-bottom: .4rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .alt-day-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .35rem .6rem;
+      border-radius: 8px;
+      font-size: .78rem;
+      font-weight: 700;
+      margin-bottom: .25rem;
+    }
+
+    .alt-day-row.on {
+      background: rgba(34, 197, 94, .12);
+      color: #16a34a;
+    }
+
+    .alt-day-row.off {
+      background: rgba(214, 48, 49, .06);
+      color: var(--muted);
+    }
+
+    .freq-summary {
+      margin-top: 1rem;
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 14px;
+      padding: .7rem .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+
+    .freq-summary-text {
+      font-weight: 800;
+      font-size: .82rem;
+      color: #15803d;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .freq-change-btn {
+      padding: .4rem .8rem;
+      border-radius: 50px;
+      border: none;
+      background: #fff;
+      color: #16a34a;
+      font-weight: 800;
+      font-size: .75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    @media (min-width: 640px) {
+      .freq-opt {
+        min-width: 100px;
+      }
+    }
+
+    .schedule-header-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #22c55e;
+      color: #fff;
+      font-size: .62rem;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid #fff;
+    }
+
+    .schedule-header-badge.show {
+      display: flex;
+    }
+
+    .sd-item-card {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      background: #fff;
+      border-radius: 16px;
+      padding: .8rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+      margin-bottom: 1rem;
+    }
+
+    .sd-item-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: #f4f6f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .sd-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sd-item-name {
+      font-weight: 800;
+      font-size: .9rem;
+      color: var(--text);
+    }
+
+    .sd-item-price {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: .95rem;
+      margin-top: .2rem;
+    }
+
+    .sd-total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f4f6f5;
+      border-radius: 12px;
+      padding: .8rem 1rem;
+      font-weight: 800;
+      font-size: .95rem;
+      margin-top: .8rem;
+    }
+
+    .sd-total-row span:last-child {
+      color: #22c55e;
+      font-size: 1.1rem;
     }
 
     .detail-tags {
@@ -4718,6 +5407,9 @@
           Orders</a>
         <a href="#profile" class="menu-link" onclick="showTab('profile');closeMenu()"><i class="fa fa-user"></i>
           Profile</a>
+        <a href="#schedule-items" class="menu-link" onclick="openScheduleItemsPage();closeMenu()"><i
+            class="fa fa-calendar-check"></i>
+          Schedule Items</a>
         <div class="menu-divider"></div>
         <a href="#about" class="menu-link" onclick="showTab('about');closeMenu()"><i class="fa fa-info-circle"></i>
           About Us</a>
@@ -4757,6 +5449,31 @@
       </div>
     </div>
 
+    <!-- SCHEDULE AUTO-PAY DISCLAIMER MODAL -->
+    <div class="track-modal" id="disclaimer-modal">
+      <div class="track-sheet">
+        <div class="sheet-handle"></div>
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;">
+          <div class="back-icon-btn" onclick="closeDisclaimerPopup()"><i class="fa fa-arrow-left"></i></div>
+          <div style="font-weight:800;font-size:.95rem;"><i class="fa fa-circle-info" style="color:#22c55e"></i>
+            Auto-Pay Disclaimer</div>
+        </div>
+        <div style="font-size:.85rem;line-height:1.8;color:var(--text)">
+          <p><b>Hindi:</b> Auto pay set karne par, "One Time" waale ke liye jis date/time par set kiya hai, usi date aur
+            time par aapke bank account se automatically paise cut jaayenge. "Daily/Weekly/Monthly/Yearly/Alternative"
+            waale ke liye har baar order lagega aur usi tay time par payment automatic cut jayegi.</p>
+          <p><b>English:</b> Once auto-pay is set, on a One Time schedule, the payment will be deducted automatically
+            from your bank account on the selected date and time. For recurring schedules
+            (Daily/Weekly/Monthly/Yearly/Alternative), an order will be placed and payment auto-deducted each time at
+            the set time — all automatically.</p>
+          <p><b>Hinglish:</b> Auto pay set karne ke baad ye pura process automatic ho jayega — aapko baar baar order
+            lagane ki zaroorat nahi. Aap kabhi bhi "Temporary Off" karke ise pause kar sakte ho.</p>
+        </div>
+        <button class="place-order-btn" style="margin-top:1rem" onclick="closeDisclaimerPopup()"><i
+            class="fa fa-check"></i> Samajh Gaya</button>
+      </div>
+    </div>
+
     <!-- NOTIFICATION PANEL - NEW DESIGN -->
     <div id="notif-panel">
       <div class="notif-sheet">
@@ -4787,6 +5504,95 @@
     </div>
 
     <!-- WISHLIST FULL PAGE -->
+    <!-- SCHEDULE DETAIL PAGE -->
+    <div id="schedule-detail-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:650;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><i class="fa fa-calendar-check" style="color:#22c55e;font-size:1.3rem;"></i></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="closeScheduleDetailPage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Add to Schedule</div>
+        <div id="schedule-detail-content"></div>
+        <div id="freq-card-wrap-detail"></div>
+        <button class="add-more-btn" id="set-automation-btn-detail" style="margin-top:1rem"
+          onclick="setAutomationOrder()"><i class="fa fa-robot"></i> <span id="set-automation-btn-detail-txt">Set
+            Automation Order</span></button>
+      </div>
+    </div>
+
+    <!-- SCHEDULE BROWSE PAGE -->
+    <div id="schedule-browse-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><img
+              src="https://raw.githubusercontent.com/RakeshMart/Rakesh-logo/main/rakesh-mart-logo.jpg"
+              alt="Rakesh Mart"></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="openScheduleItemsPage()" title="Schedule">
+              <i class="fa fa-clock"></i>
+              <span class="wp-badge schedule-header-badge" id="sb-header-badge">0</span>
+            </button>
+            <button class="wp-icon-btn" onclick="closeScheduleBrowsePage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <div class="wp-search-wrap show" id="sb-search-wrap">
+          <input type="text" class="wp-search-input" id="sb-search-input" placeholder="Item dhundho..."
+            oninput="filterScheduleBrowsePage()">
+        </div>
+      </div>
+      <div class="wp-body">
+        <div class="wp-title-row"><i class="fa fa-calendar-check" style="color:#22c55e"></i> Item Chuno</div>
+        <div class="products-grid" id="schedule-browse-grid"></div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE ITEMS LIST PAGE -->
+    <div id="schedule-items-page"
+      style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
+      <div class="wp-header">
+        <div class="wp-header-top">
+          <div class="wp-logo"><i class="fa fa-calendar-check" style="color:#22c55e;font-size:1.3rem;"></i></div>
+          <div class="wp-header-icons">
+            <button class="wp-icon-btn" onclick="closeScheduleItemsPage()" title="Band karo">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <div id="automation-tabs"
+          style="display:none;gap:4px;background:rgba(255,255,255,.15);padding:4px;border-radius:12px;margin-top:.6rem;">
+          <button id="atab-new" class="automation-tab-btn active" onclick="handleNewOrderTabClick()"><i
+              class="fa fa-plus"></i> New Order</button>
+          <button id="atab-place" class="automation-tab-btn" onclick="setAutomationTab('place')"><i
+              class="fa fa-list-check"></i> Place Order</button>
+        </div>
+      </div>
+      <div class="wp-body">
+        <div id="automation-new-order-content">
+          <div class="wp-title-row" style="justify-content:space-between;">
+            <span><i class="fa fa-calendar-check" style="color:#22c55e"></i> Schedule Items</span>
+            <button onclick="handleAddItemFromScheduleList()"
+              style="padding:.5rem 1rem;border-radius:50px;border:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;box-shadow:0 4px 12px rgba(34,197,94,.3);"><i
+                class="fa fa-plus"></i> Add Item</button>
+          </div>
+          <div id="schedule-items-list"></div>
+          <div id="freq-card-wrap-list"></div>
+          <button class="add-more-btn" id="set-automation-btn" style="margin-top:1rem" onclick="setAutomationOrder()"><i
+              class="fa fa-robot"></i> <span id="set-automation-btn-txt">Set Automation Order</span></button>
+        </div>
+        <div id="automation-placed-list" style="display:none"></div>
+      </div>
+    </div>
+
     <div id="wishlist-page"
       style="position:fixed;inset:0;background:#f4f6f5;z-index:600;display:none;flex-direction:column;">
       <div class="wp-header">
@@ -4799,7 +5605,8 @@
               <i class="fa fa-bell"></i>
               <span class="wp-badge" id="wp-notif-badge">0</span>
             </button>
-            <button class="wp-icon-btn" onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
+            <button class="wp-icon-btn"
+              onclick="document.getElementById('wishlist-page').style.display='none';showTab('cart')" title="Cart">
               <i class="fa fa-bag-shopping"></i>
               <span class="wp-badge" id="wp-cart-badge">0</span>
             </button>
@@ -5213,7 +6020,7 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzhou_QJ0_DA5_E-hCPZNFq51eicSqHI65oZfoZWlZo0whzfo0buYeDTY1lm4bHCTfx/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwHWxVVZR2sVSVqpAfXQWqEf0SqyPOIYF5LW50Yr22mf08n1ckI4NuKm63tpHBV4lnfuw/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
     var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega), Main Address default OFF (sheet se ON ho to hi dikhega)
@@ -5322,6 +6129,9 @@
     var currentUser = null; var cart = []; var orders = []; var products = [];
     var currentOrderId = ""; var selectedPayment = "upi";
     var currentProductId = null; var detailQty = 1;
+    var scheduleItems = []; var scheduleQty = 1; var scheduleCurrentProductId = null;
+    var automationOrders = JSON.parse(localStorage.getItem('kiranaAutomationOrders') || '[]');
+    var editingAutomationOrderId = null;
     var activeCategory = 'All'; var activeTab = 'home';
     var trackRefreshTimer = null; var chatRefreshTimer = null; var ordersRefreshTimer = null; var chatBadgeTimer = null; var chatBadgeTimer = null;
     var searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
@@ -5806,6 +6616,7 @@
       if (!currentUser) { var modal = document.getElementById('reg-modal'); if (modal) modal.classList.add('open'); }
 
       var savedCart = localStorage.getItem('kiranaCart'); if (savedCart) { cart = JSON.parse(savedCart); updateCartBadges(); }
+      var savedSchedule = localStorage.getItem('kiranaSchedule'); if (savedSchedule) { scheduleItems = JSON.parse(savedSchedule); } updateScheduleBadge();
       var savedOrders = localStorage.getItem('kiranaOrders'); if (savedOrders) orders = JSON.parse(savedOrders);
       try { var pr = localStorage.getItem('pendingReward'); if (pr) pendingRewardItem = JSON.parse(pr); } catch (e) { }
       var savedLang = localStorage.getItem("lang"); if (savedLang) currentLang = savedLang;
@@ -6422,6 +7233,7 @@
         '<div class="qty-row"><span class="qty-label"><i class="fa fa-layer-group"></i> ' + t('quantity') + '</span>' +
         '<div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)"><i class="fa fa-minus"></i></button><span class="qty-val" id="qty-val">1</span><button class="qty-btn" onclick="changeQty(1)"><i class="fa fa-plus"></i></button></div></div></div>' + offerDetailHtml +
         '<div class="detail-actions"><button class="btn btn-outline" onclick="addToCartDetail()"><i class="fa fa-bag-shopping"></i> ' + t('add_to_cart_btn') + '</button><button class="btn btn-accent" onclick="buyNow()"><i class="fa fa-bolt"></i> ' + t('buy_now') + '</button></div>' +
+        '<div class="detail-actions"><button class="btn btn-schedule" onclick="addToSchedule()"><i class="fa fa-calendar-plus"></i> Add to Schedule</button></div>' +
         '<div class="detail-tags"><span class="tag"><i class="fa fa-truck"></i> ' + t('free_above') + '</span><span class="tag"><i class="fa fa-rotate-left"></i> ' + t('day3_return') + '</span><span class="tag"><i class="fa fa-shield-check"></i> ' + t('original') + '</span></div>';
       showTab('product'); if (galleryImages.length > 1) { enableGallerySwipe(); startDetailGalleryAuto(); }
     }
@@ -6433,6 +7245,713 @@
     function changeQty(d) { detailQty = Math.max(1, detailQty + d); document.getElementById('qty-val').textContent = detailQty; }
     function addToCartDetail() { for (var i = 0; i < detailQty; i++)addToCart(currentProductId, false); showToast(detailQty + ' item cart mein dala', 'success'); detailQty = 1; }
     function buyNow() { addToCartDetail(); showTab('cart'); }
+    function addOrUpdateScheduleItem(id, qty) {
+      var ex = scheduleItems.find(function (s) { return String(s.id) == String(id); });
+      if (ex) {
+        ex.qty = qty;
+      } else {
+        var p = products.find(function (x) { return x.id == id; }); if (!p) return;
+        scheduleItems.push({ id: p.id, name: p.name, name_hi: p.name_hi, name_en: p.name_en, price: p.price, img: p.img, qty: qty });
+      }
+      localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+      updateScheduleBadge();
+    }
+    function removeScheduleItem(id) {
+      scheduleItems = scheduleItems.filter(function (s) { return String(s.id) != String(id); });
+      localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+      updateScheduleBadge(); renderScheduleItemsList();
+    }
+    function updateScheduleBadge() {
+      var count = scheduleItems.reduce(function (s, i) { return s + i.qty; }, 0);
+      var badges = document.querySelectorAll('.schedule-header-badge');
+      badges.forEach(function (b) { b.textContent = count; b.classList.toggle('show', count > 0); });
+    }
+    function addToSchedule() {
+      scheduleCurrentProductId = currentProductId; scheduleQty = 1;
+      var p = products.find(function (x) { return x.id == currentProductId; }); if (!p) return;
+      addOrUpdateScheduleItem(currentProductId, scheduleQty);
+      renderScheduleDetail(p);
+      document.getElementById('schedule-detail-page').style.display = 'flex';
+      renderFrequencyCard('detail');
+      document.body.classList.add('fixed-page-open');
+    }
+    function renderScheduleDetail(p) {
+      var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
+      if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>'; }
+      document.getElementById('schedule-detail-content').innerHTML =
+        '<div class="sd-item-card"><div class="sd-item-img">' + imgHtml + '</div>' +
+        '<div class="sd-item-info"><div class="sd-item-name">' + getName(p) + '</div>' +
+        '<div class="sd-item-price">₹' + p.price + '</div></div></div>' +
+        '<div class="qty-row"><span class="qty-label"><i class="fa fa-layer-group"></i> ' + t('quantity') + '</span>' +
+        '<div class="qty-ctrl"><button class="qty-btn" onclick="changeScheduleQty(-1)"><i class="fa fa-minus"></i></button>' +
+        '<span class="qty-val" id="sd-qty-val">1</span>' +
+        '<button class="qty-btn" onclick="changeScheduleQty(1)"><i class="fa fa-plus"></i></button></div></div>' +
+        '<div class="sd-total-row"><span>Total</span><span id="sd-total-price">₹' + p.price + '</span></div>' +
+        '<button class="add-more-btn" onclick="openScheduleBrowsePage()"><i class="fa fa-plus"></i> Add More Item</button>';
+    }
+    function changeScheduleQty(d) {
+      scheduleQty = Math.max(1, scheduleQty + d);
+      var p = products.find(function (x) { return x.id == scheduleCurrentProductId; }); if (!p) return;
+      document.getElementById('sd-qty-val').textContent = scheduleQty;
+      document.getElementById('sd-total-price').textContent = '₹' + (p.price * scheduleQty);
+      addOrUpdateScheduleItem(scheduleCurrentProductId, scheduleQty);
+    }
+    function closeScheduleDetailPage() {
+      document.getElementById('schedule-detail-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
+    }
+    function buildScheduleCardHtml(p) {
+      var stars = ''; for (var i = 0; i < Math.round(p.rating || 4); i++)stars += '<i class="fa fa-star"></i>'; for (var i = Math.round(p.rating || 4); i < 5; i++)stars += '<i class="fa-regular fa-star"></i>';
+      var firstImg = (p.img && p.img.startsWith && p.img.startsWith('http')) ? p.img : null; var imgHtml = '';
+      if (firstImg) { imgHtml = '<img src="' + firstImg + '" onerror="this.outerHTML=\'<i class=fa fa-box style=font-size:3rem></i>\'" loading="lazy">'; } else { imgHtml = '<i class="fa fa-box" style="font-size:3rem;color:var(--muted)"></i>'; }
+      var wCode = p.wishlistCode || '';
+      var isWished = wCode && wishlistCodesSet[wCode];
+      return '<div class="product-card" onclick="showProduct(' + p.id + ')">' +
+        '<div class="product-img">' + (p.badge ? '<div class="badge badge-' + (p.badge.toLowerCase() === 'sale' ? 'sale' : 'new') + '">' + (p.badge.toLowerCase() === 'sale' ? 'SALE' : 'NEW') + '</div>' : '') +
+        (wCode ? '<button class="wishlist-heart-btn' + (isWished ? ' active' : '') + '" data-wcode="' + wCode + '" onclick="event.stopPropagation();toggleWishlist(\'' + wCode + '\',\'' + String(getName(p)).replace(/'/g, "\\'") + '\',this)"><i class="fa' + (isWished ? '-solid' : '-regular') + ' fa-heart"></i></button>' : '') +
+        imgHtml + '</div>' +
+        '<div class="product-body"><div class="product-cat">' + getProductCatDisplay(p) + '</div><div class="product-name">' + getName(p) + '</div><div class="product-desc">' + getDesc(p) + '</div>' +
+        '<div class="product-rating">' + stars + ' <span>' + (p.rating || 4.0) + '</span></div>' +
+        '<div class="price-row"><span class="price">₹' + p.price + '</span>' + (p.orig ? '<span class="price-old">₹' + p.orig + '</span>' : '') +
+        '</div><button class="add-btn add-btn-green" onclick="event.stopPropagation();addItemToScheduleFromGrid(' + p.id + ',this)"><i class="fa fa-calendar-plus"></i> Add to Schedule<div class="btn-toast"><i class="fa fa-check"></i> Added!</div></button></div></div>';
+    }
+    function renderScheduleBrowseGrid(filterText) {
+      var grid = document.getElementById('schedule-browse-grid');
+      if (!grid) return;
+      var items = products;
+      if (filterText) {
+        var q = filterText.toLowerCase();
+        items = items.filter(function (p) { return String(getName(p)).toLowerCase().indexOf(q) !== -1; });
+      }
+      if (!items.length) { grid.innerHTML = '<div class="wp-empty"><i class="fa fa-magnifying-glass"></i><p>Koi item nahi mila</p></div>'; return; }
+      grid.innerHTML = items.map(function (p) { return buildScheduleCardHtml(p); }).join('');
+    }
+    function filterScheduleBrowsePage() {
+      renderScheduleBrowseGrid(document.getElementById('sb-search-input').value);
+    }
+    function addItemToScheduleFromGrid(id, btn) {
+      var ex = scheduleItems.find(function (s) { return String(s.id) == String(id); });
+      var qty = ex ? ex.qty + 1 : 1;
+      addOrUpdateScheduleItem(id, qty);
+      if (btn) { var toast = btn.querySelector('.btn-toast'); if (toast) { toast.classList.add('show'); setTimeout(function () { toast.classList.remove('show'); }, 1200); } }
+    }
+    function openScheduleBrowsePage() {
+      document.getElementById('schedule-detail-page').style.display = 'none';
+      document.getElementById('schedule-browse-page').style.display = 'flex';
+      var si = document.getElementById('sb-search-input'); if (si) si.value = '';
+      renderScheduleBrowseGrid();
+      updateScheduleBadge();
+      if (scheduleBrowseReturnTo !== 'scheduleItems') scheduleBrowseReturnTo = 'home';
+      document.body.classList.add('fixed-page-open');
+    }
+    function closeScheduleBrowsePage() {
+      document.getElementById('schedule-browse-page').style.display = 'none';
+      if (scheduleBrowseReturnTo === 'scheduleItems') {
+        scheduleBrowseReturnTo = 'home';
+        document.getElementById('schedule-items-page').style.display = 'flex';
+        renderScheduleItemsList();
+        syncFrequencyCards();
+      } else {
+        document.body.classList.remove('fixed-page-open');
+        showTab('home');
+      }
+    }
+    function openScheduleItemsPage() {
+      document.getElementById('schedule-items-page').style.display = 'flex';
+      var hasOrders = automationOrders.length > 0;
+      var tabsEl = document.getElementById('automation-tabs');
+      if (tabsEl) tabsEl.style.display = hasOrders ? 'flex' : 'none';
+      renderScheduleItemsList();
+      renderFrequencyCard('list');
+      setAutomationTab('new');
+      document.body.classList.add('fixed-page-open');
+    }
+    function closeScheduleItemsPage() {
+      document.getElementById('schedule-items-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
+    }
+    function saveAutomationOrders() { localStorage.setItem('kiranaAutomationOrders', JSON.stringify(automationOrders)); }
+
+    var scheduleBrowseReturnTo = 'home'; // 'home' ya 'scheduleItems' — batata hai wapas kahan jaana hai
+
+    function handleAddItemFromScheduleList() {
+      scheduleBrowseReturnTo = 'scheduleItems';
+      document.getElementById('schedule-items-page').style.display = 'none';
+      openScheduleBrowsePage();
+    }
+
+    function handleNewOrderTabClick() {
+      var newBtn = document.getElementById('atab-new');
+      var alreadyOnNewTab = newBtn && newBtn.classList.contains('active');
+      if (alreadyOnNewTab) {
+        scheduleBrowseReturnTo = 'scheduleItems';
+        document.getElementById('schedule-items-page').style.display = 'none';
+        openScheduleBrowsePage();
+      } else {
+        setAutomationTab('new');
+      }
+    }
+
+    function setAutomationTab(tab) {
+      var newBtn = document.getElementById('atab-new');
+      var placeBtn = document.getElementById('atab-place');
+      var newContent = document.getElementById('automation-new-order-content');
+      var placeContent = document.getElementById('automation-placed-list');
+      if (tab === 'place') {
+        if (newBtn) newBtn.classList.remove('active');
+        if (placeBtn) placeBtn.classList.add('active');
+        if (newContent) newContent.style.display = 'none';
+        if (placeContent) placeContent.style.display = 'block';
+        renderAutomationOrdersList();
+      } else {
+        if (newBtn) newBtn.classList.add('active');
+        if (placeBtn) placeBtn.classList.remove('active');
+        if (newContent) newContent.style.display = 'block';
+        if (placeContent) placeContent.style.display = 'none';
+      }
+    }
+
+    function frequencySummaryText(f) {
+      if (!f || !f.type) return '';
+      if (f.type === 'onetime' && f.date) return 'One Time — ' + formatDateDisplay(f.date) + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      if (f.type === 'monthly' && f.monthDate) return 'Monthly — Date ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      if (f.type === 'yearly' && f.month && f.monthDate) return 'Yearly — ' + f.month + ' ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      if (f.type === 'alternate' && f.days && f.days.length) return 'Alternate Din — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      if (f.type === 'weekly' && f.days && f.days.length) return 'Weekly — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      if (f.type === 'daily') return 'Daily' + (f.time ? ' at ' + formatTimeDisplay(f.time) : '');
+      return '';
+    }
+
+    function buildAutomationOrderTable(order) {
+      var arr = order.items || [];
+      var grandTotal = 0;
+      var rows = arr.map(function (i) {
+        var qty = i.qty || 1;
+        var price = Number(i.price) || 0;
+        var lineTotal = price * qty;
+        grandTotal += lineTotal;
+        return '<tr><td class="oit-name">' + getName(i) + '</td><td class="oit-qty">' + qty + '</td><td class="oit-price">₹' + price + '</td><td class="oit-linetotal">₹' + lineTotal + '</td></tr>';
+      }).join('');
+      return '<div class="order-items-table-wrap"><table class="order-items-table">' +
+        '<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+        '<tfoot><tr><td colspan="3">' + t('total') + '</td><td>₹' + grandTotal + '</td></tr></tfoot>' +
+        '</table></div>';
+    }
+
+    function renderAutomationOrdersList() {
+      var wrap = document.getElementById('automation-placed-list');
+      if (!wrap) return;
+      if (!automationOrders.length) {
+        wrap.innerHTML = '<div class="wp-empty"><i class="fa fa-robot"></i><p>Koi automation order set nahi hai</p></div>';
+        return;
+      }
+      wrap.innerHTML = automationOrders.map(function (order) {
+        var freqText = frequencySummaryText(order.frequency);
+        var isOn = order.active !== false;
+        return '<div class="sd-item-card" style="display:block;position:relative;padding:1rem;">' +
+          '<button onclick="editAutomationOrder(\'' + order.id + '\')" style="position:absolute;top:.7rem;right:.7rem;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);"><i class="fa fa-pen"></i></button>' +
+          '<div style="font-weight:800;color:var(--green);font-size:.85rem;margin-bottom:.3rem;padding-right:2.5rem"><i class="fa fa-clock"></i> ' + freqText + '</div>' +
+          buildAutomationOrderTable(order) +
+          '<div class="auto-status-row">' +
+          '<button class="auto-cancel-btn" onclick="deleteAutomationOrder(\'' + order.id + '\')"><i class="fa fa-ban"></i> Cancel This Order</button>' +
+          '<div class="auto-status-wrap">' +
+          '<span class="auto-status-label ' + (isOn ? 'on' : 'off') + '" id="auto-status-label-' + order.id + '">' + (isOn ? 'On' : 'Temporary Off') + '</span>' +
+          '<label class="auto-switch"><input type="checkbox" ' + (isOn ? 'checked' : '') + ' onchange="toggleAutomationOrderStatus(\'' + order.id + '\',this.checked)"><span class="auto-switch-slider"></span></label>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function toggleAutomationOrderStatus(id, isOn) {
+      var order = automationOrders.find(function (o) { return o.id === id; });
+      if (!order) return;
+      order.active = isOn;
+      saveAutomationOrders();
+      var label = document.getElementById('auto-status-label-' + id);
+      if (label) {
+        label.textContent = isOn ? 'On' : 'Temporary Off';
+        label.classList.remove('on', 'off');
+        label.classList.add(isOn ? 'on' : 'off');
+      }
+      postToSheet({ action: 'updateScheduleOrderStatus', orderId: id, status: getScheduleStatusForOrder(order, isOn) });
+      showToast(isOn ? 'Order phir se ON ho gaya' : 'Order temporary OFF kar diya', 'success');
+    }
+
+    function deleteAutomationOrder(id) {
+      if (!confirm('Ye automation order delete karna hai?')) return;
+      automationOrders = automationOrders.filter(function (o) { return o.id !== id; });
+      saveAutomationOrders();
+      postToSheet({ action: 'deleteScheduleOrder', orderId: id });
+      renderAutomationOrdersList();
+      if (!automationOrders.length) {
+        var tabsEl = document.getElementById('automation-tabs');
+        if (tabsEl) tabsEl.style.display = 'none';
+        setAutomationTab('new');
+      }
+    }
+
+    function editAutomationOrder(id) {
+      var order = automationOrders.find(function (o) { return o.id === id; });
+      if (!order) return;
+      editingAutomationOrderId = id;
+      scheduleItems = JSON.parse(JSON.stringify(order.items));
+      localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+      updateScheduleBadge();
+      scheduleFrequency = JSON.parse(JSON.stringify(order.frequency));
+      saveScheduleFrequency();
+      renderScheduleItemsList();
+      syncFrequencyCards();
+      var btnTxt = document.getElementById('set-automation-btn-txt');
+      if (btnTxt) btnTxt.textContent = 'Save';
+      setAutomationTab('new');
+    }
+
+    function setAutomationOrder() {
+      if (!scheduleItems.length) { showToast('Pehle kuch items schedule mein dalo', 'error'); return; }
+      if (!scheduleFrequency.type) { showToast('Schedule frequency chuno (Daily/Weekly etc)', 'error'); return; }
+      var f = scheduleFrequency;
+      if (f.type === 'onetime' && !f.date) { showToast('Date chuno', 'error'); return; }
+      if (f.type === 'monthly' && !f.monthDate) { showToast('Date chuno', 'error'); return; }
+      if (f.type === 'yearly' && (!f.month || !f.monthDate)) { showToast('Month aur Date chuno', 'error'); return; }
+      if ((f.type === 'alternate' || f.type === 'weekly') && (!f.days || !f.days.length)) { showToast('Din chuno', 'error'); return; }
+      if (!currentUser) { showToast('Pehle login karo', 'error'); return; }
+
+      var activeCid = (document.getElementById('schedule-detail-page').style.display === 'flex') ? 'detail' : 'list';
+      var discCb = document.getElementById('disclaimer-check-' + activeCid);
+      if (!discCb || !discCb.checked) {
+        showToast('Pehle disclaimer checkbox tick karo', 'error');
+        var discWrap = document.getElementById('disc-wrap-' + activeCid);
+        if (discWrap) { discWrap.classList.add('disc-check-zoom'); setTimeout(function () { discWrap.classList.remove('disc-check-zoom'); }, 400); }
+        return;
+      }
+
+      var order = {
+        id: editingAutomationOrderId || ('AUTO-' + Date.now()),
+        items: JSON.parse(JSON.stringify(scheduleItems)),
+        frequency: JSON.parse(JSON.stringify(scheduleFrequency)),
+        createdAt: new Date().toLocaleString('en-IN')
+      };
+
+      // Update automationOrders list (localStorage) – but keep scheduleItems for now
+      if (editingAutomationOrderId) {
+        var idx = automationOrders.findIndex(function (o) { return o.id === editingAutomationOrderId; });
+        if (idx >= 0) { order.createdAt = automationOrders[idx].createdAt; automationOrders[idx] = order; }
+        editingAutomationOrderId = null;
+      } else {
+        automationOrders.unshift(order);
+      }
+      saveAutomationOrders();
+
+      // Clear scheduleItems and frequency ONLY after mandate is done (or if already done)
+      function finalizeLocalCleanup() {
+        scheduleItems = [];
+        localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+        updateScheduleBadge();
+        scheduleFrequency = { type: null, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
+        saveScheduleFrequency();
+
+        var btnTxt = document.getElementById('set-automation-btn-txt');
+        if (btnTxt) btnTxt.textContent = 'Set Automation Order';
+        var btnTxtDetail = document.getElementById('set-automation-btn-detail-txt');
+        if (btnTxtDetail) btnTxtDetail.textContent = 'Set Automation Order';
+        renderScheduleItemsList();
+        syncFrequencyCards();
+
+        showToast('Automation order set ho gaya!', 'success');
+
+        document.getElementById('schedule-detail-page').style.display = 'none';
+        document.getElementById('schedule-browse-page').style.display = 'none';
+        scheduleBrowseReturnTo = 'home';
+        document.getElementById('schedule-items-page').style.display = 'flex';
+        var tabsEl = document.getElementById('automation-tabs');
+        if (tabsEl) tabsEl.style.display = 'flex';
+        setAutomationTab('place');
+      }
+
+      // ----- STEP 1: Backend se pucho — is customer ka AutoPay mandate pehle se bana hua hai ya nahi -----
+      // (sirf localStorage pe depend nahi karte, warna dusre device/browser/cache-clear
+      //  pe purana token miss ho jaata hai aur M,N,O khaali reh jaate hain)
+      fetch(CONFIG.SCRIPT_URL + '?action=getMandateInfo&phone=' + encodeURIComponent(currentUser.phone))
+        .then(function (r) { return r.json(); })
+        .then(function (backendMandate) { proceedWithMandate(backendMandate); })
+        .catch(function () { proceedWithMandate(null); });
+
+      function proceedWithMandate(backendMandate) {
+        var existingMandateInfo = (backendMandate && backendMandate.tokenId) ? backendMandate : null;
+        if (!existingMandateInfo) {
+          try {
+            var savedMandate = localStorage.getItem('kiranaAutoPayInfo_' + currentUser.phone);
+            if (savedMandate) existingMandateInfo = JSON.parse(savedMandate);
+          } catch (e) { }
+        }
+        // Jo bhi mandate mila (backend ya local), turant local cache bhi sync kar do
+        if (existingMandateInfo && existingMandateInfo.tokenId) {
+          localStorage.setItem('kiranaAutoPayInfo_' + currentUser.phone, JSON.stringify(existingMandateInfo));
+          localStorage.setItem('kiranaAutoPayDone_' + currentUser.phone, 'yes');
+        }
+
+        // ----- STEP 2: Order ko sheet me save karo (jo bhi mandate mila usi ke saath) -----
+        postToSheet({
+          action: 'saveScheduleOrder',
+          order: {
+            id: order.id,
+            items: order.items,
+            scheduledDate: computeScheduledDateString(f),
+            scheduleTime: f.time ? formatTimeDisplay(f.time) : '',
+            subscribeDate: order.createdAt,
+            repeatTime: REPEAT_LABELS[f.type] || f.type,
+            status: getScheduleStatusForOrder(order, true),
+            mandateInfo: existingMandateInfo // {customerId, tokenId, method} ya null
+          },
+          user: {
+            name: (currentUser.fname + ' ' + (currentUser.lname || '')).trim(),
+            phone: currentUser.phone,
+            email: currentUser.googleEmail || ''
+          }
+        });
+
+        // ----- STEP 3: Mandate mil gaya to seedha finish, warna ₹1 AutoPay authorization karwao -----
+        if (existingMandateInfo && existingMandateInfo.tokenId) {
+          finalizeLocalCleanup();
+        } else {
+          var orderTotal = order.items.reduce(function (s, i) { return s + (i.price * i.qty); }, 0);
+          setupAutoPayMandate(order.id, Math.max(orderTotal * 3, 2000), finalizeLocalCleanup);
+        }
+      }
+    }
+    function renderScheduleItemsList() {
+      var list = document.getElementById('schedule-items-list');
+      if (!list) return;
+      if (!scheduleItems.length) {
+        list.innerHTML = '<div class="wp-empty"><i class="fa fa-calendar-xmark"></i><p>Schedule khali hai</p></div>';
+        return;
+      }
+      list.innerHTML = scheduleItems.map(function (item) {
+        var imgHtml = (item.img && item.img.startsWith && item.img.startsWith('http'))
+          ? '<img src="' + item.img + '" onerror="this.parentElement.innerHTML=\'<i class=fa fa-box></i>\'">'
+          : '<i class="fa fa-box" style="font-size:2rem;color:var(--muted)"></i>';
+        return '<div class="cart-item"><div class="cart-img">' + imgHtml + '</div>' +
+          '<div class="cart-info"><div class="cart-name">' + getName(item) + '</div>' +
+          '<div class="cart-price">₹' + (item.price * item.qty) + '</div>' +
+          '<div class="cart-controls">' +
+          '<button class="cart-qty-btn" onclick="changeScheduleListQty(' + item.id + ',-1)"><i class="fa fa-minus"></i></button>' +
+          '<span class="cart-qty-val">' + item.qty + '</span>' +
+          '<button class="cart-qty-btn" onclick="changeScheduleListQty(' + item.id + ',1)"><i class="fa fa-plus"></i></button>' +
+          '<span style="color:var(--muted);font-size:.75rem">× ₹' + item.price + '</span>' +
+          '<button class="cart-remove" onclick="removeScheduleItem(' + item.id + ')"><i class="fa fa-trash"></i> ' + t('remove') + '</button>' +
+          '</div></div></div>';
+      }).join('');
+    }
+    function changeScheduleListQty(id, d) {
+      var item = scheduleItems.find(function (s) { return s.id == id; });
+      if (item) {
+        item.qty = Math.max(1, item.qty + d);
+        localStorage.setItem('kiranaSchedule', JSON.stringify(scheduleItems));
+        updateScheduleBadge();
+        renderScheduleItemsList();
+      }
+    }
+
+    // ===== SCHEDULE FOR (frequency picker) =====
+    var scheduleFrequency = JSON.parse(localStorage.getItem('kiranaScheduleFreq') || 'null') || { type: null, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
+    var altUnderstandOpenMap = {};
+    var FREQ_OPTIONS = [
+      { key: 'daily', label: 'Daily', icon: 'fa-rotate' },
+      { key: 'onetime', label: 'One Time', icon: 'fa-calendar-day' },
+      { key: 'monthly', label: 'Monthly', icon: 'fa-calendar-week' },
+      { key: 'yearly', label: 'Yearly', icon: 'fa-calendar' },
+      { key: 'alternate', label: 'Alternative', icon: 'fa-shuffle' },
+      { key: 'weekly', label: 'Weekly', icon: 'fa-calendar-days' }
+    ];
+    var WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var MONTH_DAYS = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var FREQ_CARD_IDS = ['detail', 'list'];
+
+    function saveScheduleFrequency() { localStorage.setItem('kiranaScheduleFreq', JSON.stringify(scheduleFrequency)); }
+    var REPEAT_LABELS = { daily: 'daily', onetime: 'one time', monthly: 'monthly', yearly: 'yearly', alternate: 'alternative', weekly: 'weekly' };
+    function computeScheduledDateString(f) {
+      if (f.type === 'onetime') return formatDateDisplay(f.date);
+      if (f.type === 'monthly') return f.monthDate + ' tarikh';
+      if (f.type === 'yearly') { var mi = MONTH_NAMES.indexOf(f.month); return f.monthDate + ' tarikh ' + (mi + 1) + ' months'; }
+      if (f.type === 'alternate') { var d = (f.days && f.days.length) ? WEEK_DAYS[f.days[0]] : ''; return d + '_' + (f.altSkip || 1); }
+      if (f.type === 'weekly') return (f.days || []).map(function (d) { return WEEK_DAYS[d]; }).join(',');
+      return '';
+    }
+    function getScheduleStatusForOrder(order, isOn) {
+      if (order.frequency.type === 'onetime') return isOn === false ? 'off' : 'temp on';
+      return isOn === false ? 'temp off' : 'on';
+    }
+    function todayStrGlobal() {
+      var d = new Date(); var m = ('0' + (d.getMonth() + 1)).slice(-2); var day = ('0' + d.getDate()).slice(-2);
+      return d.getFullYear() + '-' + m + '-' + day;
+    }
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr + 'T00:00:00');
+      return d.getDate() + ' ' + MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function getTimeFormat() { return localStorage.getItem('kiranaTimeFormat') || '12'; }
+    function setTimeFormat(fmt) { localStorage.setItem('kiranaTimeFormat', fmt); }
+    function formatTimeDisplay(val) {
+      if (!val) return '';
+      var parts = val.split(':'); var h = parseInt(parts[0], 10); var m = parseInt(parts[1], 10) || 0;
+      if (getTimeFormat() === '24') return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2);
+      var period = h < 12 ? 'AM' : 'PM'; var h12 = h % 12; if (h12 === 0) h12 = 12;
+      return h12 + ':' + ('0' + m).slice(-2) + ' ' + period;
+    }
+    function parseTimeVal(val) {
+      if (!val) return { h: 8, m: 0 };
+      var parts = val.split(':'); var h = parseInt(parts[0], 10); var m = parseInt(parts[1], 10);
+      if (isNaN(h)) h = 8; if (isNaN(m)) m = 0;
+      return { h: h, m: m };
+    }
+    function formatTime24(h, m) { return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2); }
+    function clampTime(h, m) {
+      if (h < 8) { h = 8; m = 0; }
+      if (h > 21) { h = 21; m = 0; }
+      if (h === 21 && m > 0) m = 0;
+      if (m < 0) m = 0; if (m > 59) m = 59;
+      return { h: h, m: m };
+    }
+    function buildTimeRowHtml(cid) {
+      var t = parseTimeVal(scheduleFrequency.time);
+      var fmt = getTimeFormat();
+      var dispH, ampm;
+      if (fmt === '12') { dispH = t.h % 12; if (dispH === 0) dispH = 12; ampm = t.h < 12 ? 'AM' : 'PM'; }
+      else { dispH = t.h; ampm = ''; }
+      var html = '<div class="freq-row"><span class="freq-label"><i class="fa fa-clock"></i> Time Chuno</span>' +
+        '<div class="time-picker-row">' +
+        '<button class="time-fmt-btn" onclick="toggleTimeFormat()" title="12/24 Hour Format"><i class="fa fa-repeat"></i> ' + fmt + 'H</button>' +
+        '<div class="time-picker-box">' +
+        '<div class="tp-col"><button class="tp-arrow" onclick="stepTimeUnit(\'h\',1)"><i class="fa fa-chevron-up"></i></button>' +
+        '<input type="text" inputmode="numeric" class="tp-input" value="' + ('0' + dispH).slice(-2) + '" onchange="onTimeManualInput(\'h\',this.value)">' +
+        '<button class="tp-arrow" onclick="stepTimeUnit(\'h\',-1)"><i class="fa fa-chevron-down"></i></button></div>' +
+        '<div class="tp-colon">:</div>' +
+        '<div class="tp-col"><button class="tp-arrow" onclick="stepTimeUnit(\'m\',1)"><i class="fa fa-chevron-up"></i></button>' +
+        '<input type="text" inputmode="numeric" class="tp-input" value="' + ('0' + t.m).slice(-2) + '" onchange="onTimeManualInput(\'m\',this.value)">' +
+        '<button class="tp-arrow" onclick="stepTimeUnit(\'m\',-1)"><i class="fa fa-chevron-down"></i></button></div>';
+      if (fmt === '12') {
+        html += '<div class="tp-col tp-col-ampm"><button class="tp-arrow" onclick="stepTimeUnit(\'p\',1)"><i class="fa fa-chevron-up"></i></button>' +
+          '<div class="tp-input tp-ampm-val">' + ampm + '</div>' +
+          '<button class="tp-arrow" onclick="stepTimeUnit(\'p\',-1)"><i class="fa fa-chevron-down"></i></button></div>';
+      }
+      html += '</div></div></div>';
+      return html;
+    }
+    function stepTimeUnit(unit, dir) {
+      var t = parseTimeVal(scheduleFrequency.time); var h = t.h, m = t.m;
+      if (unit === 'm') { m += dir; if (m > 59) { m = 0; h += 1; } if (m < 0) { m = 59; h -= 1; } }
+      else if (unit === 'h') { h += dir; }
+      else if (unit === 'p') { h += dir * 12; }
+      var c = clampTime(h, m);
+      scheduleFrequency.time = formatTime24(c.h, c.m);
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function onTimeManualInput(unit, value) {
+      var t = parseTimeVal(scheduleFrequency.time);
+      var num = parseInt(value, 10); if (isNaN(num)) num = 0;
+      var fmt = getTimeFormat();
+      if (unit === 'h') {
+        if (fmt === '12') {
+          if (num < 1) num = 1; if (num > 12) num = 12;
+          var isPM = t.h >= 12; var h24 = num % 12; if (isPM) h24 += 12;
+          t.h = h24;
+        } else { if (num < 0) num = 0; if (num > 23) num = 23; t.h = num; }
+      } else if (unit === 'm') { if (num < 0) num = 0; if (num > 59) num = 59; t.m = num; }
+      var c = clampTime(t.h, t.m);
+      scheduleFrequency.time = formatTime24(c.h, c.m);
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function toggleTimeFormat() {
+      setTimeFormat(getTimeFormat() === '12' ? '24' : '12');
+      syncFrequencyCards();
+    }
+    function openDatePicker(cid) {
+      var el = document.getElementById('freq-date-input-' + cid);
+      if (el && el.showPicker) { try { el.showPicker(); } catch (e) { } }
+    }
+    function monthDateGridHtml(cid, maxDay) {
+      var html = '';
+      for (var d = 1; d <= maxDay; d++) {
+        html += '<button class="date-cell' + (String(scheduleFrequency.monthDate) === String(d) ? ' active' : '') + '" onclick="updateFrequencyField(\'' + cid + '\',\'monthDate\',' + d + ')">' + d + '</button>';
+      }
+      return html;
+    }
+    function monthGridHtml(cid) {
+      return MONTH_NAMES.map(function (m) {
+        return '<button class="date-cell' + (scheduleFrequency.month === m ? ' active' : '') + '" onclick="selectYearlyMonth(\'' + cid + '\',\'' + m + '\')">' + m + '</button>';
+      }).join('');
+    }
+    function selectYearlyMonth(cid, m) {
+      scheduleFrequency.month = m; scheduleFrequency.monthDate = '';
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function altSkipSelectorHtml() {
+      var skip = scheduleFrequency.altSkip || 1;
+      var html = '<div class="freq-row"><span class="freq-label"><i class="fa fa-forward"></i> Kitne Din Chhodein</span><div class="skip-selector">';
+      for (var i = 1; i <= 5; i++) {
+        html += '<button class="skip-btn' + (skip === i ? ' active' : '') + '" onclick="setAltSkip(' + i + ')">' + i + '</button>';
+      }
+      html += '</div></div>';
+      return html;
+    }
+
+    function computeAlternatePreview(days, skip) {
+      var step = (skip || 1) + 1;
+      var startIdx = (days && days.length) ? Math.min.apply(null, days) : 0;
+      var results = [];
+      for (var i = 0; i < 21; i++) {
+        var weekday = (startIdx + i) % 7;
+        var deliver = (i % step) === 0;
+        results.push({ weekNum: Math.floor(i / 7) + 1, dayName: WEEK_DAYS[weekday], deliver: deliver });
+      }
+      return results;
+    }
+
+    function buildAltUnderstandHtml(cid) {
+      var f = scheduleFrequency;
+      if (!f.days || !f.days.length) {
+        return '<div class="alt-understand-panel"><button class="alt-understand-close" onclick="toggleAltUnderstand(\'' + cid + '\')"><i class="fa fa-xmark"></i></button><p style="font-size:.8rem;color:var(--muted);margin:0">Pehle "Din Chuno" mein se koi din select karo, phir yahan pattern dikhega.</p></div>';
+      }
+      var rows = computeAlternatePreview(f.days, f.altSkip);
+      var weeksHtml = '';
+      for (var w = 1; w <= 3; w++) {
+        var weekRows = rows.filter(function (r) { return r.weekNum === w; });
+        weeksHtml += '<div class="alt-week-block"><div class="alt-week-title"><i class="fa fa-calendar-week"></i> Week ' + w + '</div>' +
+          weekRows.map(function (r) {
+            return '<div class="alt-day-row ' + (r.deliver ? 'on' : 'off') + '"><span>' + r.dayName + '</span><span>' + (r.deliver ? '✅ Delivery' : '❌ Off') + '</span></div>';
+          }).join('') + '</div>';
+      }
+      return '<div class="alt-understand-panel"><button class="alt-understand-close" onclick="toggleAltUnderstand(\'' + cid + '\')"><i class="fa fa-xmark"></i></button>' +
+        '<p style="font-size:.75rem;color:var(--muted);margin:0 0 .6rem">Har Delivery ke baad lagatar <b>' + (f.altSkip || 1) + ' din</b> Off rahenge. Ye pattern hamesha isi tarah chalta rahega:</p>' +
+        weeksHtml + '</div>';
+    }
+
+    function toggleAltUnderstand(cid) {
+      altUnderstandOpenMap[cid] = !altUnderstandOpenMap[cid];
+      var wrap = document.getElementById('alt-understand-wrap-' + cid);
+      if (wrap) wrap.innerHTML = altUnderstandOpenMap[cid] ? buildAltUnderstandHtml(cid) : '';
+    }
+    function setAltSkip(n) {
+      scheduleFrequency.altSkip = n; scheduleFrequency.days = [];
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function weekDayGridHtml(cid, isAlternate) {
+      return WEEK_DAYS.map(function (d, idx) {
+        var active = scheduleFrequency.days && scheduleFrequency.days.indexOf(idx) !== -1;
+        return '<button class="day-toggle' + (active ? ' active' : '') + '" onclick="toggleDay(\'' + cid + '\',' + idx + ',' + isAlternate + ')">' + d + '</button>';
+      }).join('');
+    }
+    function toggleDay(cid, idx, isAlternate) {
+      if (!scheduleFrequency.days) scheduleFrequency.days = [];
+      if (isAlternate) {
+        var skip = scheduleFrequency.altSkip || 1; var step = skip + 1; var pattern = [];
+        for (var d = idx; d <= 6; d += step) pattern.push(d);
+        var same = pattern.length === scheduleFrequency.days.length && pattern.every(function (p) { return scheduleFrequency.days.indexOf(p) !== -1; });
+        scheduleFrequency.days = same ? [] : pattern;
+      } else {
+        var pos = scheduleFrequency.days.indexOf(idx);
+        if (pos === -1) scheduleFrequency.days.push(idx); else scheduleFrequency.days.splice(pos, 1);
+      }
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function updateFrequencyField(cid, field, value) {
+      scheduleFrequency[field] = value;
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function buildFrequencySummaryHtml(cid) {
+      var f = scheduleFrequency; var text = '';
+      if (f.type === 'onetime' && f.date) { text = 'One Time — ' + formatDateDisplay(f.date) + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'monthly' && f.monthDate) { text = 'Monthly — Date ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'yearly' && f.month && f.monthDate) { text = 'Yearly — ' + f.month + ' ' + f.monthDate + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'alternate' && f.days && f.days.length) { text = 'Alternate Din — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'weekly' && f.days && f.days.length) { text = 'Weekly — ' + f.days.map(function (d) { return WEEK_DAYS[d]; }).join(', ') + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      else if (f.type === 'daily') { text = 'Daily' + (f.time ? ' at ' + formatTimeDisplay(f.time) : ''); }
+      if (!text) return '';
+      return '<div class="freq-summary"><div class="freq-summary-text"><i class="fa fa-circle-check"></i> ' + text + '</div>' +
+        '<button class="freq-change-btn" onclick="clearFrequencySelection(\'' + cid + '\')"><i class="fa fa-pen"></i> Change</button></div>';
+    }
+    function buildFrequencyDetailHtml(cid) {
+      var f = scheduleFrequency; if (!f.type) return '';
+      var html = '';
+      if (f.type === 'onetime') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-day"></i> Date Chuno</span>' +
+          '<div class="freq-date-row" onclick="openDatePicker(\'' + cid + '\')"><input type="date" class="freq-date-input" id="freq-date-input-' + cid + '" min="' + todayStrGlobal() + '" value="' + (f.date || '') + '" onchange="updateFrequencyField(\'' + cid + '\',\'date\',this.value)"></div></div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'monthly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-hashtag"></i> Date Chuno (1-31)</span>' +
+          '<div class="date-grid">' + monthDateGridHtml(cid, 31) + '</div></div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'yearly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar"></i> Month Chuno</span>' +
+          '<div class="month-grid">' + monthGridHtml(cid) + '</div></div>';
+        if (f.month) {
+          var mi = MONTH_NAMES.indexOf(f.month); var days = MONTH_DAYS[mi] || 31;
+          html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-hashtag"></i> Date Chuno</span>' +
+            '<div class="date-grid">' + monthDateGridHtml(cid, days) + '</div></div>';
+        }
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'alternate') {
+        html += altSkipSelectorHtml();
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-shuffle"></i> Din Chuno</span>' +
+          '<div class="day-toggle-grid">' + weekDayGridHtml(cid, true) + '</div></div>';
+        html += '<button type="button" class="alt-understand-btn" onclick="toggleAltUnderstand(\'' + cid + '\')"><i class="fa fa-circle-info"></i> Click Here to Understand</button>';
+        html += '<div id="alt-understand-wrap-' + cid + '">' + (altUnderstandOpenMap[cid] ? buildAltUnderstandHtml(cid) : '') + '</div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'weekly') {
+        html += '<div class="freq-row"><span class="freq-label"><i class="fa fa-calendar-days"></i> Din Chuno</span>' +
+          '<div class="day-toggle-grid">' + weekDayGridHtml(cid, false) + '</div></div>';
+        html += buildTimeRowHtml(cid);
+      } else if (f.type === 'daily') {
+        html += buildTimeRowHtml(cid);
+      }
+      html += buildFrequencySummaryHtml(cid);
+      return html;
+    }
+    function selectFrequency(cid, key) {
+      scheduleFrequency = { type: key, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function clearFrequencySelection(cid) {
+      var keepType = scheduleFrequency.type;
+      scheduleFrequency = { type: keepType, date: '', time: '', month: '', monthDate: '', days: [], altSkip: 1 };
+      saveScheduleFrequency();
+      syncFrequencyCards();
+    }
+    function buildFrequencyCardHtml(cid) {
+      var optsHtml = FREQ_OPTIONS.map(function (o) {
+        return '<button class="freq-opt' + (scheduleFrequency.type === o.key ? ' active' : '') + '" onclick="selectFrequency(\'' + cid + '\',\'' + o.key + '\')"><i class="fa ' + o.icon + '"></i> ' + o.label + '</button>';
+      }).join('');
+      var discHtml = '<div class="freq-row" id="disc-wrap-' + cid + '" style="display:flex;align-items:flex-start;gap:.6rem;margin-top:.8rem;padding-top:.8rem;border-top:1px dashed #e3e7e5">' +
+        '<input type="checkbox" id="disclaimer-check-' + cid + '" style="width:20px;height:20px;flex-shrink:0;accent-color:#22c55e;cursor:pointer;margin-top:2px">' +
+        '<label for="disclaimer-check-' + cid + '" style="font-size:.78rem;color:var(--muted);line-height:1.5">' +
+        'Main samajhta/samajhti hoon ki automatic payment set ho jayega. ' +
+        '<span style="color:var(--info);font-weight:800;cursor:pointer;text-decoration:underline" onclick="openDisclaimerPopup()">Click here to read</span>' +
+        '</label></div>';
+      return '<div class="freq-card"><div class="freq-card-header"><i class="fa fa-calendar-check"></i> Schedule For</div>' +
+        '<div class="freq-options">' + optsHtml + '</div>' +
+        '<div class="freq-detail" id="freq-detail-' + cid + '">' + buildFrequencyDetailHtml(cid) + '</div>' +
+        discHtml + '</div>';
+    }
+    function openDisclaimerPopup() { document.getElementById('disclaimer-modal').classList.add('open'); }
+    function closeDisclaimerPopup() { document.getElementById('disclaimer-modal').classList.remove('open'); }
+    function syncFrequencyCards() {
+      FREQ_CARD_IDS.forEach(function (cid) {
+        var wrap = document.getElementById('freq-card-wrap-' + cid);
+        if (wrap) wrap.innerHTML = buildFrequencyCardHtml(cid);
+      });
+    }
+    function renderFrequencyCard(cid) { syncFrequencyCards(); }
 
     // ============================================================
     // CART
@@ -6594,6 +8113,85 @@
       var el = document.getElementById('paylater-info-modal');
       if (el) el.classList.remove('open');
     }
+
+    function setupAutoPayMandate(scheduleOrderId, maxAmountRupees, onDone) {
+      var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
+      fetch(CONFIG.SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          action: 'createMandateOrder',
+          customer: { name: fullName, email: currentUser.googleEmail || '', phone: currentUser.phone },
+          maxAmount: maxAmountRupees,
+          method: 'upi'
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (mandateData) {
+          console.log('Mandate order response:', mandateData);
+          if (!mandateData.success) {
+            alert('AutoPay Error: ' + (mandateData.message || 'Unknown error'));
+            onDone();
+            return;
+          }
+          var options = {
+            key: mandateData.key_id,
+            amount: mandateData.amount,
+            currency: "INR",
+            name: "Rakesh Mart",
+            description: "AutoPay Setup (₹1 authorization) — future scheduled orders isi se auto-cut honge",
+            order_id: mandateData.order_id,
+            customer_id: mandateData.customer_id,
+            recurring: '1',
+            method: 'upi',
+            handler: function (response) {
+              fetch(CONFIG.SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({
+                  action: 'saveMandateToken',
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  customer_id: mandateData.customer_id,
+                  scheduleOrderId: scheduleOrderId
+                })
+              })
+                .then(function (r) { return r.json(); })
+                .then(function (tokenData) {
+                  if (tokenData.success) {
+                    localStorage.setItem('kiranaAutoPayDone_' + currentUser.phone, 'yes');
+                    // AGLE schedule orders ke liye customer_id/token/method save karo —
+                    // taaki naye order ki row mein bhi M,N,O turant bhar sakein (dobara ₹1 pay kiye bina)
+                    localStorage.setItem('kiranaAutoPayInfo_' + currentUser.phone, JSON.stringify({
+                      customerId: mandateData.customer_id,
+                      tokenId: tokenData.token_id || '',
+                      method: tokenData.method || 'upi'
+                    }));
+                    showToast('AutoPay set ho gaya! (' + (tokenData.method || '') + ')', 'success');
+                  } else {
+                    showToast(tokenData.message || 'AutoPay token save nahi hua, baad me try karo', 'error');
+                  }
+                  onDone();
+                })
+                .catch(function () { showToast('AutoPay verify me network error', 'error'); onDone(); });
+            },
+            modal: {
+              ondismiss: function () {
+                showToast('AutoPay cancel kiya — schedule phir bhi save ho raha hai, baad me AutoPay set kar sakte ho', 'error');
+                onDone();
+              }
+            }
+          };
+          var rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch(function () {
+          showToast('AutoPay setup me network error', 'error');
+          onDone();
+        });
+    }
+
     function handleRazorpay(btn) {
       // STEP 1: Apps Script se secure order mangwao (Secret sirf wahi hai, yaha nahi)
       fetch(CONFIG.SCRIPT_URL, {
@@ -8275,9 +9873,11 @@
       toggleWishlistSearchBar();
       renderWishlistPage();
       syncWishlistPageBadges();
+      document.body.classList.add('fixed-page-open');
     }
     function closeWishlistPage() {
       document.getElementById('wishlist-page').style.display = 'none';
+      document.body.classList.remove('fixed-page-open');
       showTab('home');
     }
     function toggleWishlistSearchBar() {
