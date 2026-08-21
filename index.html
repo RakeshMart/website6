@@ -6649,7 +6649,32 @@
       if (currentUser) startChatBadgePolling();
       setupScrollBehavior();
       updateNotifBadge();
+      handleNotificationHashRouting();
     };
+
+    // Handles #spin / #offer when opened from a push notification click,
+    // and messages posted from the Service Worker (already-open tab case).
+    function handleNotificationHashRouting() {
+      function routeHash(hash) {
+        if (hash === '#spin') {
+          setTimeout(function () { showSpinPage(); }, currentUser ? 300 : 0);
+        } else if (hash === '#offer') {
+          setTimeout(function () { showTab('home'); selectCat('__OFFER__'); }, 300);
+        }
+      }
+      if (window.location.hash) routeHash(window.location.hash);
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', function (event) {
+          if (event.data && event.data.action === 'navigate' && event.data.url) {
+            try {
+              var u = new URL(event.data.url);
+              routeHash(u.hash);
+            } catch (e) {}
+          }
+        });
+      }
+    }
 
     // ============================================================
     // USER AUTH
