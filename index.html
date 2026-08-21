@@ -5407,7 +5407,7 @@
           Orders</a>
         <a href="#profile" class="menu-link" onclick="showTab('profile');closeMenu()"><i class="fa fa-user"></i>
           Profile</a>
-        <a href="#schedule-items" class="menu-link" onclick="openScheduleItemsPage();closeMenu()"><i
+        <a href="#schedule-items" id="menu-schedule-item-link" class="menu-link" style="display:none" onclick="openScheduleItemsPage();closeMenu()"><i
             class="fa fa-calendar-check"></i>
           Schedule Items</a>
         <div class="menu-divider"></div>
@@ -6020,10 +6020,10 @@
   </div>
 
   <script>
-    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwhsss-RtoJrx37PGMoa0-EdxQ-l_J2Oa3aR6qR0ML-o2JF3pn6B54S1KQoloJDu5uX/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
+    var CONFIG = { SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxv0WqsvICG0kacgk_VXwn-tSI8I9dlBE5wmm7GFReckOQEdmBQ-cCfcSMtM3SlPQ/exec", GOOGLE_CLIENT_ID: "171261874899-4biajfb8vch57ne77pghb2bmpb06g8ad.apps.googleusercontent.com" };
     var UDHAR_API_URL = "https://script.google.com/macros/s/AKfycbwDups6fnYNXExOrsnAmwW1U94J8KUGG0O6W8nH8_-3OVf93etlCfVHl-2AJVDXXaZ6/exec"; // Part 1 wale deployment ka same URL yahan bhi paste karo
     var UPI_CONFIG = { merchantUPI: "paytm.s1nz6ut@pty", merchantName: "Rakesh Kirana", merchantCode: "" };
-    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false }; // Current Location default OFF (sheet se ON ho to hi dikhega), Other Address default ON (sheet se OFF ho to hi chhupega), Main Address default OFF (sheet se ON ho to hi dikhega)
+    var paymentSettings = { upi: true, card: true, cod: true, razorpay: true, payLater: true, currentLocation: false, otherAddress: true, mainAddress: false, scheduleItem: false }; // Current Location default OFF, Other Address default ON, Main Address default OFF, Schedule Item default OFF (sheet se ON ho to hi dikhega)
 
     function loadPaymentSettings() {
       fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
@@ -6038,7 +6038,8 @@
               payLater: data.payLater !== false,
               currentLocation: data.currentLocation !== false,
               otherAddress: data.otherAddress !== false,
-              mainAddress: data.mainAddress === true
+              mainAddress: data.mainAddress === true,
+              scheduleItem: data.scheduleItem === true
             };
           }
           applyPaymentSettingsUI();
@@ -6072,6 +6073,25 @@
         var el = document.getElementById(id);
         if (el) el.style.display = paymentSettings.mainAddress ? '' : 'none';
       });
+      // Schedule Item — hamburger menu link aur product detail button, sheet ON/OFF se control
+      var schedMenuLink = document.getElementById('menu-schedule-item-link');
+      if (schedMenuLink) schedMenuLink.style.display = paymentSettings.scheduleItem ? '' : 'none';
+      var schedBtnWrap = document.getElementById('schedule-item-btn-wrap');
+      if (schedBtnWrap) schedBtnWrap.style.display = paymentSettings.scheduleItem ? '' : 'none';
+    }
+
+    // Sirf schedule item ka fresh check — 3-line menu open karte time ya product click karte time call hota hai
+    function refreshScheduleItemVisibility() {
+      fetch(CONFIG.SCRIPT_URL + '?action=getPaymentSettings')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          paymentSettings.scheduleItem = !!(data && data.scheduleItem === true);
+          var schedMenuLink = document.getElementById('menu-schedule-item-link');
+          if (schedMenuLink) schedMenuLink.style.display = paymentSettings.scheduleItem ? '' : 'none';
+          var schedBtnWrap = document.getElementById('schedule-item-btn-wrap');
+          if (schedBtnWrap) schedBtnWrap.style.display = paymentSettings.scheduleItem ? '' : 'none';
+        })
+        .catch(function () { });
     }
 
     // Email whitelist + Udhar Khata (subscription/membership) check — sirf login/app-open ke time, buy page ke time NAHI
@@ -7233,9 +7253,10 @@
         '<div class="qty-row"><span class="qty-label"><i class="fa fa-layer-group"></i> ' + t('quantity') + '</span>' +
         '<div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)"><i class="fa fa-minus"></i></button><span class="qty-val" id="qty-val">1</span><button class="qty-btn" onclick="changeQty(1)"><i class="fa fa-plus"></i></button></div></div></div>' + offerDetailHtml +
         '<div class="detail-actions"><button class="btn btn-outline" onclick="addToCartDetail()"><i class="fa fa-bag-shopping"></i> ' + t('add_to_cart_btn') + '</button><button class="btn btn-accent" onclick="buyNow()"><i class="fa fa-bolt"></i> ' + t('buy_now') + '</button></div>' +
-        '<div class="detail-actions"><button class="btn btn-schedule" onclick="addToSchedule()"><i class="fa fa-calendar-plus"></i> Add to Schedule</button></div>' +
+        '<div class="detail-actions" id="schedule-item-btn-wrap" style="display:none"><button class="btn btn-schedule" onclick="addToSchedule()"><i class="fa fa-calendar-plus"></i> Add to Schedule</button></div>' +
         '<div class="detail-tags"><span class="tag"><i class="fa fa-truck"></i> ' + t('free_above') + '</span><span class="tag"><i class="fa fa-rotate-left"></i> ' + t('day3_return') + '</span><span class="tag"><i class="fa fa-shield-check"></i> ' + t('original') + '</span></div>';
       showTab('product'); if (galleryImages.length > 1) { enableGallerySwipe(); startDetailGalleryAuto(); }
+      refreshScheduleItemVisibility();
     }
     function startDetailGalleryAuto() { if (detailGalleryTimer) clearInterval(detailGalleryTimer); detailGalleryTimer = setInterval(function () { if (!document.getElementById('gallery-track')) { clearInterval(detailGalleryTimer); detailGalleryTimer = null; return; } galleryCurrentIndex = (galleryCurrentIndex + 1) % galleryImages.length; updateGallery(); }, 2500); }
     function changeSlide(dir) { if (!galleryImages.length) return; galleryCurrentIndex = (galleryCurrentIndex + dir + galleryImages.length) % galleryImages.length; updateGallery(); if (detailGalleryTimer) { clearInterval(detailGalleryTimer); startDetailGalleryAuto(); } }
@@ -8413,7 +8434,7 @@
     document.getElementById('dp-modal').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
     document.getElementById("prof-avatar-box").addEventListener("click", function () { openDPModal(); });
 
-    function openMenu() { document.getElementById('hamburger-menu').classList.add('open'); document.getElementById('menu-overlay').classList.add('show'); }
+    function openMenu() { document.getElementById('hamburger-menu').classList.add('open'); document.getElementById('menu-overlay').classList.add('show'); refreshScheduleItemVisibility(); }
     function closeMenu() { document.getElementById('hamburger-menu').classList.remove('open'); document.getElementById('menu-overlay').classList.remove('show'); }
 
     // ============================================================
