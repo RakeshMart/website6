@@ -61,8 +61,104 @@ self.addEventListener("fetch", (event) => {
 });
 
 // ===================================================
-// PUSH NOTIFICATION HANDLER - RICH WITH IMAGE SUPPORT
+// NATIVE WEB PUSH NOTIFICATION HANDLER
+// Spin + Offer + General
+// Works through Service Worker even when page is closed
 // ===================================================
+
+self.addEventListener("push", function (event) {
+  let data = {};
+
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    data = {
+      title: "🛒 Rakesh Mart",
+      body: event.data ? event.data.text() : "Koi notification aayi!"
+    };
+  }
+
+  const title = data.title || "🛒 Rakesh Mart";
+
+  const options = {
+    body: data.body || data.message || "",
+    icon: "/website6/icon-192.png",
+    badge: "/website6/icon-192.png",
+
+    // Har scheduled notification ki unique ID
+    tag: data.notificationId || undefined,
+
+    // Same notification ko duplicate hone se rokne mein help
+    renotify: false,
+
+    requireInteraction: false,
+
+    data: {
+      url: data.url || "/website6/",
+      type: data.type || "general",
+      notificationId: data.notificationId || ""
+    }
+  };
+
+  // Notification image
+  if (
+    data.image &&
+    typeof data.image === "string" &&
+    data.image.startsWith("http")
+  ) {
+    options.image = data.image;
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+
+// ===================================================
+// NOTIFICATION CLICK
+// ===================================================
+
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close();
+
+  const notificationData = event.notification.data || {};
+
+  const targetUrl =
+    notificationData.url || "/website6/";
+
+  event.waitUntil(
+    clients
+      .matchAll({
+        type: "window",
+        includeUncontrolled: true
+      })
+      .then(function (clientList) {
+
+        // Existing website/PWA window mil jaye
+        for (let i = 0; i < clientList.length; i++) {
+
+          const client = clientList[i];
+
+          if ("focus" in client) {
+
+            return client.focus().then(function () {
+
+              if ("navigate" in client) {
+                return client.navigate(targetUrl);
+              }
+
+            });
+          }
+        }
+
+        // Koi window open nahi hai
+        if (clients.openWindow) {
+          return clients.openWindow(targetUrl);
+        }
+      })
+  );
+});
 self.addEventListener("push", (event) => {
   let data = {};
   try {
