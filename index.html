@@ -1157,6 +1157,7 @@
       transition: all .35s ease;
       position: relative;
       overflow: hidden;
+      z-index: 0;
       box-shadow: 0 8px 20px rgba(0, 0, 0, .08), inset 0 1px 0 rgba(255, 255, 255, .6);
     }
 
@@ -4336,6 +4337,7 @@
       display: flex;
       align-items: center;
       gap: .5rem;
+      pointer-events: none;
     }
 
     .toast.show {
@@ -5357,7 +5359,7 @@
         <div class="form-group"><label>Aakhri Naam</label><input type="text" id="edit-lname"
             placeholder="Sharma (optional)"></div>
         <div class="form-group"><label>Phone *</label><input type="tel" id="edit-phone" placeholder="7742474578"
-            maxlength="10" inputmode="numeric"></div>
+            maxlength="10" inputmode="numeric" readonly style="background:var(--surface2);color:var(--muted);cursor:not-allowed;"></div>
         <div class="form-group" id="edit-mainaddr-block" style="display:none"><label>Pata *</label><textarea
             id="edit-addr" rows="2" placeholder="Ghar ka pata..."></textarea></div>
         <div class="form-group" id="edit-manualaddr-block">
@@ -5720,7 +5722,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5731,7 +5733,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5742,7 +5744,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5753,7 +5755,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5764,7 +5766,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5775,7 +5777,7 @@
                 <div class="product-cat">Category</div>
                 <div class="product-name">Loading product name placeholder text</div>
                 <div class="product-desc">Loading product description placeholder text goes here</div>
-                <div class="product-rating">★★★★★ <span>4.8</span></div>
+                <div class="product-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> <span>4.8</span></div>
                 <div class="price-row"><span class="price">₹999</span></div>
                 <button class="add-btn" tabindex="-1"><i class="fa fa-plus"></i> Add</button>
               </div>
@@ -5967,6 +5969,13 @@
           <div class="pf-content">
             <div class="pf-label">Phone</div>
             <div class="pf-value" id="pf-phone">—</div>
+          </div>
+        </div>
+        <div class="profile-field">
+          <div class="pf-icon"><i class="fa fa-envelope"></i></div>
+          <div class="pf-content">
+            <div class="pf-label" id="email-label">Gmail</div>
+            <div class="pf-value" id="pf-email">—</div>
           </div>
         </div>
         <div class="profile-field">
@@ -6476,6 +6485,7 @@
       chat_login_sub: { hi: "चैट के लिए रजिस्टर होना जरूरी है", hinglish: "Chat ke liye register hona zaroori hai", en: "Registration required for chat" },
       my_info: { hi: "मेरी जानकारी", hinglish: "Meri Jankari", en: "My Info" },
       full_name: { hi: "पूरा नाम", hinglish: "Poora Naam", en: "Full Name" },
+      email_label: { hi: "जीमेल", hinglish: "Gmail", en: "Gmail" },
       address: { hi: "पता", hinglish: "Pata", en: "Address" },
       edit_profile: { hi: "प्रोफाइल एडिट करो", hinglish: "Profile Edit Karo", en: "Edit Profile" },
       logout_btn: { hi: "लॉगआउट करो", hinglish: "Logout Karo", en: "Logout" },
@@ -6525,7 +6535,7 @@
       set('cart-header-txt', 'cart_header'); set('orders-header-txt', 'orders_header');
       set('chat-header-txt', 'chat_header'); set('chat-login-title', 'chat_login_title');
       set('chat-login-sub', 'chat_login_sub'); set('my-info-txt', 'my_info');
-      set('full-name-label', 'full_name'); set('address-label', 'address');
+      set('full-name-label', 'full_name'); set('email-label', 'email_label'); set('address-label', 'address');
       set('edit-profile-btn-txt', 'edit_profile'); set('logout-btn-txt', 'logout_btn');
       set('co-delivery-label', 'delivery_details'); set('co-summary-label', 'order_summary');
       set('co-payment-label', 'payment_method'); set('co-edit-hint', 'co_edit_hint');
@@ -6688,6 +6698,7 @@
       var name = document.getElementById('reg-name').value.trim(); var phone = document.getElementById('reg-phone').value.trim(); var addr = document.getElementById('reg-addr').value.trim(); var location = document.getElementById('reg-location').value.trim();
       if (!name || !phone || (paymentSettings.mainAddress && !addr)) { showToast('Sabhi fields zaroori hain', 'error'); return; }
       if (phone.length < 10) { showToast('Sahi phone number dalo', 'error'); return; }
+      if (!paymentSettings.mainAddress && !(regManualAddr.houseNo && regManualAddr.gali && regManualAddr.area)) { showToast('Pehle apna pura Address bharo (Road, Area, City)', 'error'); openManualAddress('reg'); return; }
       // Live Location ab OPTIONAL hai — bina location ke bhi aage badh sakte hain
       pendingReg = { fname: name, phone: phone, addr: addr, location: location, houseNo: regManualAddr.houseNo, gali: regManualAddr.gali, landmark: regManualAddr.landmark, area: regManualAddr.area };
       document.getElementById('reg-modal').classList.remove('open');
@@ -6771,7 +6782,7 @@
     function fillProfileUI() {
       if (!currentUser) return; var fullName = (currentUser.fname + ' ' + (currentUser.lname || '')).trim();
       document.getElementById('prof-name').textContent = fullName; document.getElementById('prof-phone').textContent = currentUser.phone;
-      document.getElementById('pf-fullname').textContent = fullName; document.getElementById('pf-phone').textContent = currentUser.phone; document.getElementById('pf-addr').textContent = currentUser.addr;
+      document.getElementById('pf-fullname').textContent = fullName; document.getElementById('pf-phone').textContent = currentUser.phone; document.getElementById('pf-email').textContent = currentUser.googleEmail || '—'; document.getElementById('pf-addr').textContent = currentUser.addr;
       updateProfileAvatar(currentUser.dpUrl || ''); if (!currentUser.dpUrl) { var l = document.getElementById('prof-avatar-letter'); if (l) l.textContent = currentUser.fname.charAt(0).toUpperCase(); }
       if (currentUser.location) { document.getElementById('pf-location').textContent = currentUser.location; document.getElementById('pf-loc-wrap').style.display = 'flex'; }
     }
@@ -6781,7 +6792,7 @@
       document.getElementById('edit-phone').value = currentUser.phone || ''; document.getElementById('edit-addr').value = currentUser.addr || ''; document.getElementById('edit-location').value = currentUser.location || '';
       editManualAddr = { houseNo: currentUser.houseNo || '', gali: currentUser.gali || '', landmark: currentUser.landmark || '', area: currentUser.area || '' };
       var editMaBtn = document.getElementById('edit-manualaddr-btn-text');
-      if (editMaBtn) editMaBtn.textContent = (editManualAddr.gali || editManualAddr.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Road, Area...)';
+      if (editMaBtn) editMaBtn.innerHTML = (editManualAddr.gali || editManualAddr.area) ? '<i class="fa fa-circle-check" style="color:#16a34a"></i> Address Details Set — Edit Karo' : 'Address Manually Likho (Road, Area...)';
       document.getElementById('edit-modal').classList.add('open');
     }
     function saveProfile() {
@@ -7048,14 +7059,14 @@
       var coordStr = lpCurrentLat.toFixed(6) + ', ' + lpCurrentLng.toFixed(6);
       if (lpContext === 'reg') {
         document.getElementById('reg-location').value = coordStr;
-        document.getElementById('reg-loc-btn-text').textContent = 'Location Set ✓ — Dobara Change Karo';
+        document.getElementById('reg-loc-btn-text').innerHTML = '<i class="fa fa-circle-check" style="color:#16a34a"></i> Location Set — Dobara Change Karo';
         var addrHint = document.getElementById('reg-addr');
         if (addrHint && !addrHint.value.trim() && lpCurrentAddr) addrHint.value = lpCurrentAddr;
       } else {
         document.getElementById('edit-location').value = coordStr;
-        document.getElementById('loc-btn-text').textContent = 'Location Set ✓ — Dobara Change Karo';
+        document.getElementById('loc-btn-text').innerHTML = '<i class="fa fa-circle-check" style="color:#16a34a"></i> Location Set — Dobara Change Karo';
       }
-      showToast('Location select ho gayi ✓', 'success');
+      showToast('Location select ho gayi', 'success');
       closeLocationPicker();
     }
 
@@ -7084,9 +7095,9 @@
       var btnId = maContext === 'reg' ? 'reg-manualaddr-btn-text' : 'edit-manualaddr-btn-text';
       if (maContext === 'reg') { regManualAddr = obj; } else { editManualAddr = obj; }
       var btnEl = document.getElementById(btnId);
-      if (btnEl) btnEl.textContent = (obj.gali || obj.area) ? 'Address Details Set ✓ — Edit Karo' : 'Address Manually Likho (Road, Area...)';
+      if (btnEl) btnEl.innerHTML = (obj.gali || obj.area) ? '<i class="fa fa-circle-check" style="color:#16a34a"></i> Address Details Set — Edit Karo' : 'Address Manually Likho (Road, Area...)';
       closeManualAddress();
-      showToast('Address details save ho gaye ✓', 'success');
+      showToast('Address details save ho gaye', 'success');
     }
 
     // ============================================================
@@ -7871,7 +7882,7 @@
         var weekRows = rows.filter(function (r) { return r.weekNum === w; });
         weeksHtml += '<div class="alt-week-block"><div class="alt-week-title"><i class="fa fa-calendar-week"></i> Week ' + w + '</div>' +
           weekRows.map(function (r) {
-            return '<div class="alt-day-row ' + (r.deliver ? 'on' : 'off') + '"><span>' + r.dayName + '</span><span>' + (r.deliver ? '✅ Delivery' : '❌ Off') + '</span></div>';
+            return '<div class="alt-day-row ' + (r.deliver ? 'on' : 'off') + '"><span>' + r.dayName + '</span><span>' + (r.deliver ? '<i class="fa fa-circle-check" style="color:#16a34a"></i> Delivery' : '<i class="fa fa-circle-xmark" style="color:var(--danger)"></i> Off') + '</span></div>';
           }).join('') + '</div>';
       }
       return '<div class="alt-understand-panel"><button class="alt-understand-close" onclick="toggleAltUnderstand(\'' + cid + '\')"><i class="fa fa-xmark"></i></button>' +
@@ -8121,7 +8132,7 @@
     function showCheckout() {
       if (!currentUser) { showToast('Pehle login karo', 'error'); return; } if (!cart.length) { showToast('Cart khali hai', 'error'); return; }
       isOrderPlacing = false; document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); }); document.getElementById('checkout-page').classList.add('active');
-      document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); }); document.getElementById('main-top-header').style.display = ''; document.querySelector('.bottom-nav').style.display = ''; document.body.classList.remove('static-page-open');
+      document.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); }); document.getElementById('main-top-header').style.display = ''; document.querySelector('.bottom-nav').style.display = ''; document.body.classList.remove('static-page-open'); document.body.classList.remove('fixed-page-open');
       document.getElementById('co-name').textContent = (currentUser.fname + ' ' + (currentUser.lname || '')).trim(); document.getElementById('co-phone').textContent = currentUser.phone; document.getElementById('co-addr').textContent = currentUser.addr;
       renderCheckoutSummary(); var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0); var delivery = FREE_DELIVERY_MODE ? 0 : (subtotal >= 99 ? 0 : 20); currentCheckoutTotal = subtotal + delivery;
       var amountEl = document.getElementById('upi-amount-display'); if (amountEl) amountEl.textContent = '₹' + currentCheckoutTotal;
@@ -8451,7 +8462,13 @@
     // UTILS
     // ============================================================
     function postToSheet(data) { if (!CONFIG.SCRIPT_URL) return; fetch(CONFIG.SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(data) }).catch(function (e) { console.log('Sheet error:', e); }); }
-    function showToast(msg, type) { var el = document.getElementById('toast'); el.innerHTML = msg; el.className = 'toast ' + (type || '') + ' show'; setTimeout(function () { el.classList.remove('show'); }, 2500); }
+    function showToast(msg, type) {
+      var el = document.getElementById('toast');
+      var iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+      el.innerHTML = '<i class="fa ' + iconClass + '" style="font-size:1rem;flex-shrink:0"></i><span>' + msg + '</span>';
+      el.className = 'toast ' + (type || '') + ' show';
+      setTimeout(function () { el.classList.remove('show'); }, 2500);
+    }
 
     // Event listeners
     document.getElementById('track-modal').addEventListener('click', function (e) { if (e.target.id === 'track-modal') closeTrackModal(); });
@@ -8543,7 +8560,7 @@
           body: JSON.stringify({ token: JSON.stringify(sub) })
         });
 
-        console.log('✅ Web Push registered successfully!');
+        console.log('Web Push registered successfully!');
 
       } catch (err) {
         console.log('Push setup failed:', err);
@@ -8915,25 +8932,60 @@
       { bg: '#E67E22', text: '#fff', glow: 'rgba(230,126,34,0.6)' }
     ];
 
-    // ICON mapping for common grocery items
+    // ICON mapping for common grocery items — returns a Font Awesome class name
+    // (resolved to the actual webfont glyph at draw-time via _getFaGlyph, with a
+    // guaranteed-safe fallback, so nothing ever renders as a missing glyph box)
     function getItemIcon(name) {
       var n = (name || '').toLowerCase();
-      if (n.includes('chawal') || n.includes('rice') || n.includes('चावल')) return '🍚';
-      if (n.includes('atta') || n.includes('flour') || n.includes('आटा')) return '🌾';
-      if (n.includes('daal') || n.includes('dal') || n.includes('दाल')) return '🫘';
-      if (n.includes('tel') || n.includes('oil') || n.includes('ghee') || n.includes('तेल')) return '🫙';
-      if (n.includes('masala') || n.includes('spice') || n.includes('मसाला')) return '🌶️';
-      if (n.includes('namak') || n.includes('salt') || n.includes('नमक')) return '🧂';
-      if (n.includes('shakkar') || n.includes('sugar') || n.includes('चीनी')) return '🍬';
-      if (n.includes('sabun') || n.includes('soap') || n.includes('साबुन')) return '🧼';
-      if (n.includes('milk') || n.includes('doodh') || n.includes('dairy') || n.includes('दूध')) return '🥛';
-      if (n.includes('namkeen') || n.includes('snack') || n.includes('chips')) return '🥨';
-      if (n.includes('biscuit') || n.includes('cookie')) return '🍪';
-      if (n.includes('chai') || n.includes('tea') || n.includes('चाय')) return '🍵';
-      if (n.includes('sabzi') || n.includes('vegetable') || n.includes('veggie')) return '🥦';
-      if (n.includes('fruit') || n.includes('fal') || n.includes('phal')) return '🍎';
-      if (n.includes('free') || n.includes('muft') || n.includes('gift')) return '🎁';
-      return '🛒';
+      if (n.includes('chawal') || n.includes('rice') || n.includes('चावल')) return 'fa-bowl-rice';
+      if (n.includes('atta') || n.includes('flour') || n.includes('आटा')) return 'fa-wheat-awn';
+      if (n.includes('daal') || n.includes('dal') || n.includes('दाल')) return 'fa-seedling';
+      if (n.includes('tel') || n.includes('oil') || n.includes('ghee') || n.includes('तेल')) return 'fa-oil-can';
+      if (n.includes('masala') || n.includes('spice') || n.includes('मसाला')) return 'fa-pepper-hot';
+      if (n.includes('namak') || n.includes('salt') || n.includes('नमक')) return 'fa-bag-shopping';
+      if (n.includes('shakkar') || n.includes('sugar') || n.includes('चीनी')) return 'fa-bag-shopping';
+      if (n.includes('sabun') || n.includes('soap') || n.includes('साबुन')) return 'fa-pump-soap';
+      if (n.includes('milk') || n.includes('doodh') || n.includes('dairy') || n.includes('दूध')) return 'fa-bag-shopping';
+      if (n.includes('namkeen') || n.includes('snack') || n.includes('chips')) return 'fa-bag-shopping';
+      if (n.includes('biscuit') || n.includes('cookie')) return 'fa-cookie';
+      if (n.includes('chai') || n.includes('tea') || n.includes('चाय')) return 'fa-mug-saucer';
+      if (n.includes('sabzi') || n.includes('vegetable') || n.includes('veggie')) return 'fa-carrot';
+      if (n.includes('fruit') || n.includes('fal') || n.includes('phal')) return 'fa-apple-whole';
+      if (n.includes('free') || n.includes('muft') || n.includes('gift')) return 'fa-gift';
+      return 'fa-bag-shopping';
+    }
+
+    // Resolves a Font Awesome icon class to its real glyph character + font
+    // family/weight by reading the browser's own computed ::before content —
+    // this is 100% accurate (no guessed unicode) and caches the result.
+    var _faGlyphCache = {};
+    function _getFaGlyph(iconClass) {
+      if (_faGlyphCache[iconClass] !== undefined) return _faGlyphCache[iconClass];
+      var result = null;
+      try {
+        var span = document.createElement('i');
+        span.className = 'fa ' + iconClass;
+        span.style.cssText = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;';
+        document.body.appendChild(span);
+        var cs = getComputedStyle(span, '::before');
+        var ch = (cs.content || '').replace(/^["']|["']$/g, '');
+        if (ch && ch !== 'none' && ch.length) {
+          result = { ch: ch, fam: cs.fontFamily || '"Font Awesome 6 Free"', weight: cs.fontWeight || '900' };
+        }
+        document.body.removeChild(span);
+      } catch (e) { }
+      _faGlyphCache[iconClass] = result;
+      return result;
+    }
+    // Draws a professional Font Awesome glyph centered at the current canvas
+    // origin (used as the fallback when a spin-wheel item has no product image).
+    function _drawFaIcon(ctx, iconClass, size, color) {
+      var g = _getFaGlyph(iconClass) || _getFaGlyph('fa-bag-shopping');
+      if (!g) return;
+      ctx.font = g.weight + ' ' + size + 'px ' + g.fam;
+      ctx.fillStyle = color || '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      try { ctx.fillText(g.ch, 0, 0); } catch (e) { }
     }
 
     var spinImgCache = {};
@@ -9024,8 +9076,10 @@
           ctx.drawImage(_imgCache[item.image], -imgSize / 2, -imgSize / 2, imgSize, imgSize);
           ctx.restore();
         } else {
-          ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          try { ctx.fillText(getItemIcon(item.name), 0, 0); } catch (e) { }
+          var iconColor = spinColors[i % spinColors.length].text;
+          ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 3;
+          _drawFaIcon(ctx, getItemIcon(item.name), 20, iconColor);
+          ctx.shadowBlur = 0;
         }
         ctx.restore();
       });
@@ -9137,7 +9191,7 @@
             };
             _preFetchStatus = 'ready';
             _preFetchStatus = 'ready';
-            console.log('✅ Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
+            console.log('Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
 
             // Hub restore + agar user pehle click kar chuka tha to auto-spin!
             if (_hubWaitTimer) { clearInterval(_hubWaitTimer); _hubWaitTimer = null; }
@@ -9146,7 +9200,7 @@
               _spinQueued = false;
               setTimeout(doSpin, 80); // Thoda delay for smooth UX
             }
-            console.log('✅ Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
+            console.log('Winner ready (silent):', _preFetchedWinner.winItem.name, '₹' + _preFetchedWinner.winItem.price);
           } else {
             _preFetchStatus = 'error';
             _preFetchedWinner = null;
@@ -9364,8 +9418,10 @@
             ctx.drawImage(_imgCache[item.image], -imgSize / 2, -imgSize / 2, imgSize, imgSize);
             ctx.restore();
           } else {
-            ctx.font = '22px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            try { ctx.fillText(getItemIcon(item.name), 0, 0); } catch (e) { }
+            var iconColor = spinColors[i % spinColors.length].text;
+            ctx.shadowColor = 'rgba(0,0,0,0.35)'; ctx.shadowBlur = 3;
+            _drawFaIcon(ctx, getItemIcon(item.name), 20, iconColor);
+            ctx.shadowBlur = 0;
           }
           ctx.restore();
         });
@@ -9843,7 +9899,7 @@
         });
         playWishlistSound();
         launchWishlistBurst(btnEl);
-        showToast('Wishlist mein add ho gaya ❤️', 'success');
+        showToast('Wishlist mein add ho gaya', 'success');
       }
       updateWishlistHeaderBadge();
       var wp = document.getElementById('wishlist-page');
