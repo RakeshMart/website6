@@ -1351,6 +1351,32 @@
       margin-bottom: 2px;
     }
 
+    .bill-due-badge {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #c0392b;
+      background: #fdecea;
+      border: 1px solid #f5c6c2;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-bottom: 4px;
+      width: fit-content;
+    }
+
+    .bill-paid-badge {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1b5e20;
+      background: #e6f4ea;
+      border: 1px solid #b7e0c0;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-bottom: 4px;
+      width: fit-content;
+    }
+
     .bill-actions {
       display: flex;
       gap: 8px;
@@ -2220,7 +2246,7 @@
 
   <script>
     // ===== IMPORTANT: Paste your Apps Script Web App URL below =====
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzf8Umfa2S4RVmH1-qXPuAU1nm0byJvKZVnuz3QUo3EVr5jECzo-9oRgqehnzkoJxJb/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxdwgoMjR1J4xZS9OXfWzPDBcyJQdyGpWa_jrraOZ7ixTHylcOVnz9f9BFoUam4kO1a/exec';
 
     // ---- Theme: dark toggle removed, app always stays on default (light) theme ----
     document.documentElement.removeAttribute('data-theme');
@@ -2329,7 +2355,7 @@
       document.body.classList.remove('no-scroll');
 
       const c = lastStatementRes.customer;
-      const initial = (c.name || '?').trim().charAt(0).toUpperCase();
+      const initial = String(c.name || '?').trim().charAt(0).toUpperCase();
       document.getElementById('pf_avatar').innerHTML = c.dpUrl
         ? `<img src="${c.dpUrl}" alt="${escapeHtml(c.name)}">`
         : escapeHtml(initial);
@@ -2415,6 +2441,7 @@
               <div class="bill-date">${formatDate(h.date)}</div>
               <div class="bill-amount">${formatMoney(Math.abs(h.amount))}</div>
               <div class="bill-tag">Bill Added</div>
+              ${g.outstanding > 0 ? `<div class="bill-due-badge">Baaki: ${formatMoney(g.outstanding)}</div>` : `<div class="bill-paid-badge">Paid</div>`}
               <div class="bill-actions">
                 <a class="bill-btn" href="${h.billImageUrl}" target="_blank">View</a>
                 <a class="bill-btn" ${downloadUrl ? `href="${downloadUrl}" target="_blank" download` : 'href="javascript:void(0)"'}>Download</a>
@@ -2430,6 +2457,7 @@
             <div class="bill-date">${formatDate(g.date)}</div>
             <div class="bill-amount">${formatMoney(g.total)}</div>
             <div class="bill-tag">${g.entries.length} item${g.entries.length > 1 ? 's' : ''}</div>
+            ${g.outstanding > 0 ? `<div class="bill-due-badge">Baaki: ${formatMoney(g.outstanding)}</div>` : `<div class="bill-paid-badge">Paid</div>`}
             <div class="bill-actions">
               <a class="bill-btn" href="javascript:void(0)" onclick="openBillOrderModal(${idx})">View</a>
               <a class="bill-btn" href="javascript:void(0)" onclick="downloadBillOrderImage(${idx})">Download</a>
@@ -2446,16 +2474,17 @@
       const seenIdx = {};
       bills.forEach(function (h) {
         if (h.billImageUrl) {
-          groups.push({ hasImage: true, entries: [h], date: h.date, total: Math.abs(h.amount) });
+          groups.push({ hasImage: true, entries: [h], date: h.date, total: Math.abs(h.amount), outstanding: h.runningBalance });
           return;
         }
         const key = String(h.createdAt || h.date);
         if (seenIdx[key] !== undefined) {
           groups[seenIdx[key]].entries.push(h);
           groups[seenIdx[key]].total += Math.abs(h.amount);
+          groups[seenIdx[key]].outstanding = h.runningBalance;
         } else {
           seenIdx[key] = groups.length;
-          groups.push({ hasImage: false, entries: [h], date: h.date, total: Math.abs(h.amount) });
+          groups.push({ hasImage: false, entries: [h], date: h.date, total: Math.abs(h.amount), outstanding: h.runningBalance });
         }
       });
       return groups;
@@ -2958,10 +2987,10 @@
     async function renderStatement(res) {
       lastStatementRes = res;
       const c = res.customer, b = res.balance;
-      const initial = (c.name || '?').trim().charAt(0).toUpperCase();
+      const initial = String(c.name || '?').trim().charAt(0).toUpperCase();
       const isClear = b.outstanding <= 0;
       const isActive = c.status === 'Active';
-      const firstName = (c.name || '').trim().split(' ')[0] || c.name;
+      const firstName = String(c.name || '').trim().split(' ')[0] || c.name;
       const avatarHtml = c.dpUrl
         ? `<img src="${c.dpUrl}" alt="${escapeHtml(c.name)}">`
         : escapeHtml(initial);
