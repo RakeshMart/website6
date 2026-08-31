@@ -2775,11 +2775,12 @@
 
         // NAYA: purana upar, naya niche - Created At (asli time) se sort, taaki
         // same-din ki multiple entries bhi sahi order + sahi time ke saath aayein
+        // NAYA: naya upar, purana niche - Created At (asli time) se descending sort
         const allEntries = (lastStatementRes.history || [])
           .slice()
           .sort(
             (a, b) =>
-              new Date(a.createdAt || a.date) - new Date(b.createdAt || b.date),
+              new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date),
           );
 
         const bills = allEntries.filter((h) => h.type === "Udhar");
@@ -2796,6 +2797,7 @@
         window._billOrderGroups = groups;
 
         // Bill-groups aur payments ko unke asli time ke hisaab se ek timeline me merge karo
+        // Bill-groups aur payments ko unke asli time ke hisaab se ek timeline me merge karo (newest upar)
         const timeline = groups
           .map((g, idx) => ({
             kind: "bill",
@@ -2811,7 +2813,7 @@
               time: new Date(p.createdAt || p.date).getTime(),
             })),
           )
-          .sort((a, b) => a.time - b.time);
+          .sort((a, b) => b.time - a.time);
 
         listEl.innerHTML =
           renderPaymentSummaryCard() +
